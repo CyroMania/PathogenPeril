@@ -57,7 +57,7 @@ public class PlayerUnit : Unit
     {
         foreach (Tile t in tile.NeighbouringTiles)
         {
-            if (distance < MovementPoints && tileQueue.Contains(t) == false)
+            if (distance <= MovementPoints && tileQueue.Contains(t) == false)
             {
                 t.Reachable = true;
                 tileQueue.Enqueue(tile);
@@ -65,6 +65,9 @@ public class PlayerUnit : Unit
             }
         }
 
-        tileQueue.Dequeue();
+        if (tileQueue.Count > 0)
+        {
+            tileQueue.Dequeue();
+        }
     }
 }
