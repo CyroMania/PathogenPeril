@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    private readonly short _maxHitPoints;
-    private readonly short _maxMovementPoints;
-
-    public Unit(short maxHitPoints, short maxMovementPoints)
-    {
-        _maxHitPoints = maxHitPoints;
-        _maxMovementPoints = maxMovementPoints;
-    }
+    private short _maxHitPoints;
+    private short _maxMovementPoints;
 
     public short HitPoints { get; set; }
     public short MovementPoints { get; set; }
     public Tile CurrentTile { get; set; }
+
+    protected virtual void Init(short maxHitPoints, short maxMovementPoints)
+    {
+        _maxHitPoints = maxHitPoints;
+        _maxMovementPoints = maxMovementPoints;
+
+        Start();
+    }
+
 
     void Start()
     {

@@ -5,23 +5,40 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    private bool Reachable = false;
-    private bool Inhabited = false;
-    private Renderer renderer;
+    private bool _reachable = false;
+    private bool _inhabited = false;
+    private bool _current = false;
+    private new Renderer renderer;
 
     [SerializeField]
-    private List<Tile> tiles;
-    public bool Current { get; set; } = false;
+    private List<Tile> _neighbourTiles;
+
+    public bool Current 
+    { 
+        get => _current; 
+        set => _current = value; 
+    }
+
+    public bool Reachable
+    {
+        get => _reachable;
+        set => _reachable = value;
+    }
+
+    public bool Inhabited
+    {
+        get => _inhabited;
+        set => _inhabited = value;
+    }
 
     public List<Tile> NeighbouringTiles 
     {
-        get { return tiles; }
+        get { return _neighbourTiles; }
         private set
         {
-            tiles = value;
+            _neighbourTiles = value;
         }
     }
-
 
     void Start()
     {
@@ -31,15 +48,15 @@ public class Tile : MonoBehaviour
 
     void Update()
     {
-        if (Current)
+        if (_current)
         {
             renderer.material.color = Color.blue;
         }
-        else if (Reachable)
+        else if (_reachable)
         {
             renderer.material.color = Color.yellow;
         }
-        else if (Inhabited)
+        else if (_inhabited)
         {
             renderer.material.color = Color.black;
         }

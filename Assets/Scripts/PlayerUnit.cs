@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerUnit : Unit
@@ -8,20 +8,22 @@ public class PlayerUnit : Unit
     [SerializeField]
     private Collider2D collider;
 
-    public PlayerUnit(short maxHitPoints, short maxMovementPoints)
-        : base(maxHitPoints, maxMovementPoints)
-    {
-    }
-
     public bool Selected { get; set; }
 
-    private void Start()
+    protected override void Init(short maxHitPoints, short maxMovementPoints)
+    {
+        base.Init(maxHitPoints, maxMovementPoints);
+
+        Start();
+    }
+
+    void Start()
     {
         collider = GetComponent<Collider2D>();
         mainCamera = Camera.main;
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -32,6 +34,8 @@ public class PlayerUnit : Unit
             if (hitInfo.collider == collider)
             {
                 CalculateCurrentTile();
+                Queue<Tile> selectableTilesQueue = new Queue<Tile>();
+                FindSelectableTiles(CurrentTile, selectableTilesQueue, 1);
             }
         } 
     }
@@ -47,5 +51,20 @@ public class PlayerUnit : Unit
             CurrentTile = target.GetComponent<Tile>();
             CurrentTile.Current = true;
         }
+    }
+
+    private void FindSelectableTiles(Tile tile, Queue<Tile> tileQueue, int distance)
+    {
+        foreach (Tile t in tile.NeighbouringTiles)
+        {
+            if (distance < MovementPoints && tileQueue.Contains(t) == false)
+            {
+                t.Reachable = true;
+                tileQueue.Enqueue(tile);
+                FindSelectableTiles(t, tileQueue, distance + 1);
+            }
+        }
+
+        tileQueue.Dequeue();
     }
 }
