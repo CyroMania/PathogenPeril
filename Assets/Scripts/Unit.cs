@@ -8,6 +8,7 @@ public class Unit : MonoBehaviour
     public short HitPoints { get; set; }
     public short MovementPoints { get; set; }
     public Tile CurrentTile { get; set; }
+    public Tile TargetTile { get; set; }
 
     protected virtual void Init(short maxHitPoints, short maxMovementPoints)
     {

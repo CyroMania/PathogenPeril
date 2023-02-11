@@ -4,9 +4,13 @@ using UnityEngine;
 public class PlayerUnit : Unit
 {
     [SerializeField]
-    private Camera mainCamera;
+    private Camera _mainCamera;
     [SerializeField]
     private Collider2D collider;
+    [SerializeField]
+    private bool _isMoving;
+    [SerializeField]
+    private Stack<Tile> _path;
 
     public bool Selected { get; set; }
 
@@ -19,23 +23,65 @@ public class PlayerUnit : Unit
 
     void Start()
     {
+        _isMoving = false;
         collider = GetComponent<Collider2D>();
-        mainCamera = Camera.main;
+        _mainCamera = Camera.main;
     }
 
     void Update()
     {
+        if (TargetTile != null)
+        {
+            if (!_isMoving)
+            {
+                _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>());
+                _isMoving = true;
+                return;
+            }
+            else
+            {
+                TileMovement.MoveToTile(this, _path);
+
+                if (_path.Count == 0) 
+                {
+                    _isMoving = false;
+                    CurrentTile = TargetTile;
+                    TargetTile = null;
+                }
+            }
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
-            Vector2 clickPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            int layerMask = 1 << (int)LayerMask.NameToLayer("Unit");
-            RaycastHit2D hitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, layerMask);
+            Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
-            if (hitInfo.collider == collider)
+            if (!Selected)
             {
-                CalculateCurrentTile();
-                Queue<Tile> selectableTilesQueue = new Queue<Tile>();
-                FindSelectableTiles(CurrentTile, selectableTilesQueue, 1);
+                int unitMask = 1 << (int)LayerMask.NameToLayer("Unit");
+                RaycastHit2D unitHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, unitMask);
+
+                if (unitHitInfo.collider == collider)
+                {
+                    Selected = true;
+                    CalculateCurrentTile();
+                    Queue<Tile> selectableTiles = new Queue<Tile>();
+                    FindSelectableTiles(CurrentTile, selectableTiles, 1);
+                }
+
+                return;
+            }
+
+            int tileMask = 1 << (int)LayerMask.NameToLayer("Tile");
+            RaycastHit2D tileHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, tileMask);
+
+            if (tileHitInfo.collider != null)
+            {
+                Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
+                if (selectedTile.Reachable && !selectedTile.Current)
+                {
+                    TargetTile = selectedTile;
+                    return;
+                }
             }
         } 
     }
@@ -53,21 +99,21 @@ public class PlayerUnit : Unit
         }
     }
 
-    private void FindSelectableTiles(Tile tile, Queue<Tile> tileQueue, int distance)
+    private void FindSelectableTiles(Tile tile, Queue<Tile> selectableTiles, int distance)
     {
         foreach (Tile t in tile.NeighbouringTiles)
         {
-            if (distance <= MovementPoints && tileQueue.Contains(t) == false)
+            if (distance <= MovementPoints && selectableTiles.Contains(t) == false)
             {
                 t.Reachable = true;
-                tileQueue.Enqueue(tile);
-                FindSelectableTiles(t, tileQueue, distance + 1);
+                selectableTiles.Enqueue(tile);
+                FindSelectableTiles(t, selectableTiles, distance + 1);
             }
         }
 
-        if (tileQueue.Count > 0)
+        if (selectableTiles.Count > 0)
         {
-            tileQueue.Dequeue();
+            selectableTiles.Dequeue();
         }
     }
 }
