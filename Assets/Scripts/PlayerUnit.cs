@@ -3,10 +3,8 @@ using UnityEngine;
 
 public class PlayerUnit : Unit
 {
-    [SerializeField]
     private Camera _mainCamera;
-    [SerializeField]
-    private Collider2D collider;
+    private Collider2D _collider;
     [SerializeField]
     private bool _isMoving;
     [SerializeField]
@@ -24,7 +22,7 @@ public class PlayerUnit : Unit
     void Start()
     {
         _isMoving = false;
-        collider = GetComponent<Collider2D>();
+        _collider = GetComponent<Collider2D>();
         _mainCamera = Camera.main;
     }
 
@@ -60,7 +58,7 @@ public class PlayerUnit : Unit
                 int unitMask = 1 << (int)LayerMask.NameToLayer("Unit");
                 RaycastHit2D unitHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, unitMask);
 
-                if (unitHitInfo.collider == collider)
+                if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
                     CalculateCurrentTile();
