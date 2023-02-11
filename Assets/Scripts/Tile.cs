@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -66,11 +69,21 @@ public class Tile : MonoBehaviour
         }
     }
 
-    private void Reset()
+    public void ResetTile(string ignoreProperty = "")
     {
-        Reachable = false;
-        Inhabited = false;
-        Current = false;
+        List<PropertyInfo> properties = GetType().GetDeclaredProperties()
+            .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
+
+        foreach (PropertyInfo property in properties)
+        {
+            if (property.Name != ignoreProperty)
+            {
+                if (property.PropertyType == typeof(bool))
+                {
+                    property.SetValue(this, false);
+                }
+            }
+        }
     }
 
     private List<Tile> FindNeighbouringTiles()
