@@ -1,12 +1,56 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class TileMovement : MonoBehaviour
+public static class TileMovement
 {
+    private static Vector3 unitLayer = Vector3.back;
+    private static float speed = 2f;
 
-
-    // Update is called once per frame
-    void Update()
+    internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath)
     {
-        
+        tilePath.Push(targetTile);
+
+        float distance = FindDistance(currentTile, targetTile);
+        Tile closestTile = null;
+
+        foreach (Tile t in targetTile.NeighbouringTiles)
+        {
+            if (FindDistance(currentTile, t) < distance)
+            {
+                distance = FindDistance(currentTile, t);
+                closestTile = t;
+            }
+        }
+
+        if (closestTile != currentTile)
+        {
+            FindTilePath(currentTile, closestTile, tilePath);
+        }
+
+        return tilePath;
+    }
+
+    internal static void MoveToTile(PlayerUnit unit, Stack<Tile> path)
+    {
+        Vector3 unitPos = unit.transform.position;
+        Tile tile = path.Peek();
+        Vector3 tilePos = tile.transform.position + unitLayer;
+
+        if (Vector2.Distance(unitPos, tilePos) < 0.05f)
+        {
+            path.Pop();
+        }
+        else
+        {
+            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos,speed * Time.deltaTime);
+        }
+    }
+
+    private static float FindDistance(Tile a, Tile b)
+    {
+        Vector2 currentTilePos = a.gameObject.transform.position;
+        Vector2 targetTilePos = b.gameObject.transform.position;
+
+        return Vector2.Distance(currentTilePos, targetTilePos);
     }
 }
