@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -23,5 +25,15 @@ public class Unit : MonoBehaviour
     {
         MovementPoints = _maxMovementPoints;
         HitPoints = _maxHitPoints;
+    }
+
+    protected void ResetAllTiles(string ignoreProperty = "")
+    {
+        List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
+
+        foreach (Tile t in tiles)
+        {
+            t.ResetTile(ignoreProperty);
+        }
     }
 }

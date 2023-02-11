@@ -33,19 +33,22 @@ public class PlayerUnit : Unit
             if (!_isMoving)
             {
                 _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>());
+                MovementPoints -= (short)_path.Count;
                 _isMoving = true;
                 return;
             }
             else
             {
                 TileMovement.MoveToTile(this, _path);
-
                 if (_path.Count == 0) 
                 {
                     _isMoving = false;
-                    CurrentTile = TargetTile;
-                    TargetTile = null;
+                    SetTargetTileToCurrentTile();
+                    ResetAllTiles(ignoreProperty: nameof(Tile.Current));
+                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
+
+                return;
             }
         }
 
@@ -61,15 +64,15 @@ public class PlayerUnit : Unit
                 if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
+                    ResetAllTiles();
                     CalculateCurrentTile();
-                    Queue<Tile> selectableTiles = new Queue<Tile>();
-                    FindSelectableTiles(CurrentTile, selectableTiles, 1);
+                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 
                 return;
             }
 
-            int tileMask = 1 << (int)LayerMask.NameToLayer("Tile");
+            int tileMask = 1 << LayerMask.NameToLayer("Tile");
             RaycastHit2D tileHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, tileMask);
 
             if (tileHitInfo.collider != null)
@@ -86,9 +89,11 @@ public class PlayerUnit : Unit
 
     private void CalculateCurrentTile()                   
     {
-        int layerMask = 1 << (int)LayerMask.NameToLayer("Tile");
+        int layerMask = 1 << LayerMask.NameToLayer("Tile");
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.zero, 0, layerMask);
         GameObject target = hitInfo.collider.gameObject;
+
+        Debug.Log(hitInfo.transform.name);
 
         if (target.layer == 3)
         {
@@ -113,5 +118,13 @@ public class PlayerUnit : Unit
         {
             selectableTiles.Dequeue();
         }
+    }
+
+    private void SetTargetTileToCurrentTile()
+    {
+        CurrentTile.Current = false;
+        TargetTile.Current = true;
+        CurrentTile = TargetTile;
+        TargetTile = null;
     }
 }

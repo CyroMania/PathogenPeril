@@ -3,8 +3,8 @@ using UnityEngine;
 
 public static class TileMovement
 {
-    private static Vector3 unitLayer = Vector3.back;
-    private static float speed = 2f;
+    private static Vector3 _unitLayer = Vector3.back;
+    private static float _speed = 2f;
 
     internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath)
     {
@@ -34,15 +34,16 @@ public static class TileMovement
     {
         Vector3 unitPos = unit.transform.position;
         Tile tile = path.Peek();
-        Vector3 tilePos = tile.transform.position + unitLayer;
+        Vector3 tilePos = tile.transform.position + _unitLayer;
 
-        if (Vector2.Distance(unitPos, tilePos) < 0.05f)
+        if (Vector2.Distance(unitPos, tilePos) < 0.03f)
         {
             path.Pop();
+            unit.transform.position = tilePos;
         }
         else
         {
-            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos,speed * Time.deltaTime);
+            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos,_speed * Time.deltaTime);
         }
     }
 
