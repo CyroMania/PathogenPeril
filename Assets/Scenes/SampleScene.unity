@@ -216,7 +216,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 5, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -281,8 +281,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2046048138}
   - component: {fileID: 2046048137}
-  - component: {fileID: 2046048139}
   - component: {fileID: 2046048140}
+  - component: {fileID: 2046048141}
   m_Layer: 6
   m_Name: Bacteria
   m_TagString: Untagged
@@ -357,21 +357,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2046048139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2046048136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f79fb8b138e21a4f94884a90ce6abe3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 0}
-  collider: {fileID: 0}
-  _isMoving: 0
 --- !u!58 &2046048140
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -388,6 +373,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &2046048141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046048136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 821c78034dc17c04fbc62876b254a74b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isMoving: 0
 --- !u!1001 &6046025154920045648
 PrefabInstance:
   m_ObjectHideFlags: 0
