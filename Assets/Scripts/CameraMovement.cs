@@ -45,7 +45,7 @@ public class CameraMovement : MonoBehaviour
 
         if (Input.mouseScrollDelta != Vector2.zero)
         {
-            _zoom -= Input.mouseScrollDelta.y / _zoomSpeedDampener;
+            _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
         }
 
         GetComponent<Camera>().orthographicSize = _zoom;
