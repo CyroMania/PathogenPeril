@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerUnit : Unit
+public abstract class PlayerUnit : Unit
 {
     private Camera _mainCamera;
     private Collider2D _collider;
