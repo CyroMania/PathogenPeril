@@ -236,7 +236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1474660b8b198ff4c8799c263e9fbff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedModifier: 12
+  _positionSpeedDampener: 12
+  _zoomSpeedDampener: 2
 --- !u!1 &2000843250
 GameObject:
   m_ObjectHideFlags: 0
