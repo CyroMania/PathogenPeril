@@ -1,6 +1,4 @@
-﻿namespace Assets.Scripts
+﻿public class Macrophage : ImmuneCell
 {
-    public class Macrophage : ImmuneCell
-    {
-    }
+
 }
