@@ -78,7 +78,8 @@ public abstract class PlayerUnit : Unit
             if (tileHitInfo.collider != null)
             {
                 Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
-                if (selectedTile.Reachable && !selectedTile.Current)
+
+                if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
                 {
                     TargetTile = selectedTile;
                     return;
@@ -92,8 +93,6 @@ public abstract class PlayerUnit : Unit
         int layerMask = 1 << LayerMask.NameToLayer("Tile");
         RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.zero, 0, layerMask);
         GameObject target = hitInfo.collider.gameObject;
-
-        Debug.Log(hitInfo.transform.name);
 
         if (target.layer == 3)
         {
@@ -109,14 +108,34 @@ public abstract class PlayerUnit : Unit
             if (distance <= MovementPoints && selectableTiles.Contains(t) == false)
             {
                 t.Reachable = true;
-                selectableTiles.Enqueue(tile);
-                FindSelectableTiles(t, selectableTiles, distance + 1);
+                DetermineTileIsInhabited(t);
+
+                if (!t.Inhabited)
+                {
+                    selectableTiles.Enqueue(tile);
+                    FindSelectableTiles(t, selectableTiles, distance + 1);
+                }
             }
         }
 
         if (selectableTiles.Count > 0)
         {
             selectableTiles.Dequeue();
+        }
+    }
+
+    private void DetermineTileIsInhabited(Tile t)
+    {
+        int unitMask = 1 << LayerMask.NameToLayer("Unit");
+        Vector3 tilePosition = t.transform.position;
+        RaycastHit2D hitInfo = Physics2D.Raycast(tilePosition, Vector2.zero, 0, unitMask);
+
+        if (hitInfo.collider != null)
+        {
+            if (hitInfo.collider != _collider)
+            {
+                t.Inhabited = true;
+            }
         }
     }
 

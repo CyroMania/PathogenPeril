@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public abstract class Unit : MonoBehaviour
 {
+    //This variable is associated with the turn system
+    //Due to it's highly coupled relationship to the behaviours of units it is here for ease of use
+    private static bool _isPlayerTurn = true;
+
     private short _maxHitPoints;
     private short _maxMovementPoints;
 
@@ -25,6 +30,11 @@ public abstract class Unit : MonoBehaviour
     {
         MovementPoints = _maxMovementPoints;
         HitPoints = _maxHitPoints;
+
+        if (transform.position.z != -1)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -1);
+        }
     }
 
     protected void ResetAllTiles(string ignoreProperty = "")

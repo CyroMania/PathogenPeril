@@ -6,8 +6,11 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    [SerializeField]
     private bool _reachable = false;
+    [SerializeField]
     private bool _inhabited = false;
+    [SerializeField]
     private bool _current = false;
     private new Renderer renderer;
 
@@ -20,16 +23,16 @@ public class Tile : MonoBehaviour
         set => _current = value; 
     }
 
-    public bool Reachable
-    {
-        get => _reachable;
-        set => _reachable = value;
-    }
-
     public bool Inhabited
     {
         get => _inhabited;
         set => _inhabited = value;
+    }
+
+    public bool Reachable
+    {
+        get => _reachable;
+        set => _reachable = value;
     }
 
     public List<Tile> NeighbouringTiles 
@@ -53,13 +56,13 @@ public class Tile : MonoBehaviour
         {
             renderer.material.color = Color.blue;
         }
-        else if (_reachable)
-        {
-            renderer.material.color = Color.yellow;
-        }
         else if (_inhabited)
         {
             renderer.material.color = Color.black;
+        }
+        else if (_reachable)
+        {
+            renderer.material.color = Color.yellow;
         }
         else
         {
