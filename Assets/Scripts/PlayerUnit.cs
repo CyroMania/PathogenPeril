@@ -40,6 +40,7 @@ public abstract class PlayerUnit : Unit
             else
             {
                 TileMovement.MoveToTile(this, _path);
+
                 if (_path.Count == 0) 
                 {
                     _isMoving = false;
@@ -58,8 +59,7 @@ public abstract class PlayerUnit : Unit
 
             if (!Selected)
             {
-                int unitMask = 1 << (int)LayerMask.NameToLayer("Unit");
-                RaycastHit2D unitHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, unitMask);
+                RaycastHit2D unitHitInfo = GenerateRaycast("Unit", clickPosition);
 
                 if (unitHitInfo.collider == _collider)
                 {
@@ -72,8 +72,7 @@ public abstract class PlayerUnit : Unit
                 return;
             }
 
-            int tileMask = 1 << LayerMask.NameToLayer("Tile");
-            RaycastHit2D tileHitInfo = Physics2D.Raycast(clickPosition, Vector2.zero, 0, tileMask);
+            RaycastHit2D tileHitInfo = GenerateRaycast("Tile", clickPosition);
 
             if (tileHitInfo.collider != null)
             {
@@ -90,8 +89,7 @@ public abstract class PlayerUnit : Unit
 
     private void CalculateCurrentTile()                   
     {
-        int layerMask = 1 << LayerMask.NameToLayer("Tile");
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.zero, 0, layerMask);
+        RaycastHit2D hitInfo = GenerateRaycast("Tile", transform.position);
         GameObject target = hitInfo.collider.gameObject;
 
         if (target.layer == 3)
@@ -126,9 +124,7 @@ public abstract class PlayerUnit : Unit
 
     private void DetermineTileIsInhabited(Tile t)
     {
-        int unitMask = 1 << LayerMask.NameToLayer("Unit");
-        Vector3 tilePosition = t.transform.position;
-        RaycastHit2D hitInfo = Physics2D.Raycast(tilePosition, Vector2.zero, 0, unitMask);
+        RaycastHit2D hitInfo = GenerateRaycast("Unit", t.transform.position);
 
         if (hitInfo.collider != null)
         {
@@ -145,5 +141,11 @@ public abstract class PlayerUnit : Unit
         TargetTile.Current = true;
         CurrentTile = TargetTile;
         TargetTile = null;
+    }
+
+    private RaycastHit2D GenerateRaycast(string targetLayer, Vector3 raycastOrigin)
+    {
+        int unitMask = 1 << LayerMask.NameToLayer(targetLayer);
+        return Physics2D.Raycast(raycastOrigin, Vector2.zero, 0, unitMask);
     }
 }
