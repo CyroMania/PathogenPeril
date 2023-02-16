@@ -8,9 +8,12 @@ public class HealthBar : MonoBehaviour
     private void Start()
     {
         GameObject fill = new GameObject(FillName);
-        fill.transform.SetParent(gameObject.transform);
         fill.AddComponent<CanvasRenderer>();
         fill.AddComponent<Image>();
+        fill.transform.SetParent(gameObject.transform);
+        fill.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.5f, 0.5f);
+        fill.GetComponent<RectTransform>().anchorMin = new Vector2(0.0f, 0.0f);
+        fill.GetComponent<RectTransform>().anchorMax = new Vector2(1.0f, 1.0f);
 
         GameObject border = new GameObject(BorderName);
         border.transform.SetParent(gameObject.transform);
