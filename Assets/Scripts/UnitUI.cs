@@ -8,6 +8,8 @@ public class UnitUI : MonoBehaviour
     private const string healthBarContainerName = "HealthBars";
     private const string healthBarName = "HealthBar";
 
+    private readonly Vector2 translationOffset = new Vector2(0, -50);
+
     [SerializeField]
     //This association is needed so we can relate each health bar in the scene to a specific unit
     private Dictionary<PlayerUnit, GameObject> _pathogenHealthBars;
@@ -35,6 +37,16 @@ public class UnitUI : MonoBehaviour
 
     private void Update()
     {
+        foreach (KeyValuePair<PlayerUnit, GameObject> pathogenHealthBar in _pathogenHealthBars)
+        {
+            PlayerUnit pathogen = pathogenHealthBar.Key;
 
+            if (pathogen.IsMoving)
+            {
+                GameObject healthBar = pathogenHealthBar.Value;
+                Vector2 worldToScreenPoint = Camera.main.WorldToScreenPoint(pathogen.gameObject.transform.position);
+                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + translationOffset;
+            }
+        }
     }
 }

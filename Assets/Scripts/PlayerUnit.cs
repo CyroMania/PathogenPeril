@@ -12,6 +12,12 @@ public abstract class PlayerUnit : Unit
 
     public bool Selected { get; set; }
 
+    public bool IsMoving 
+    { 
+        get => _isMoving; 
+        set => _isMoving = value; 
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints)
     {
         base.Init(maxHitPoints, maxMovementPoints);
