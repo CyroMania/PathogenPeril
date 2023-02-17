@@ -5,10 +5,13 @@ using UnityEngine.UI;
 
 public class UnitUI : MonoBehaviour
 {
-    private const string healthBarContainerName = "HealthBars";
-    private const string healthBarName = "HealthBar";
+    public Camera mainCamera;
 
-    private readonly Vector2 translationOffset = new Vector2(0, -50);
+    private const string HealthBarContainerName = "HealthBars";
+    private const string HealthBarName = "HealthBar";
+
+    private CameraMovement _cameraMove;
+    private readonly Vector2 _translationOffset = new Vector2(0, -50);
 
     [SerializeField]
     //This association is needed so we can relate each health bar in the scene to a specific unit
@@ -16,16 +19,17 @@ public class UnitUI : MonoBehaviour
 
     private void Start()
     {
+        _cameraMove = mainCamera.GetComponent<CameraMovement>();
         _pathogenHealthBars = new Dictionary<PlayerUnit, GameObject>();
         List<PlayerUnit> pathogens = FindObjectsOfType<PlayerUnit>().ToList();
 
-        GameObject healthBars = new GameObject(healthBarContainerName);
+        GameObject healthBars = new GameObject(HealthBarContainerName);
         healthBars.transform.SetParent(FindObjectOfType<Canvas>().transform);
         healthBars.AddComponent<RectTransform>();
 
         foreach (PlayerUnit pathogen in pathogens)
         {
-            GameObject healthBar = new GameObject(healthBarName);
+            GameObject healthBar = new GameObject(HealthBarName);
             healthBar.AddComponent<RectTransform>();
             healthBar.AddComponent<StatBar>();
             healthBar.AddComponent<Slider>();
@@ -41,11 +45,11 @@ public class UnitUI : MonoBehaviour
         {
             PlayerUnit pathogen = pathogenHealthBar.Key;
 
-            if (pathogen.IsMoving)
+            if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
                 GameObject healthBar = pathogenHealthBar.Value;
-                Vector2 worldToScreenPoint = Camera.main.WorldToScreenPoint(pathogen.gameObject.transform.position);
-                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + translationOffset;
+                Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
+                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _translationOffset;
             }
         }
     }

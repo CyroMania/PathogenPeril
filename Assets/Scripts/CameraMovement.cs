@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
+    private bool _isMoving;
     private float _zoom = 5;
-
-    [SerializeField]
     private float _positionSpeedDampener = 12f;
-
-    [SerializeField]
     private float _zoomSpeedDampener = 3;
+
+    public bool IsMoving
+    {
+        get => _isMoving;
+        set => _isMoving = value;
+    }
 
     private void Start()
     {
@@ -39,6 +42,15 @@ public class CameraMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             movementVector += Vector2.right;
+        }
+
+        if (movementVector != Vector2.zero)
+        {
+            _isMoving = true;
+        }
+        else
+        {
+            _isMoving = false;
         }
 
         //Zoom Controls

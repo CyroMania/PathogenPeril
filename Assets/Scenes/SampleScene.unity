@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0798b5278159d4d92c324830c7b477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
 --- !u!114 &340083356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,8 +350,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1474660b8b198ff4c8799c263e9fbff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _positionSpeedDampener: 12
-  _zoomSpeedDampener: 2
 --- !u!1 &898658187
 GameObject:
   m_ObjectHideFlags: 0
