@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class PlayerUnit : Unit
@@ -7,10 +9,22 @@ public abstract class PlayerUnit : Unit
     private Collider2D _collider;
     [SerializeField]
     private bool _isMoving;
+    private bool _selected;
     [SerializeField]
     private Stack<Tile> _path;
 
-    public bool Selected { get; set; }
+    public bool Selected 
+    {
+        get => _selected;
+        set 
+        {
+            _selected = value;
+            if (_selected)
+            {
+                DeselectOtherUnits();
+            }
+        }
+    }
 
     public bool IsMoving 
     { 
@@ -63,7 +77,7 @@ public abstract class PlayerUnit : Unit
         {
             Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
-            if (!Selected)
+            if (!_selected)
             {
                 RaycastHit2D unitHitInfo = GenerateRaycast("Unit", clickPosition);
 
@@ -147,6 +161,18 @@ public abstract class PlayerUnit : Unit
         TargetTile.Current = true;
         CurrentTile = TargetTile;
         TargetTile = null;
+    }
+
+    private void DeselectOtherUnits()
+    {
+        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
+        foreach (PlayerUnit unit in units)
+        {
+            if (unit != this && unit.Selected)
+            {
+                unit.Selected = false;
+            }
+        }
     }
 
     private RaycastHit2D GenerateRaycast(string targetLayer, Vector3 raycastOrigin)
