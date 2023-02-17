@@ -22,7 +22,7 @@ public class HealthBar : MonoBehaviour
 
         Image borderImage = border.GetComponent<Image>();
 
-        //set border sprite
+        borderImage.sprite = Resources.Load("StatBar") as Sprite;
         borderImage.SetNativeSize(); //this will provide the x and y size of the health bar
 
         //Set parent to have same size
