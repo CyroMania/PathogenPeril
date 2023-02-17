@@ -25,7 +25,8 @@ public class UnitUI : MonoBehaviour
         {
             GameObject healthBar = new GameObject(healthBarName);
             healthBar.AddComponent<RectTransform>();
-            healthBar.AddComponent<HealthBar>();
+            healthBar.AddComponent<StatBar>();
+            healthBar.AddComponent<Slider>();
             healthBar.transform.SetParent(healthBars.transform);
 
             _pathogenHealthBars.Add(pathogen, healthBar);
