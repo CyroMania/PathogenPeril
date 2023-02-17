@@ -21,6 +21,7 @@ public abstract class PlayerUnit : Unit
             _selected = value;
             if (_selected)
             {
+                //Ensures that only ever one unit is selected
                 DeselectOtherUnits();
             }
         }
@@ -73,7 +74,7 @@ public abstract class PlayerUnit : Unit
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
         {
             Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
@@ -105,6 +106,21 @@ public abstract class PlayerUnit : Unit
                 }
             }
         } 
+    }
+
+    private bool ConfirmNoOtherUnitMoving()
+    {
+        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
+
+        foreach (PlayerUnit unit in units)
+        {
+            if (unit != this && unit.IsMoving)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void CalculateCurrentTile()                   
