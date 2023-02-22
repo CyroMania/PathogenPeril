@@ -33,5 +33,4 @@ public class Grid : MonoBehaviour
         Destroy(first);
         tiles.RemoveAt(0);
     }
-
 }

@@ -17,6 +17,12 @@ public abstract class Unit : MonoBehaviour
     public Tile CurrentTile { get; set; }
     public Tile TargetTile { get; set; }
 
+    protected bool IsPlayerTurn
+    {
+        get { return _isPlayerTurn; }
+        set { _isPlayerTurn = value; }
+    }
+
     protected virtual void Init(short maxHitPoints, short maxMovementPoints)
     {
         _maxHitPoints = maxHitPoints;
@@ -37,6 +43,18 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
+    protected void CalculateCurrentTile()
+    {
+        RaycastHit2D hitInfo = GenerateRaycast("Tile", transform.position);
+        GameObject target = hitInfo.collider.gameObject;
+
+        if (target.layer == 3)
+        {
+            CurrentTile = target.GetComponent<Tile>();
+            CurrentTile.Current = true;
+        }
+    }
+
     protected void ResetAllTiles(string ignoreProperty = "")
     {
         List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
@@ -45,5 +63,24 @@ public abstract class Unit : MonoBehaviour
         {
             t.ResetTile(ignoreProperty);
         }
+    }
+
+    protected RaycastHit2D GenerateRaycast(string targetLayer, Vector3 raycastOrigin)
+    {
+        int unitMask = 1 << LayerMask.NameToLayer(targetLayer);
+        return Physics2D.Raycast(raycastOrigin, Vector2.zero, 0, unitMask);
+    }
+
+    protected void SetTargetTileToCurrentTile()
+    {
+        CurrentTile.Current = false;
+        TargetTile.Current = true;
+        CurrentTile = TargetTile;
+        TargetTile = null;
+    }
+
+    public static void EndCurrentTurn()
+    {
+        _isPlayerTurn = !_isPlayerTurn;
     }
 }

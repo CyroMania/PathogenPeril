@@ -123,18 +123,6 @@ public abstract class PlayerUnit : Unit
         return true;
     }
 
-    private void CalculateCurrentTile()                   
-    {
-        RaycastHit2D hitInfo = GenerateRaycast("Tile", transform.position);
-        GameObject target = hitInfo.collider.gameObject;
-
-        if (target.layer == 3)
-        {
-            CurrentTile = target.GetComponent<Tile>();
-            CurrentTile.Current = true;
-        }
-    }
-
     private void FindSelectableTiles(Tile tile, Queue<Tile> selectableTiles, int distance)
     {
         foreach (Tile t in tile.NeighbouringTiles)
@@ -171,17 +159,10 @@ public abstract class PlayerUnit : Unit
         }
     }
 
-    private void SetTargetTileToCurrentTile()
-    {
-        CurrentTile.Current = false;
-        TargetTile.Current = true;
-        CurrentTile = TargetTile;
-        TargetTile = null;
-    }
-
     private void DeselectOtherUnits()
     {
         List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
+
         foreach (PlayerUnit unit in units)
         {
             if (unit != this && unit.Selected)
@@ -189,11 +170,5 @@ public abstract class PlayerUnit : Unit
                 unit.Selected = false;
             }
         }
-    }
-
-    private RaycastHit2D GenerateRaycast(string targetLayer, Vector3 raycastOrigin)
-    {
-        int unitMask = 1 << LayerMask.NameToLayer(targetLayer);
-        return Physics2D.Raycast(raycastOrigin, Vector2.zero, 0, unitMask);
     }
 }
