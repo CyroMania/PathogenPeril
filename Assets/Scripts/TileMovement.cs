@@ -6,7 +6,7 @@ public static class TileMovement
     private static Vector3 _unitLayer = Vector3.back;
     private static float _speed = 2f;
 
-    internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath)
+    internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath, short remainingMovementPoints)
     {
         tilePath.Push(targetTile);
 
@@ -15,16 +15,40 @@ public static class TileMovement
 
         foreach (Tile t in targetTile.NeighbouringTiles)
         {
-            if (FindDistance(currentTile, t) < distance)
+            if (!t.Inhabited)
             {
-                distance = FindDistance(currentTile, t);
-                closestTile = t;
+                if (FindDistance(currentTile, t) < distance && !tilePath.Contains(t) && t.Reachable)
+                {
+                    distance = FindDistance(currentTile, t);
+                    closestTile = t;
+                }
             }
+        }
+
+        if (closestTile == null)
+        {
+            foreach (Tile t in targetTile.NeighbouringTiles)
+            {
+                if (!t.Inhabited)
+                {
+                    if (FindDistance(currentTile, t) <= remainingMovementPoints && !tilePath.Contains(t))
+                    {
+                        distance = FindDistance(currentTile, t);
+                        closestTile = t;
+                    }
+                }
+            }
+        }
+
+        if (closestTile == null) 
+        {
+            Debug.Log("Path FInding Failed");
+            return tilePath;
         }
 
         if (closestTile != currentTile)
         {
-            FindTilePath(currentTile, closestTile, tilePath);
+            FindTilePath(currentTile, closestTile, tilePath, --remainingMovementPoints);
         }
 
         return tilePath;
@@ -43,7 +67,7 @@ public static class TileMovement
         }
         else
         {
-            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos,_speed * Time.deltaTime);
+            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos, _speed * Time.deltaTime);
         }
     }
 

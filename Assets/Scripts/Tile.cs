@@ -91,7 +91,7 @@ public class Tile : MonoBehaviour
     {
         Vector2 size = new Vector2(0.5f, 0.5f);
         List<Tile> list = new List<Tile>();
-        int layerMask = 1 << (int)LayerMask.NameToLayer("Tile");
+        int layerMask = 1 << LayerMask.NameToLayer("Tile");
 
         for (int x = -1; x <= 1; x++)
         {

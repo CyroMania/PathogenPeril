@@ -53,7 +53,7 @@ public abstract class PlayerUnit : Unit
         {
             if (!_isMoving)
             {
-                _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>());
+                _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
                 MovementPoints -= (short)_path.Count;
                 _isMoving = true;
                 return;
