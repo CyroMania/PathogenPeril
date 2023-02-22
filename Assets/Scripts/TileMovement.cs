@@ -71,7 +71,22 @@ public static class TileMovement
         }
     }
 
-    private static float FindDistance(Tile a, Tile b)
+    internal static Tile CalculateCurrentTile(Unit unit)
+    {
+        RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Tile", unit.transform.position);
+        GameObject target = hitInfo.collider.gameObject;
+
+        if (target.layer == 3)
+        {
+            Tile current = target.GetComponent<Tile>();
+            current.Current = true;
+            return current;
+        }
+
+        return null;
+    }
+
+    internal static float FindDistance(Tile a, Tile b)
     {
         Vector2 currentTilePos = a.gameObject.transform.position;
         Vector2 targetTilePos = b.gameObject.transform.position;

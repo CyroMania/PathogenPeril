@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,10 +6,8 @@ public abstract class PlayerUnit : Unit
 {
     private Camera _mainCamera;
     private Collider2D _collider;
-    [SerializeField]
     private bool _isMoving;
     private bool _selected;
-    [SerializeField]
     private Stack<Tile> _path;
 
     public bool Selected 
@@ -80,20 +77,20 @@ public abstract class PlayerUnit : Unit
 
             if (!_selected)
             {
-                RaycastHit2D unitHitInfo = GenerateRaycast("Unit", clickPosition);
+                RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
 
                 if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
                     ResetAllTiles();
-                    CalculateCurrentTile();
+                    CurrentTile = TileMovement.CalculateCurrentTile(this);
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 
                 return;
             }
 
-            RaycastHit2D tileHitInfo = GenerateRaycast("Tile", clickPosition);
+            RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
 
             if (tileHitInfo.collider != null)
             {
@@ -148,7 +145,7 @@ public abstract class PlayerUnit : Unit
 
     private void DetermineTileIsInhabited(Tile t)
     {
-        RaycastHit2D hitInfo = GenerateRaycast("Unit", t.transform.position);
+        RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", t.transform.position);
 
         if (hitInfo.collider != null)
         {
