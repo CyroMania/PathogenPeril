@@ -10,10 +10,10 @@ public abstract class PlayerUnit : Unit
     private bool _selected;
     private Stack<Tile> _path;
 
-    public bool Selected 
+    public bool Selected
     {
         get => _selected;
-        set 
+        set
         {
             _selected = value;
             if (_selected)
@@ -24,15 +24,15 @@ public abstract class PlayerUnit : Unit
         }
     }
 
-    public bool IsMoving 
-    { 
-        get => _isMoving; 
-        set => _isMoving = value; 
+    public bool IsMoving
+    {
+        get => _isMoving;
+        set => _isMoving = value;
     }
 
-    protected override void Init(short maxHitPoints, short maxMovementPoints)
+    protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
-        base.Init(maxHitPoints, maxMovementPoints);
+        base.Init(maxHitPoints, maxMovementPoints, visibilityRange);
 
         Start();
     }
@@ -42,6 +42,9 @@ public abstract class PlayerUnit : Unit
         _isMoving = false;
         _collider = GetComponent<Collider2D>();
         _mainCamera = Camera.main;
+        CurrentTile = TileMovement.CalculateCurrentTile(this);
+
+        FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
     }
 
     void Update()
@@ -59,12 +62,13 @@ public abstract class PlayerUnit : Unit
             {
                 TileMovement.MoveToTile(this, _path);
 
-                if (_path.Count == 0) 
+                if (_path.Count == 0)
                 {
                     _isMoving = false;
                     SetTargetTileToCurrentTile();
                     ResetAllTiles(ignoreProperty: nameof(Tile.Current));
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                    FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 
                 return;
@@ -84,6 +88,7 @@ public abstract class PlayerUnit : Unit
                     Selected = true;
                     ResetAllTiles();
                     CurrentTile = TileMovement.CalculateCurrentTile(this);
+                    CurrentTile.Current = true;
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 
@@ -102,7 +107,7 @@ public abstract class PlayerUnit : Unit
                     return;
                 }
             }
-        } 
+        }
     }
 
     private bool ConfirmNoOtherUnitMoving()
@@ -120,11 +125,30 @@ public abstract class PlayerUnit : Unit
         return true;
     }
 
+    private void FindVisibleTiles(Tile tile, Queue<Tile> visibleTiles, int distance)
+    {
+        tile.Visible = true;
+
+        foreach (Tile t in tile.NeighbouringTiles)
+        {
+            if (distance <= Visibility && !visibleTiles.Contains(t))
+            {
+                visibleTiles.Enqueue(tile);
+                FindVisibleTiles(t, visibleTiles, distance + 1);
+            }
+        }
+
+        if (visibleTiles.Count > 0)
+        {
+            visibleTiles.Dequeue();
+        }
+    }
+
     private void FindSelectableTiles(Tile tile, Queue<Tile> selectableTiles, int distance)
     {
         foreach (Tile t in tile.NeighbouringTiles)
         {
-            if (distance <= MovementPoints && selectableTiles.Contains(t) == false)
+            if (distance <= MovementPoints && !selectableTiles.Contains(t))
             {
                 t.Reachable = true;
                 DetermineTileIsInhabited(t);

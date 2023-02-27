@@ -12,10 +12,14 @@ public class Tile : MonoBehaviour
     private bool _inhabited = false;
     [SerializeField]
     private bool _current = false;
+    [SerializeField]
+    private bool _visible = false;
+
     private new Renderer renderer;
 
     [SerializeField]
     private List<Tile> _neighbourTiles;
+
 
     public bool Current 
     { 
@@ -33,6 +37,12 @@ public class Tile : MonoBehaviour
     {
         get => _reachable;
         set => _reachable = value;
+    }
+
+    public bool Visible
+    {
+        get => _visible;
+        set => _visible = value;
     }
 
     public List<Tile> NeighbouringTiles 
@@ -64,9 +74,13 @@ public class Tile : MonoBehaviour
         {
             renderer.material.color = Color.yellow;
         }
-        else
+        else if (_visible)
         {
             renderer.material.color = Color.white;
+        }
+        else
+        {
+            renderer.material.color = Color.grey;
         }
     }
 
@@ -90,25 +104,25 @@ public class Tile : MonoBehaviour
     private List<Tile> FindNeighbouringTiles()
     {
         Vector2 size = new Vector2(0.5f, 0.5f);
-        List<Tile> list = new List<Tile>();
+        List<Tile> tiles = new List<Tile>();
         int layerMask = 1 << LayerMask.NameToLayer("Tile");
 
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
             {
-                if (x != y && x * y == 0)
+                  if (x != y && x * y == 0)
                 {
                     Collider2D collider = Physics2D.OverlapBox(transform.position + new Vector3(x, y), size, 0f, layerMask);
 
                     if (collider != null)
                     {
-                        list.Add(collider.gameObject.GetComponent<Tile>());
+                        tiles.Add(collider.gameObject.GetComponent<Tile>());
                     }
                 }
             }
         }
 
-        return list;
+        return tiles;
     }
 }

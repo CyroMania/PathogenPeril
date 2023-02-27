@@ -29,10 +29,11 @@ public abstract class Unit : MonoBehaviour
         set { _isPlayerTurn = value; }
     }
 
-    protected virtual void Init(short maxHitPoints, short maxMovementPoints)
+    protected virtual void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         _maxHitPoints = maxHitPoints;
         _maxMovementPoints = maxMovementPoints;
+        _visibilityRange = visibilityRange;
 
         Start();
     }

@@ -6,9 +6,9 @@ public abstract class ImmuneCell : Unit
 {
     private PlayerUnit _targetUnit;
 
-    protected override void Init(short maxHitPoints, short maxMovementPoints)
+    protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
-        base.Init(maxHitPoints, maxMovementPoints);
+        base.Init(maxHitPoints, maxMovementPoints, visibiltyRange);
     }
 
     private void Update()

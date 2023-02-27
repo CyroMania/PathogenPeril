@@ -79,7 +79,6 @@ public static class TileMovement
         if (target.layer == 3)
         {
             Tile current = target.GetComponent<Tile>();
-            current.Current = true;
             return current;
         }
 
