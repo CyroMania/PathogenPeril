@@ -66,9 +66,9 @@ public abstract class PlayerUnit : Unit
                 {
                     _isMoving = false;
                     SetTargetTileToCurrentTile();
-                    ResetAllTiles(ignoreProperty: nameof(Tile.Current));
+                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current) });
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
-                    FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
+                    FindAllVisibleTiles();
                 }
 
                 return;
@@ -86,7 +86,7 @@ public abstract class PlayerUnit : Unit
                 if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
-                    ResetAllTiles();
+                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                     CurrentTile = TileMovement.CalculateCurrentTile(this);
                     CurrentTile.Current = true;
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
@@ -189,7 +189,19 @@ public abstract class PlayerUnit : Unit
             if (unit != this && unit.Selected)
             {
                 unit.Selected = false;
+                unit.CurrentTile.Current = false;
             }
         }
+    }
+
+    private void FindAllVisibleTiles()
+    {
+        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
+
+        foreach (PlayerUnit unit in units)
+        {
+            FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1);
+        }
+
     }
 }

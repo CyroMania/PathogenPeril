@@ -50,13 +50,13 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    protected void ResetAllTiles(string ignoreProperty = "")
+    protected void ResetAllTiles(params string[] ignoredProps)
     {
         List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
 
         foreach (Tile t in tiles)
         {
-            t.ResetTile(ignoreProperty);
+            t.ResetTile(ignoredProps);
         }
     }
 

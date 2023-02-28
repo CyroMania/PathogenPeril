@@ -84,18 +84,21 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void ResetTile(string ignoreProperty = "")
+    public void ResetTile(params string[] ignoredProperties)
     {
         List<PropertyInfo> properties = GetType().GetDeclaredProperties()
             .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
 
         foreach (PropertyInfo property in properties)
         {
-            if (property.Name != ignoreProperty)
+            foreach (string ignoredProp in ignoredProperties)
             {
-                if (property.PropertyType == typeof(bool))
+                if (property.Name != ignoredProp)
                 {
-                    property.SetValue(this, false);
+                    if (property.PropertyType == typeof(bool))
+                    {
+                        property.SetValue(this, false);
+                    }
                 }
             }
         }
