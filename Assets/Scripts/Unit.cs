@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public abstract class Unit : MonoBehaviour
 {
@@ -11,9 +10,16 @@ public abstract class Unit : MonoBehaviour
 
     private short _maxHitPoints;
     private short _maxMovementPoints;
+    private short _visibilityRange;
 
     public short HitPoints { get; set; }
     public short MovementPoints { get; set; }
+    public short Visibility 
+    { 
+        get => _visibilityRange; 
+        set => _visibilityRange = value; 
+    }
+
     public Tile CurrentTile { get; set; }
     public Tile TargetTile { get; set; }
 
@@ -23,10 +29,11 @@ public abstract class Unit : MonoBehaviour
         set { _isPlayerTurn = value; }
     }
 
-    protected virtual void Init(short maxHitPoints, short maxMovementPoints)
+    protected virtual void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         _maxHitPoints = maxHitPoints;
         _maxMovementPoints = maxMovementPoints;
+        _visibilityRange = visibilityRange;
 
         Start();
     }
@@ -43,13 +50,13 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    protected void ResetAllTiles(string ignoreProperty = "")
+    protected void ResetAllTiles(params string[] ignoredProps)
     {
         List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
 
         foreach (Tile t in tiles)
         {
-            t.ResetTile(ignoreProperty);
+            t.ResetTile(ignoredProps);
         }
     }
 
