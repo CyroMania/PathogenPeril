@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public abstract class PlayerUnit : Unit
@@ -9,6 +10,7 @@ public abstract class PlayerUnit : Unit
     private bool _isMoving;
     private bool _selected;
     private Stack<Tile> _path;
+    private UI _UI;
 
     public bool Selected
     {
@@ -42,8 +44,9 @@ public abstract class PlayerUnit : Unit
         _isMoving = false;
         _collider = GetComponent<Collider2D>();
         _mainCamera = Camera.main;
-        CurrentTile = TileMovement.CalculateCurrentTile(this);
+        _UI = GameObject.Find("Canvas").GetComponent<UI>();
 
+        CurrentTile = TileMovement.CalculateCurrentTile(this);
         FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
     }
 
@@ -86,6 +89,7 @@ public abstract class PlayerUnit : Unit
                 if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
+                    _UI.DisplayButtons();
                     ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                     CurrentTile = TileMovement.CalculateCurrentTile(this);
                     CurrentTile.Current = true;
