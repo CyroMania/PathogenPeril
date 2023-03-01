@@ -110,6 +110,13 @@ public abstract class PlayerUnit : Unit
                     TargetTile = selectedTile;
                     return;
                 }
+                else if (!selectedTile.Reachable)
+                {
+                    Selected = false;
+                    CurrentTile.Current = false;
+                    _UI.HideButtons();
+                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                }
             }
         }
     }

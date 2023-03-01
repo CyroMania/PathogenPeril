@@ -18,4 +18,9 @@ public class UI : MonoBehaviour
     {
         _divideBtnAnim.SetTrigger("UnitSelected");
     }
+
+    public void HideButtons()
+    {
+        _divideBtnAnim.SetTrigger("UnitDeselected");
+    }
 }
