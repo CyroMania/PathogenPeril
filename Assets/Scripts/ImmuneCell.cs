@@ -5,14 +5,32 @@ using UnityEngine;
 public abstract class ImmuneCell : Unit
 {
     private PlayerUnit _targetUnit;
+    private Renderer _renderer;
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibiltyRange);
+
+        Start();
+    }
+
+    private void Start()
+    {
+        CurrentTile = TileMovement.CalculateCurrentTile(this);
+        _renderer = GetComponent<Renderer>();
     }
 
     private void Update()
     {
+        if (CurrentTile.Visible)
+        {
+            _renderer.enabled = true;
+        }
+        else
+        {
+            _renderer.enabled = false;
+        }
+
         if (!IsPlayerTurn)
         {
             List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().ToList();
