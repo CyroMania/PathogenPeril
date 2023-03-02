@@ -29,9 +29,10 @@ public class Bacteria : PlayerUnit
                 {
                     Bacteria clone = Instantiate(this, tile.transform.position, quaternion.identity);
                     clone.Start();
-                    clone.CurrentTile.Inhabited = true;
                     MovementPoints = 0;
-
+                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                    clone.CurrentTile.Inhabited = true;
+                    CurrentTile.Current = true;
                     return;
                 }
             }

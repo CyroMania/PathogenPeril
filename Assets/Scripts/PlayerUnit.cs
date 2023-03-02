@@ -31,6 +31,11 @@ public abstract class PlayerUnit : Unit
         set => _isMoving = value;
     }
 
+    protected UI UI 
+    {
+        get => _UI;
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibilityRange);
