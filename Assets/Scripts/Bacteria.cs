@@ -32,7 +32,9 @@ public class Bacteria : PlayerUnit
                     MovementPoints = 0;
                     ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                     clone.CurrentTile.Inhabited = true;
+                    clone.MovementPoints = 0;
                     CurrentTile.Current = true;
+                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                     return;
                 }
             }

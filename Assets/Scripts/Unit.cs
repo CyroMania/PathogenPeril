@@ -12,9 +12,29 @@ public abstract class Unit : MonoBehaviour
     private short _maxMovementPoints;
     private short _visibilityRange;
 
-    public short HitPoints { get; set; }
-    public short MovementPoints { get; set; }
-    public short Visibility 
+    private void Start()
+    {
+        MovementPoints = _maxMovementPoints;
+        HitPoints = _maxHitPoints;
+
+        if (transform.position.z != -1)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -1);
+        }
+    }
+
+    protected short MaxHitPoints 
+    { 
+        get => _maxHitPoints;
+    }
+    protected short MaxMovementPoints
+    {
+        get => _maxMovementPoints;
+    }
+
+    protected short HitPoints { get; set; }
+    protected short MovementPoints { get; set; }
+    protected short Visibility 
     { 
         get => _visibilityRange; 
         set => _visibilityRange = value; 
@@ -25,8 +45,8 @@ public abstract class Unit : MonoBehaviour
 
     protected bool IsPlayerTurn
     {
-        get { return _isPlayerTurn; }
-        set { _isPlayerTurn = value; }
+        get => _isPlayerTurn;
+        set => _isPlayerTurn = value;
     }
 
     protected virtual void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
@@ -36,18 +56,6 @@ public abstract class Unit : MonoBehaviour
         _visibilityRange = visibilityRange;
 
         Start();
-    }
-
-
-    void Start()
-    {
-        MovementPoints = _maxMovementPoints;
-        HitPoints = _maxHitPoints;
-
-        if (transform.position.z != -1)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -1);
-        }
     }
 
     protected void ResetAllTiles(params string[] ignoredProps)

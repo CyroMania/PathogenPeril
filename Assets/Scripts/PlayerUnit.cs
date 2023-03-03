@@ -94,8 +94,8 @@ public abstract class PlayerUnit : Unit
                 {
                     Selected = true;
                     _UI.DisplayButtons();
+                    _UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                     ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                    CurrentTile = TileMovement.CalculateCurrentTile(this);
                     CurrentTile.Current = true;
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
@@ -109,12 +109,16 @@ public abstract class PlayerUnit : Unit
             {
                 Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
 
-                if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                if (selectedTile.Current)
+                {
+                    return;
+                }
+                else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
                 {
                     TargetTile = selectedTile;
                     return;
                 }
-                else if (!selectedTile.Reachable)
+                else if (!selectedTile.Reachable && !selectedTile.Visible)
                 {
                     Selected = false;
                     CurrentTile.Current = false;
