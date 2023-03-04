@@ -11,12 +11,19 @@ public class Bacteria : PlayerUnit
     private const string DivideBtnName = "DivideBtn";
     private Button _divideBtn;
 
+    private bool _clone = false;
+
     private void Start()
     {
         base.Init(_maxHitPoints, _maxMovementPoints, _visibilityRange);
 
         _divideBtn = GameObject.Find(DivideBtnName).GetComponent<Button>();
         _divideBtn.onClick.AddListener(Divide);
+
+        if (_clone)
+        {
+            MovementPoints = 0;
+        }
     }
 
     private void Divide()
@@ -28,11 +35,11 @@ public class Bacteria : PlayerUnit
                 if (!tile.Inhabited)
                 {
                     Bacteria clone = Instantiate(this, tile.transform.position, quaternion.identity);
-                    clone.Start();
+                    clone.name = "Bacteria";
+                    clone._clone = true;
+                    clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
                     MovementPoints = 0;
                     ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                    clone.CurrentTile.Inhabited = true;
-                    clone.MovementPoints = 0;
                     CurrentTile.Current = true;
                     UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                     return;

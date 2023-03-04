@@ -43,7 +43,7 @@ public abstract class PlayerUnit : Unit
         Start();
     }
 
-    void Start()
+    private void Start()
     {
         _isMoving = false;
         _collider = GetComponent<Collider2D>();
@@ -54,7 +54,7 @@ public abstract class PlayerUnit : Unit
         FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
     }
 
-    void Update()
+    private void Update()
     {
         if (TargetTile != null)
         {
