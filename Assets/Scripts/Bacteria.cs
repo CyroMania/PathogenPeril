@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.CanvasScaler;
 
 public class Bacteria : PlayerUnit
 {
@@ -23,6 +25,7 @@ public class Bacteria : PlayerUnit
         if (_clone)
         {
             MovementPoints = 0;
+            StopAllCoroutines();
         }
     }
 
@@ -41,15 +44,30 @@ public class Bacteria : PlayerUnit
             }
 
             Tile chosenTile = acceptableTiles.ToArray()[Random.Range(0, acceptableTiles.Count)];
-            Bacteria clone = Instantiate(this, chosenTile.transform.position, Quaternion.identity);
+            Bacteria clone = Instantiate(this, transform.position, Quaternion.identity);
             clone.name = "Bacteria";
             clone._clone = true;
-            clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
+
+            //Make Smoothly move to Tile
+            StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position + TileMovement.UnitLayer));
+            clone.CurrentTile = chosenTile;
             MovementPoints = 0;
             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
             CurrentTile.Current = true;
             UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
             return;
         }
+    }
+
+    IEnumerator<Vector3> DivideToNewTile(Bacteria clone, Vector3 destination)
+    {
+        while (Vector3.Distance(clone.transform.position, destination) > 0.03f)
+        {
+            Vector3 newPos = Vector3.MoveTowards(clone.transform.position, destination, TileMovement.Speed * Time.deltaTime);
+            clone.transform.position = newPos;
+            yield return newPos;
+        }
+
+        clone.transform.position = destination;
     }
 }
