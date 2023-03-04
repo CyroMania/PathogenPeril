@@ -1,12 +1,12 @@
-using Unity.Mathematics;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Bacteria : PlayerUnit
 {
-	private static readonly short _maxHitPoints = 8;
-	private static readonly short _maxMovementPoints = 5;
-	private static readonly short _visibilityRange = 6;
+    private static readonly short _maxHitPoints = 8;
+    private static readonly short _maxMovementPoints = 5;
+    private static readonly short _visibilityRange = 6;
 
     private const string DivideBtnName = "DivideBtn";
     private Button _divideBtn;
@@ -30,21 +30,26 @@ public class Bacteria : PlayerUnit
     {
         if (Selected && MovementPoints == _maxMovementPoints)
         {
+            List<Tile> acceptableTiles = new List<Tile>();
+
             foreach (Tile tile in CurrentTile.NeighbouringTiles)
             {
                 if (!tile.Inhabited)
                 {
-                    Bacteria clone = Instantiate(this, tile.transform.position, quaternion.identity);
-                    clone.name = "Bacteria";
-                    clone._clone = true;
-                    clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
-                    MovementPoints = 0;
-                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                    CurrentTile.Current = true;
-                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                    return;
+                    acceptableTiles.Add(tile);
                 }
             }
+
+            Tile chosenTile = acceptableTiles.ToArray()[Random.Range(0, acceptableTiles.Count)];
+            Bacteria clone = Instantiate(this, chosenTile.transform.position, Quaternion.identity);
+            clone.name = "Bacteria";
+            clone._clone = true;
+            clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
+            MovementPoints = 0;
+            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+            CurrentTile.Current = true;
+            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+            return;
         }
     }
 }
