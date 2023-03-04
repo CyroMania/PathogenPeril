@@ -4,13 +4,17 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
+    public Button DivideBtn;
+    public Button EndTurnBtn;
+
     private Animator _divideBtnAnim;
-    private Button _divideBtn;
+    private Animator _endTurnBtnAnim;
+
 
     private void Start()
     {
-        _divideBtnAnim = gameObject.GetComponentInChildren<Animator>();
-        _divideBtn = gameObject.GetComponentInChildren<Button>();
+        _divideBtnAnim = DivideBtn.GetComponent<Animator>();
+        _endTurnBtnAnim= EndTurnBtn.GetComponent<Animator>();
     }
 
     public void NewTurn()
@@ -34,11 +38,11 @@ public class UI : MonoBehaviour
     { 
         if (currentEnergy == maxEnergy)
         {
-            _divideBtn.enabled = true;
+            DivideBtn.interactable = true;
         }
         else
         {
-            _divideBtn.enabled = false;
+            DivideBtn.interactable = false;
         }
     }
 }
