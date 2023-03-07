@@ -3,8 +3,9 @@ using UnityEngine;
 
 public static class TileMovement
 {
-    private static Vector3 _unitLayer = Vector3.back;
-    private static float _speed = 2f;
+    public static Vector3 UnitLayer { get; } = Vector3.back;
+
+    public static float Speed { get; } = 2f;
 
     internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath, short remainingMovementPoints)
     {
@@ -42,7 +43,7 @@ public static class TileMovement
 
         if (closestTile == null) 
         {
-            Debug.Log("Path FInding Failed");
+            Debug.Log("Path Finding Failed");
             return tilePath;
         }
 
@@ -54,11 +55,11 @@ public static class TileMovement
         return tilePath;
     }
 
-    internal static void MoveToTile(PlayerUnit unit, Stack<Tile> path)
+    internal static void MoveToTile(Unit unit, Stack<Tile> path)
     {
         Vector3 unitPos = unit.transform.position;
         Tile tile = path.Peek();
-        Vector3 tilePos = tile.transform.position + _unitLayer;
+        Vector3 tilePos = tile.transform.position + UnitLayer;
 
         if (Vector2.Distance(unitPos, tilePos) < 0.03f)
         {
@@ -67,7 +68,7 @@ public static class TileMovement
         }
         else
         {
-            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos, _speed * Time.deltaTime);
+            unit.transform.position = Vector3.MoveTowards(unitPos, tilePos, Speed * Time.deltaTime);
         }
     }
 
@@ -85,11 +86,43 @@ public static class TileMovement
         return null;
     }
 
+    internal static void FindVisibleTiles(Tile tile, Queue<Tile> visibleTiles, int distance, short visibilityRange)
+    {
+        tile.Visible = true;
+
+        foreach (Tile t in tile.NeighbouringTiles)
+        {
+            if (distance <= visibilityRange && !visibleTiles.Contains(t))
+            {
+                visibleTiles.Enqueue(tile);
+                FindVisibleTiles(t, visibleTiles, distance + 1, visibilityRange);
+            }
+        }
+
+        if (visibleTiles.Count > 0)
+        {
+            visibleTiles.Dequeue();
+        }
+    }
+
     internal static float FindDistance(Tile a, Tile b)
     {
         Vector2 currentTilePos = a.gameObject.transform.position;
         Vector2 targetTilePos = b.gameObject.transform.position;
 
         return Vector2.Distance(currentTilePos, targetTilePos);
+    }
+
+    internal static void DetermineTileIsInhabited(Tile t, Collider2D currentUnitCollider)
+    {
+        RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", t.transform.position);
+
+        if (hitInfo.collider != null)
+        {
+            if (hitInfo.collider != currentUnitCollider)
+            {
+                t.Inhabited = true;
+            }
+        }
     }
 }

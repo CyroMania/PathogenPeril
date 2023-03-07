@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,6 +9,9 @@ public abstract class PlayerUnit : Unit
     private bool _isMoving;
     private bool _selected;
     private Stack<Tile> _path;
+    private UI _UI;
+
+    protected bool Clone { get; set; } = false;
 
     public bool Selected
     {
@@ -30,24 +33,32 @@ public abstract class PlayerUnit : Unit
         set => _isMoving = value;
     }
 
+    protected UI UI 
+    {
+        get => _UI;
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibilityRange);
-
-        Start();
-    }
-
-    void Start()
-    {
-        _isMoving = false;
         _collider = GetComponent<Collider2D>();
         _mainCamera = Camera.main;
-        CurrentTile = TileMovement.CalculateCurrentTile(this);
+        _isMoving = false;
+        _UI = GameObject.Find("Canvas").GetComponent<UI>();
 
-        FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1);
+        if (!Clone)
+        {
+            Start();
+        }
     }
 
-    void Update()
+    private void Start()
+    {
+        CurrentTile = TileMovement.CalculateCurrentTile(this);
+        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+    }
+
+    private void Update()
     {
         if (TargetTile != null)
         {
@@ -86,8 +97,9 @@ public abstract class PlayerUnit : Unit
                 if (unitHitInfo.collider == _collider)
                 {
                     Selected = true;
+                    _UI.DisplayButtons();
+                    _UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                     ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                    CurrentTile = TileMovement.CalculateCurrentTile(this);
                     CurrentTile.Current = true;
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
@@ -101,10 +113,21 @@ public abstract class PlayerUnit : Unit
             {
                 Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
 
-                if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                if (selectedTile.Current)
+                {
+                    return;
+                }
+                else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
                 {
                     TargetTile = selectedTile;
                     return;
+                }
+                else if (!selectedTile.Reachable && !selectedTile.Visible)
+                {
+                    Selected = false;
+                    CurrentTile.Current = false;
+                    _UI.HideButtons();
+                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                 }
             }
         }
@@ -125,25 +148,6 @@ public abstract class PlayerUnit : Unit
         return true;
     }
 
-    private void FindVisibleTiles(Tile tile, Queue<Tile> visibleTiles, int distance)
-    {
-        tile.Visible = true;
-
-        foreach (Tile t in tile.NeighbouringTiles)
-        {
-            if (distance <= Visibility && !visibleTiles.Contains(t))
-            {
-                visibleTiles.Enqueue(tile);
-                FindVisibleTiles(t, visibleTiles, distance + 1);
-            }
-        }
-
-        if (visibleTiles.Count > 0)
-        {
-            visibleTiles.Dequeue();
-        }
-    }
-
     private void FindSelectableTiles(Tile tile, Queue<Tile> selectableTiles, int distance)
     {
         foreach (Tile t in tile.NeighbouringTiles)
@@ -151,7 +155,7 @@ public abstract class PlayerUnit : Unit
             if (distance <= MovementPoints && !selectableTiles.Contains(t))
             {
                 t.Reachable = true;
-                DetermineTileIsInhabited(t);
+                TileMovement.DetermineTileIsInhabited(t, _collider);
 
                 if (!t.Inhabited)
                 {
@@ -167,18 +171,7 @@ public abstract class PlayerUnit : Unit
         }
     }
 
-    private void DetermineTileIsInhabited(Tile t)
-    {
-        RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", t.transform.position);
 
-        if (hitInfo.collider != null)
-        {
-            if (hitInfo.collider != _collider)
-            {
-                t.Inhabited = true;
-            }
-        }
-    }
 
     private void DeselectOtherUnits()
     {
@@ -200,7 +193,7 @@ public abstract class PlayerUnit : Unit
 
         foreach (PlayerUnit unit in units)
         {
-            FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1);
+            TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
         }
 
     }
