@@ -8,7 +8,9 @@ public abstract class ImmuneCell : Unit
     private PlayerUnit _targetUnit;
     private Renderer _renderer;
     private Collider2D _collider;
-    private Stack<Tile> _path;
+    private Stack<Tile> _path = new Stack<Tile>();
+
+    private bool _finishedTurn = false;
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
@@ -57,7 +59,11 @@ public abstract class ImmuneCell : Unit
                 {
                     if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile))
                     {
-
+                        //Go And Attack Player Unit
+                    }
+                    else
+                    {
+                        _path = FindPathClosestToTargetUnit();
                     }
                 }
                 else
@@ -65,8 +71,9 @@ public abstract class ImmuneCell : Unit
                     List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
                     Tile targetTile = selectableTiles.ToArray()[Random.Range(0, selectableTiles.Count)];
                     _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
-                    MovementPoints -= (short)_path.Count;
                 }
+
+                MovementPoints -= (short)_path.Count;
             }
         }
     }
@@ -150,5 +157,22 @@ public abstract class ImmuneCell : Unit
             RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", closestUnitTile.transform.position);
             _targetUnit = hitInfo.collider.GetComponent<PlayerUnit>();
         }
+    }
+
+    private Stack<Tile> FindPathClosestToTargetUnit()
+    {
+        List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
+        Tile closestTile = selectableTiles.FirstOrDefault();
+        float distance = TileMovement.FindDistance(closestTile, _targetUnit.CurrentTile);
+
+        foreach (Tile t in selectableTiles)
+        {
+            if (TileMovement.FindDistance(t, _targetUnit.CurrentTile) < distance)
+            {
+                closestTile = t;
+            }
+        }
+
+        return TileMovement.FindTilePath(CurrentTile, closestTile, new Stack<Tile>(), MovementPoints);
     }
 }
