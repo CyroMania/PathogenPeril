@@ -170,13 +170,16 @@ public abstract class ImmuneCell : Unit
     {
         List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
         Tile closestTile = selectableTiles.FirstOrDefault();
-        float distance = TileMovement.FindDistance(closestTile, _targetUnit.CurrentTile);
+        float closestDistance = TileMovement.FindDistance(closestTile, _targetUnit.CurrentTile);
 
         foreach (Tile t in selectableTiles)
         {
-            if (TileMovement.FindDistance(t, _targetUnit.CurrentTile) < distance)
+            float tempDistance = TileMovement.FindDistance(t, _targetUnit.CurrentTile);
+
+            if (tempDistance < closestDistance)
             {
                 closestTile = t;
+                closestDistance = tempDistance;
             }
         }
 
