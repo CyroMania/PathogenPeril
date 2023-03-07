@@ -25,6 +25,7 @@ public class Grid : MonoBehaviour
             for (float y = 0; y < gridHeight; y++)
             {
                 Tile clone = Instantiate(tile, new Vector3(x, y, transform.position.z), Quaternion.identity, transform);
+                clone.name = "Tile (" + x + y + ")";
                 tiles.Add(clone);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -6,10 +7,14 @@ public abstract class ImmuneCell : Unit
 {
     private PlayerUnit _targetUnit;
     private Renderer _renderer;
+    private Collider2D _collider;
+    private Stack<Tile> _path;
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibiltyRange);
+        _renderer = GetComponent<Renderer>();
+        _collider = GetComponent<Collider2D>();
 
         Start();
     }
@@ -17,35 +22,107 @@ public abstract class ImmuneCell : Unit
     private void Start()
     {
         CurrentTile = TileMovement.CalculateCurrentTile(this);
-        _renderer = GetComponent<Renderer>();
     }
 
     private void Update()
     {
-        if (CurrentTile.Visible)
+        //if (CurrentTile.Visible)
+        //{
+        //    _renderer.enabled = true;
+        //}
+        //else
+        //{
+        //    _renderer.enabled = false;
+        //}
+
+        if (_path.Count > 0)
         {
-            _renderer.enabled = true;
-        }
-        else
-        {
-            _renderer.enabled = false;
+            TileMovement.MoveToTile(this, _path);
+
+            if (_path.Count == 0)
+            {
+                CurrentTile = TileMovement.CalculateCurrentTile(this);
+            }
+
+            return;
         }
 
         if (!IsPlayerTurn)
         {
-            List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().ToList();
-            CurrentTile =  TileMovement.CalculateCurrentTile(this);
-
-            foreach (ImmuneCell cell in cells)
+            if (_path.Count == 0 && MovementPoints == MaxMovementPoints)
             {
-                FindNearestPathogen(cell);
+                FindNearestPathogen(this);
 
-                //if unit visible
+                if (CheckUnitVisible(_targetUnit.CurrentTile))
+                {
+                    if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile))
+                    {
 
-                //Moves towards unit
-
-                //otherwise moves randomly
+                    }
+                }
+                else
+                {
+                    List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
+                    Tile targetTile = selectableTiles.ToArray()[Random.Range(0, selectableTiles.Count)];
+                    _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
+                    MovementPoints -= (short)_path.Count;
+                }
             }
+        }
+    }
+
+    private List<Tile> FindSelectableTiles(Tile origin, List<Tile> selectableTiles, int distance)
+    {
+        foreach (Tile t in origin.NeighbouringTiles)
+        {
+            if (distance <= MovementPoints)
+            {
+                TileMovement.DetermineTileIsInhabited(t, _collider);
+
+                if (!t.Inhabited & t != CurrentTile)
+                {
+                    //Debug Test
+                    t.Reachable = true;
+
+                    if (!selectableTiles.Contains(t))
+                    {
+                        selectableTiles.Add(t);
+                    }
+
+                    FindSelectableTiles(t, selectableTiles, distance + 1);
+                }
+            }
+        }
+
+        return selectableTiles;
+    }
+
+    private bool CheckUnitReachable(Tile currentTile, Tile targetUnitTile)
+    {
+        if (TileMovement.FindDistance(CurrentTile, targetUnitTile) > MovementPoints)
+        {
+            return false;
+        }
+
+        Stack<Tile> path = TileMovement.FindTilePath(currentTile, targetUnitTile, new Stack<Tile>(), MovementPoints);
+
+        if (currentTile.NeighbouringTiles.Contains(path.Peek()))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CheckUnitVisible(Tile targetUnitTile)
+    {
+        if (TileMovement.FindDistance(CurrentTile, targetUnitTile) > Visibility)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 
@@ -71,7 +148,7 @@ public abstract class ImmuneCell : Unit
             }
 
             RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", closestUnitTile.transform.position);
-            immuneActor._targetUnit = hitInfo.collider.GetComponent<PlayerUnit>();
+            _targetUnit = hitInfo.collider.GetComponent<PlayerUnit>();
         }
     }
 }

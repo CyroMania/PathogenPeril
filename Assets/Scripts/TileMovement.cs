@@ -55,7 +55,7 @@ public static class TileMovement
         return tilePath;
     }
 
-    internal static void MoveToTile(PlayerUnit unit, Stack<Tile> path)
+    internal static void MoveToTile(Unit unit, Stack<Tile> path)
     {
         Vector3 unitPos = unit.transform.position;
         Tile tile = path.Peek();
