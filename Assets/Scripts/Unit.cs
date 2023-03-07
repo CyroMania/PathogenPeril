@@ -44,7 +44,7 @@ public abstract class Unit : MonoBehaviour
     public Tile CurrentTile { get; set; }
     public Tile TargetTile { get; set; }
 
-    protected bool IsPlayerTurn
+    public static bool IsPlayerTurn
     {
         get => _isPlayerTurn;
         set => _isPlayerTurn = value;

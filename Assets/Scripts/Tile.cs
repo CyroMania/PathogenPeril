@@ -62,25 +62,28 @@ public class Tile : MonoBehaviour
 
     void Update()
     {
-        if (_current)
+        if (Unit.IsPlayerTurn)
         {
-            renderer.material.color = Color.blue;
-        }
-        else if (_inhabited)
-        {
-            renderer.material.color = Color.black;
-        }
-        else if (_reachable)
-        {
-            renderer.material.color = Color.yellow;
-        }
-        else if (_visible)
-        {
-            renderer.material.color = Color.white;
-        }
-        else
-        {
-            renderer.material.color = Color.grey;
+            if (_current)
+            {
+                renderer.material.color = Color.blue;
+            }
+            else if (_inhabited)
+            {
+                renderer.material.color = Color.black;
+            }
+            else if (_reachable)
+            {
+                renderer.material.color = Color.yellow;
+            }
+            else if (_visible)
+            {
+                renderer.material.color = Color.white;
+            }
+            else
+            {
+                renderer.material.color = Color.grey;
+            }
         }
     }
 
