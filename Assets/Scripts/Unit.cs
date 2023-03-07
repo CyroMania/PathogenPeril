@@ -76,8 +76,24 @@ public abstract class Unit : MonoBehaviour
         TargetTile = null;
     }
 
+    protected void CheckLastImmuneCellFinished()
+    {
+        List<ImmuneCell> immuneCells = FindObjectsOfType<ImmuneCell>().ToList();
+
+        foreach (ImmuneCell cell in immuneCells)
+        {
+            if (!cell.FinishedTurn)
+            {
+                return;
+            }
+        }
+
+        EndCurrentTurn();
+    }
+
     public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
+        Debug.Log("PlayerTurn: " + _isPlayerTurn);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +10,12 @@ public abstract class ImmuneCell : Unit
     private Stack<Tile> _path = new Stack<Tile>();
 
     private bool _finishedTurn = false;
+
+    public bool FinishedTurn 
+    {
+        get => _finishedTurn;
+        set => _finishedTurn = value;
+    }
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
@@ -44,12 +49,14 @@ public abstract class ImmuneCell : Unit
             if (_path.Count == 0)
             {
                 CurrentTile = TileMovement.CalculateCurrentTile(this);
+                _finishedTurn = true;
+                CheckLastImmuneCellFinished();
             }
 
             return;
         }
 
-        if (!IsPlayerTurn)
+        if (!IsPlayerTurn && !_finishedTurn)
         {
             if (_path.Count == 0 && MovementPoints == MaxMovementPoints)
             {
