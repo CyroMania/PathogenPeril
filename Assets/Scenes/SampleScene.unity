@@ -252,6 +252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a3544155e71124a8c2634ed31e6341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DivideBtn: {fileID: 1770217124}
+  EndTurnBtn: {fileID: 1670575073}
 --- !u!4 &384650041 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 883929448400278560, guid: cbb24b83c1cc5e142b467b2161deadcb, type: 3}

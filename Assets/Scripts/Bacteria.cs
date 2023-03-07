@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.CanvasScaler;
 
 public class Bacteria : PlayerUnit
 {
@@ -13,8 +11,6 @@ public class Bacteria : PlayerUnit
     private const string DivideBtnName = "DivideBtn";
     private Button _divideBtn;
 
-    private bool _clone = false;
-
     private void Start()
     {
         base.Init(_maxHitPoints, _maxMovementPoints, _visibilityRange);
@@ -22,10 +18,9 @@ public class Bacteria : PlayerUnit
         _divideBtn = GameObject.Find(DivideBtnName).GetComponent<Button>();
         _divideBtn.onClick.AddListener(Divide);
 
-        if (_clone)
+        if (Clone)
         {
             MovementPoints = 0;
-            StopAllCoroutines();
         }
     }
 
@@ -46,11 +41,9 @@ public class Bacteria : PlayerUnit
             Tile chosenTile = acceptableTiles.ToArray()[Random.Range(0, acceptableTiles.Count)];
             Bacteria clone = Instantiate(this, transform.position, Quaternion.identity);
             clone.name = "Bacteria";
-            clone._clone = true;
-
-            //Make Smoothly move to Tile
+            clone.Clone = true;
             StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position + TileMovement.UnitLayer));
-            clone.CurrentTile = chosenTile;
+ 
             MovementPoints = 0;
             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
             CurrentTile.Current = true;
@@ -69,5 +62,7 @@ public class Bacteria : PlayerUnit
         }
 
         clone.transform.position = destination;
+        clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
+        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
     }
 }
