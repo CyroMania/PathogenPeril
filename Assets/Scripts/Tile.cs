@@ -21,10 +21,10 @@ public class Tile : MonoBehaviour
     private List<Tile> _neighbourTiles;
 
 
-    public bool Current 
-    { 
-        get => _current; 
-        set => _current = value; 
+    public bool Current
+    {
+        get => _current;
+        set => _current = value;
     }
 
     public bool Inhabited
@@ -45,7 +45,7 @@ public class Tile : MonoBehaviour
         set => _visible = value;
     }
 
-    public List<Tile> NeighbouringTiles 
+    public List<Tile> NeighbouringTiles
     {
         get { return _neighbourTiles; }
         private set
@@ -62,25 +62,28 @@ public class Tile : MonoBehaviour
 
     void Update()
     {
-        if (_current)
+        if (Unit.IsPlayerTurn)
         {
-            renderer.material.color = Color.blue;
-        }
-        else if (_inhabited)
-        {
-            renderer.material.color = Color.black;
-        }
-        else if (_reachable)
-        {
-            renderer.material.color = Color.yellow;
-        }
-        else if (_visible)
-        {
-            renderer.material.color = Color.white;
-        }
-        else
-        {
-            renderer.material.color = Color.grey;
+            if (_current)
+            {
+                renderer.material.color = Color.blue;
+            }
+            else if (_inhabited)
+            {
+                renderer.material.color = Color.black;
+            }
+            else if (_reachable)
+            {
+                renderer.material.color = Color.yellow;
+            }
+            else if (_visible)
+            {
+                renderer.material.color = Color.white;
+            }
+            else
+            {
+                renderer.material.color = Color.grey;
+            }
         }
     }
 
@@ -88,6 +91,19 @@ public class Tile : MonoBehaviour
     {
         List<PropertyInfo> properties = GetType().GetDeclaredProperties()
             .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
+
+        if (ignoredProperties.Length == 0)
+        {
+            foreach (PropertyInfo property in properties)
+            {
+                if (property.PropertyType == typeof(bool))
+                {
+                    property.SetValue(this, false);
+                }
+            }
+
+            return;
+        }
 
         foreach (PropertyInfo property in properties)
         {
@@ -114,7 +130,7 @@ public class Tile : MonoBehaviour
         {
             for (int y = -1; y <= 1; y++)
             {
-                  if (x != y && x * y == 0)
+                if (x != y && x * y == 0)
                 {
                     Collider2D collider = Physics2D.OverlapBox(transform.position + new Vector3(x, y), size, 0f, layerMask);
 
