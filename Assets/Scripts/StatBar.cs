@@ -11,13 +11,15 @@ public class StatBar : MonoBehaviour
     private static readonly Vector2 sizeOffset = new Vector2(0.25f, 0.25f);
     private static readonly Vector2 statBarFromBorderOffset = new Vector2(0.99f, 0.95f);
 
+    public Color Color { get; set; } = Color.white;
+
     private void Start()
     {
         GameObject fill = new GameObject(FillName);
         fill.transform.SetParent(gameObject.transform);
         fill.AddComponent<CanvasRenderer>();
         fill.AddComponent<Image>();
-        fill.GetComponent<Image>().color = Color.red;
+        fill.GetComponent<Image>().color = Color;
 
         GameObject border = new GameObject(BorderName);
         border.transform.SetParent(gameObject.transform);
