@@ -10,8 +10,9 @@ public abstract class ImmuneCell : Unit
     private Stack<Tile> _path = new Stack<Tile>();
 
     private bool _finishedTurn = false;
+    private bool _canAttack = false;
 
-    public bool FinishedTurn 
+    public bool FinishedTurn
     {
         get => _finishedTurn;
         set => _finishedTurn = value;
@@ -51,6 +52,16 @@ public abstract class ImmuneCell : Unit
                 CurrentTile = TileMovement.CalculateCurrentTile(this);
                 _finishedTurn = true;
                 CheckLastImmuneCellFinished();
+
+                if (_canAttack)
+                {
+                    if (this is Macrophage)
+                    {
+                        Macrophage macrophage = this as Macrophage;
+                        macrophage.Phagocytosis(_targetUnit);
+                        _canAttack = false;
+                    }
+                }
             }
 
             return;
@@ -72,7 +83,8 @@ public abstract class ImmuneCell : Unit
                 {
                     if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile))
                     {
-                        //Go And Attack Player Unit
+                        _path = FindTargetUnitNearestNeighbourTile();
+                        _canAttack = true;
                     }
                     else
                     {
@@ -89,6 +101,30 @@ public abstract class ImmuneCell : Unit
                 MovementPoints -= (short)_path.Count;
             }
         }
+    }
+
+    private Stack<Tile> FindTargetUnitNearestNeighbourTile()
+    {
+        List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
+
+        Tile closestTile = _targetUnit.CurrentTile.NeighbouringTiles.First();
+        float closestDistance = TileMovement.FindDistance(CurrentTile, closestTile);
+
+        foreach (Tile neighbourTile in _targetUnit.CurrentTile.NeighbouringTiles)
+        {
+            if (neighbourTile.Reachable)
+            {
+                float tempDistance = TileMovement.FindDistance(CurrentTile, neighbourTile);
+
+                if (tempDistance < closestDistance)
+                {
+                    closestTile = neighbourTile;
+                    closestDistance = tempDistance;
+                }
+            }
+        }
+
+        return TileMovement.FindTilePath(CurrentTile, closestTile, new Stack<Tile>(), MovementPoints);
     }
 
     private List<Tile> FindSelectableTiles(Tile origin, List<Tile> selectableTiles, int distance)
@@ -126,12 +162,12 @@ public abstract class ImmuneCell : Unit
 
         Stack<Tile> path = TileMovement.FindTilePath(currentTile, targetUnitTile, new Stack<Tile>(), MovementPoints);
 
-        if (currentTile.NeighbouringTiles.Contains(path.Peek()))
+        if (currentTile.NeighbouringTiles.Contains(path.First()))
         {
             return true;
         }
 
-        return false;
+        return true;
     }
 
     private bool CheckUnitVisible(Tile targetUnitTile)
