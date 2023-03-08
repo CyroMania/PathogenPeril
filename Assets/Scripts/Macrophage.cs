@@ -38,16 +38,6 @@ public class Macrophage : ImmuneCell
             yield return newScale;
         }
 
-        UnitUI ui = GameObject.Find("Canvas").GetComponent<UnitUI>();
-        //foreach (KeyValuePair<PlayerUnit, GameObject> statBars in ui.PathogenStatBars)
-        //{
-        //    if (statBars.Key == this)
-        //    {
-        //        Destroy(statBars.Value);
-        //        //ui.PathogenStatBars.Remove(statBars.Key);
-        //    }
-        //}
-
-        //Destroy(this);
+        GameObject.Find("Canvas").GetComponent<UnitUI>().DestroyStatBars(pathogen);
     }
 } 

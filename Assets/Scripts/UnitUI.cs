@@ -72,7 +72,7 @@ public class UnitUI : MonoBehaviour
         }
     }
 
-    public void CreateNewStatBars(PlayerUnit newPathogen)
+    public void CreateNewStatBars(PlayerUnit pathogen)
     {
         //Health Bar Generation
         GameObject healthBar = new GameObject(HealthBarName);
@@ -91,6 +91,24 @@ public class UnitUI : MonoBehaviour
         energyBar.transform.SetParent(_UIStatBars.transform);
 
         StatBars pathogenStatBars = new StatBars(healthBar, energyBar);
-        _pathogensStatBars.Add(newPathogen, pathogenStatBars);
+        _pathogensStatBars.Add(pathogen, pathogenStatBars);
+    }
+
+    public void DestroyStatBars(PlayerUnit pathogen)
+    {
+        foreach (KeyValuePair<PlayerUnit, StatBars> statBars in _pathogensStatBars)
+        {
+            if (statBars.Key == pathogen)
+            {
+                _pathogensStatBars.Remove(statBars.Key);
+
+                Destroy(statBars.Value.Health);
+                Destroy(statBars.Value.Energy);
+
+                break;
+            }
+        }
+
+        Destroy(pathogen.gameObject);
     }
 }
