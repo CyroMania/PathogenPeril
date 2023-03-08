@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,8 @@ public abstract class Unit : MonoBehaviour
     private short _maxMovementPoints;
     private short _visibilityRange;
 
+    protected bool BeginTurn { get; set; }
+
     private void Start()
     {
         MovementPoints = _maxMovementPoints;
@@ -21,6 +24,11 @@ public abstract class Unit : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, -1);
         }
+    }
+
+    protected void ResetUnit()
+    {
+        MovementPoints = _maxMovementPoints;
     }
 
     protected short MaxHitPoints 
@@ -95,5 +103,27 @@ public abstract class Unit : MonoBehaviour
     {
         _isPlayerTurn = !_isPlayerTurn;
         Debug.Log("PlayerTurn: " + _isPlayerTurn);
+
+        if (_isPlayerTurn )
+        {
+            Debug.Log("Player Units Begin Turns");
+            List<PlayerUnit> playerUnits = FindObjectsOfType<PlayerUnit>().ToList();
+
+            foreach (PlayerUnit unit in playerUnits)
+            {
+                unit.BeginTurn = true;
+            }
+        }
+        else
+        {
+            Debug.Log("Enemy Units Begin Turns");
+            List<ImmuneCell> immuneActors = FindObjectsOfType<ImmuneCell>().ToList();
+
+            foreach (ImmuneCell unit in immuneActors)
+            {
+                unit.BeginTurn = true;
+                unit.FinishedTurn = false;
+            }
+        }
     }
 }

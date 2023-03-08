@@ -1,4 +1,4 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,7 +33,7 @@ public abstract class PlayerUnit : Unit
         set => _isMoving = value;
     }
 
-    protected UI UI 
+    protected UI UI
     {
         get => _UI;
     }
@@ -60,74 +60,83 @@ public abstract class PlayerUnit : Unit
 
     private void Update()
     {
-        if (TargetTile != null)
+        if (IsPlayerTurn)
         {
-            if (!_isMoving)
+            if (BeginTurn)
             {
-                _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
-                MovementPoints -= (short)_path.Count;
-                _isMoving = true;
-                return;
-            }
-            else
-            {
-                TileMovement.MoveToTile(this, _path);
-
-                if (_path.Count == 0)
-                {
-                    _isMoving = false;
-                    SetTargetTileToCurrentTile();
-                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current) });
-                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
-                    FindAllVisibleTiles();
-                }
-
-                return;
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
-        {
-            Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-            if (!_selected)
-            {
-                RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
-
-                if (unitHitInfo.collider == _collider)
-                {
-                    Selected = true;
-                    _UI.DisplayButtons();
-                    _UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                    CurrentTile.Current = true;
-                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
-                }
-
-                return;
+                ResetUnit();
+                BeginTurn = false;
             }
 
-            RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
-
-            if (tileHitInfo.collider != null)
+            if (TargetTile != null)
             {
-                Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
-
-                if (selectedTile.Current)
+                if (!_isMoving)
                 {
+                    _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
+                    MovementPoints -= (short)_path.Count;
+                    _isMoving = true;
                     return;
                 }
-                else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                else
                 {
-                    TargetTile = selectedTile;
+                    TileMovement.MoveToTile(this, _path);
+
+                    if (_path.Count == 0)
+                    {
+                        _isMoving = false;
+                        SetTargetTileToCurrentTile();
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current) });
+                        FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                        FindAllVisibleTiles();
+                    }
+
                     return;
                 }
-                else if (!selectedTile.Reachable && !selectedTile.Visible)
+            }
+
+            if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
+            {
+                Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+
+                if (!_selected)
                 {
-                    Selected = false;
-                    CurrentTile.Current = false;
-                    _UI.HideButtons();
-                    ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                    RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
+
+                    if (unitHitInfo.collider == _collider)
+                    {
+                        Selected = true;
+                        _UI.DisplayButtons();
+                        _UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        CurrentTile.Current = true;
+                        FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                    }
+
+                    return;
+                }
+
+                RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
+
+                if (tileHitInfo.collider != null)
+                {
+                    Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
+
+                    if (selectedTile.Current)
+                    {
+                        return;
+                    }
+                    else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                    {
+                        TargetTile = selectedTile;
+                        return;
+                    }
+                    else if (!selectedTile.Reachable && !selectedTile.Visible)
+                    {
+                        Selected = false;
+                        CurrentTile.Current = false;
+                        _UI.HideButtons();
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                    }
                 }
             }
         }
