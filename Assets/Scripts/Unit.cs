@@ -13,7 +13,7 @@ public abstract class Unit : MonoBehaviour
     private short _maxMovementPoints;
     private short _visibilityRange;
 
-    protected bool BeginTurn { get; set; }
+    public bool BeginTurn { get; set; }
 
     private void Start()
     {
@@ -35,13 +35,13 @@ public abstract class Unit : MonoBehaviour
     { 
         get => _maxHitPoints;
     }
-    protected short MaxMovementPoints
+    public short MaxMovementPoints
     {
         get => _maxMovementPoints;
     }
 
     protected short HitPoints { get; set; }
-    protected short MovementPoints { get; set; }
+    public short MovementPoints { get; set; }
     protected short Visibility 
     { 
         get => _visibilityRange; 

@@ -53,15 +53,21 @@ public class UnitUI : MonoBehaviour
         foreach (KeyValuePair<PlayerUnit, StatBars> pathogenStatBars in _pathogensStatBars)
         {
             PlayerUnit pathogen = pathogenStatBars.Key;
+            GameObject energyBar = pathogenStatBars.Value.Energy;
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
                 GameObject healthBar = pathogenStatBars.Value.Health;
-                GameObject energyBar = pathogenStatBars.Value.Energy;
-
+                
                 Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
+                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
+            }
+
+            if (pathogen.BeginTurn)
+            {
+                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
             }
         }
     }
