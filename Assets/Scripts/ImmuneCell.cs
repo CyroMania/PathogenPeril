@@ -58,6 +58,12 @@ public abstract class ImmuneCell : Unit
 
         if (!IsPlayerTurn && !_finishedTurn)
         {
+            if (BeginTurn)
+            {
+                ResetUnit();
+                BeginTurn = false;
+            }
+
             if (_path.Count == 0 && MovementPoints == MaxMovementPoints)
             {
                 FindNearestPathogen(this);
