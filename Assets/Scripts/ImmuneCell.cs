@@ -77,7 +77,7 @@ public abstract class ImmuneCell : Unit
 
             if (_path.Count == 0 && MovementPoints == MaxMovementPoints)
             {
-                FindNearestPathogen(this);
+                FindNearestPathogen();
 
                 if (CheckUnitVisible(_targetUnit.CurrentTile))
                 {
@@ -107,12 +107,12 @@ public abstract class ImmuneCell : Unit
     {
         List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
 
-        Tile closestTile = _targetUnit.CurrentTile.NeighbouringTiles.First();
+        Tile closestTile = _targetUnit.CurrentTile.NeighbouringTiles.FirstOrDefault();
         float closestDistance = TileMovement.FindDistance(CurrentTile, closestTile);
 
         foreach (Tile neighbourTile in _targetUnit.CurrentTile.NeighbouringTiles)
         {
-            if (neighbourTile.Reachable)
+            if (selectableTiles.Contains(neighbourTile))
             {
                 float tempDistance = TileMovement.FindDistance(CurrentTile, neighbourTile);
 
@@ -137,7 +137,6 @@ public abstract class ImmuneCell : Unit
 
                 if (!t.Inhabited & t != CurrentTile)
                 {
-                    //Debug Test
                     t.Reachable = true;
 
                     if (!selectableTiles.Contains(t))
@@ -160,14 +159,23 @@ public abstract class ImmuneCell : Unit
             return false;
         }
 
-        Stack<Tile> path = TileMovement.FindTilePath(currentTile, targetUnitTile, new Stack<Tile>(), MovementPoints);
+        List<Tile> selectableTiles = FindSelectableTiles(currentTile, new List<Tile>(), 1);
+        int count = 0;
 
-        if (currentTile.NeighbouringTiles.Contains(path.First()))
+        foreach (Tile t in targetUnitTile.NeighbouringTiles)
+        {
+            if (t.Reachable)
+            {
+                count++;
+            }
+        }
+
+        if (count > 1)
         {
             return true;
         }
 
-        return true;
+        return false;
     }
 
     private bool CheckUnitVisible(Tile targetUnitTile)
@@ -182,7 +190,7 @@ public abstract class ImmuneCell : Unit
         }
     }
 
-    private void FindNearestPathogen(ImmuneCell immuneActor)
+    private void FindNearestPathogen()
     {
         List<PlayerUnit> playerUnits = FindObjectsOfType<PlayerUnit>().ToList();
 

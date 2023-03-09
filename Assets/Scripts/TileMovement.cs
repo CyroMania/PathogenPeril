@@ -16,11 +16,13 @@ public static class TileMovement
 
         foreach (Tile t in targetTile.NeighbouringTiles)
         {
-            if (!t.Inhabited)
+            if (!t.Inhabited && t.Reachable)
             {
-                if (FindDistance(currentTile, t) < distance && !tilePath.Contains(t) && t.Reachable)
+                float tempDistance = FindDistance(currentTile, t);
+
+                if (tempDistance < distance && !tilePath.Contains(t))
                 {
-                    distance = FindDistance(currentTile, t);
+                    distance = tempDistance;
                     closestTile = t;
                 }
             }
@@ -32,9 +34,16 @@ public static class TileMovement
             {
                 if (!t.Inhabited)
                 {
-                    if (FindDistance(currentTile, t) <= remainingMovementPoints && !tilePath.Contains(t))
+                    if (t == currentTile)
                     {
-                        distance = FindDistance(currentTile, t);
+                        return tilePath;
+                    }
+
+                    float tempDistance = FindDistance(currentTile, t);
+
+                    if (tempDistance <= remainingMovementPoints && !tilePath.Contains(t))
+                    {
+                        distance = tempDistance;
                         closestTile = t;
                     }
                 }
