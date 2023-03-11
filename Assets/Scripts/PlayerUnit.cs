@@ -180,8 +180,6 @@ public abstract class PlayerUnit : Unit
         }
     }
 
-
-
     private void DeselectOtherUnits()
     {
         List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
@@ -204,6 +202,5 @@ public abstract class PlayerUnit : Unit
         {
             TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
         }
-
     }
 }

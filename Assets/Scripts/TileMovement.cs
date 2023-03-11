@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class TileMovement
@@ -32,13 +33,13 @@ public static class TileMovement
         {
             foreach (Tile t in targetTile.NeighbouringTiles)
             {
+                if (t == currentTile)
+                {
+                    return tilePath;
+                }
+
                 if (!t.Inhabited)
                 {
-                    if (t == currentTile)
-                    {
-                        return tilePath;
-                    }
-
                     float tempDistance = FindDistance(currentTile, t);
 
                     if (tempDistance <= remainingMovementPoints && !tilePath.Contains(t))
@@ -133,5 +134,29 @@ public static class TileMovement
                 t.Inhabited = true;
             }
         }
+    }
+
+    internal static Tile FindClosestTileInCollection(Unit unit, IList<Tile> tiles)
+    {
+        if (tiles.Count > 0)
+        {
+            Tile closestTile = tiles.First();
+            float closestDistance = FindDistance(unit.CurrentTile, closestTile);
+
+            foreach (Tile t in tiles)
+            {
+                float tempDistance = FindDistance(unit.CurrentTile, t);
+
+                if (tempDistance < closestDistance)
+                {
+                    closestTile = t;
+                    closestDistance = tempDistance;
+                }
+            }
+
+            return closestTile;
+        }
+
+        return null;
     }
 }
