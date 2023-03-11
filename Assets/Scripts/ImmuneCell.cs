@@ -18,6 +18,12 @@ public abstract class ImmuneCell : Unit
         set => _finishedTurn = value;
     }
 
+    public PlayerUnit TargetUnit
+    {
+        get => _targetUnit;
+        set => _targetUnit = value;
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibiltyRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibiltyRange);

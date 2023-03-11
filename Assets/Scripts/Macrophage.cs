@@ -38,6 +38,6 @@ public class Macrophage : ImmuneCell
             yield return newScale;
         }
 
-        GameObject.Find("Canvas").GetComponent<UnitUI>().DestroyStatBars(pathogen);
+        pathogen.Kill();
     }
 } 

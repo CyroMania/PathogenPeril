@@ -108,7 +108,5 @@ public class UnitUI : MonoBehaviour
                 break;
             }
         }
-
-        Destroy(pathogen.gameObject);
     }
 }

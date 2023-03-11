@@ -38,6 +38,23 @@ public abstract class PlayerUnit : Unit
         get => _UI;
     }
 
+    public void Kill()
+    {
+        GameObject.Find("Canvas").GetComponent<UnitUI>().DestroyStatBars(this);
+
+        List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().ToList();
+
+        foreach (ImmuneCell cell in cells)
+        {
+            if (cell.TargetUnit == this)
+            {
+                cell.TargetUnit = null;
+            }
+        }
+
+        Destroy(gameObject);
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibilityRange);
