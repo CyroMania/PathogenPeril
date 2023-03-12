@@ -67,7 +67,7 @@ public abstract class PlayerUnit : Unit
     private void Start()
     {
         CurrentTile = TileMovement.CalculateCurrentTile(this);
-        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+        BeginTurn = true;
     }
 
     private void Update()
@@ -77,6 +77,7 @@ public abstract class PlayerUnit : Unit
             if (BeginTurn)
             {
                 ResetUnit();
+                TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
                 BeginTurn = false;
             }
 
@@ -106,51 +107,48 @@ public abstract class PlayerUnit : Unit
                 }
             }
 
-            if (!IsPointerOverUIObject())
+            if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
             {
-                if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
+                Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+
+                if (!_selected)
                 {
-                    Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+                    RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
 
-                    if (!_selected)
+                    if (unitHitInfo.collider == _collider)
                     {
-                        RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
-
-                        if (unitHitInfo.collider == _collider)
-                        {
-                            Selected = true;
-                            UI.DisplayButtons();
-                            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                            CurrentTile.Current = true;
-                            FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
-                        }
-
-                        return;
+                        Selected = true;
+                        UI.DisplayButtons();
+                        UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        CurrentTile.Current = true;
+                        FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                     }
 
-                    RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
+                    return;
+                }
 
-                    if (tileHitInfo.collider != null)
+                RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
+
+                if (tileHitInfo.collider != null)
+                {
+                    Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
+
+                    if (selectedTile.Current)
                     {
-                        Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
-
-                        if (selectedTile.Current)
-                        {
-                            return;
-                        }
-                        else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
-                        {
-                            TargetTile = selectedTile;
-                            return;
-                        }
-                        else if (!selectedTile.Reachable && !selectedTile.Visible)
-                        {
-                            Selected = false;
-                            CurrentTile.Current = false;
-                            UI.HideButtons();
-                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                        }
+                        return;
+                    }
+                    else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                    {
+                        TargetTile = selectedTile;
+                        return;
+                    }
+                    else if (!selectedTile.Reachable && !selectedTile.Visible)
+                    {
+                        Selected = false;
+                        CurrentTile.Current = false;
+                        UI.HideButtons();
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                     }
                 }
             }
