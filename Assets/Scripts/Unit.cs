@@ -9,14 +9,26 @@ public abstract class Unit : MonoBehaviour
     //Due to it's highly coupled relationship to the behaviours of units it is here for ease of use
     private static bool _isPlayerTurn = true;
 
+    private static List<PlayerUnit> _playerUnits;
+    private static List<ImmuneCell> _immuneCells;
+
     private short _maxHitPoints;
     private short _maxMovementPoints;
     private short _visibilityRange;
 
-    public bool BeginTurn { get; set; }
+    private static bool staticsSetUp = false;
 
     private void Start()
     {
+        if (!staticsSetUp)
+        {
+            _playerUnits = new List<PlayerUnit>();
+            _immuneCells = new List<ImmuneCell>();
+            UI = GameObject.Find("Canvas").GetComponent<UI>();
+
+            staticsSetUp = true;
+        }
+
         MovementPoints = _maxMovementPoints;
         HitPoints = _maxHitPoints;
 
@@ -26,22 +38,34 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    protected void ResetUnit()
+    public static UI UI { get; set; }
+
+    public bool BeginTurn { get; set; }
+
+    protected static List<PlayerUnit> PlayerUnits
     {
-        MovementPoints = _maxMovementPoints;
+        get => _playerUnits;
+    }
+
+    protected static List<ImmuneCell> ImmuneCells
+    {
+        get => _immuneCells;
     }
 
     protected short MaxHitPoints 
     { 
         get => _maxHitPoints;
     }
+
     public short MaxMovementPoints
     {
         get => _maxMovementPoints;
     }
 
     protected short HitPoints { get; set; }
+
     public short MovementPoints { get; set; }
+
     protected short Visibility 
     { 
         get => _visibilityRange; 
@@ -49,12 +73,18 @@ public abstract class Unit : MonoBehaviour
     }
 
     public Tile CurrentTile { get; set; }
+
     public Tile TargetTile { get; set; }
 
     public static bool IsPlayerTurn
     {
         get => _isPlayerTurn;
         set => _isPlayerTurn = value;
+    }
+
+    protected void ResetUnit()
+    {
+        MovementPoints = _maxMovementPoints;
     }
 
     protected virtual void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
@@ -86,9 +116,7 @@ public abstract class Unit : MonoBehaviour
 
     protected void CheckLastImmuneCellFinished()
     {
-        List<ImmuneCell> immuneCells = FindObjectsOfType<ImmuneCell>().ToList();
-
-        foreach (ImmuneCell cell in immuneCells)
+        foreach (ImmuneCell cell in ImmuneCells)
         {
             if (!cell.FinishedTurn)
             {
@@ -100,27 +128,30 @@ public abstract class Unit : MonoBehaviour
         EndCurrentTurn();
     }
 
+    protected static void CheckNoPlayerUnitsAlive()
+    {
+        if (PlayerUnits.Count == 0)
+        {
+            Debug.Log("Game Over"); 
+            UI.GameLost();
+        }
+    }
+
     public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
         Debug.Log("PlayerTurn: " + _isPlayerTurn);
 
-        if (_isPlayerTurn )
+        if (_isPlayerTurn)
         {
-            Debug.Log("Player Units Begin Turns");
-            List<PlayerUnit> playerUnits = FindObjectsOfType<PlayerUnit>().ToList();
-
-            foreach (PlayerUnit unit in playerUnits)
+            foreach (PlayerUnit unit in PlayerUnits)
             {
                 unit.BeginTurn = true;
             }
         }
         else
         {
-            Debug.Log("Enemy Units Begin Turns");
-            List<ImmuneCell> immuneActors = FindObjectsOfType<ImmuneCell>().ToList();
-
-            foreach (ImmuneCell unit in immuneActors)
+            foreach (ImmuneCell unit in ImmuneCells)
             {
                 unit.BeginTurn = true;
                 unit.FinishedTurn = false;
