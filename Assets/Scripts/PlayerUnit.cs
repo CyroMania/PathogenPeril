@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class PlayerUnit : Unit
 {
@@ -106,48 +106,51 @@ public abstract class PlayerUnit : Unit
                 }
             }
 
-            if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
+            if (!IsPointerOverUIObject())
             {
-                Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-                if (!_selected)
+                if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
                 {
-                    RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
+                    Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
-                    if (unitHitInfo.collider == _collider)
+                    if (!_selected)
                     {
-                        Selected = true;
-                        UI.DisplayButtons();
-                        UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
-                        CurrentTile.Current = true;
-                        FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
-                    }
+                        RaycastHit2D unitHitInfo = PhysicsHelper.GenerateRaycast("Unit", clickPosition);
 
-                    return;
-                }
+                        if (unitHitInfo.collider == _collider)
+                        {
+                            Selected = true;
+                            UI.DisplayButtons();
+                            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                            CurrentTile.Current = true;
+                            FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                        }
 
-                RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
-
-                if (tileHitInfo.collider != null)
-                {
-                    Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
-
-                    if (selectedTile.Current)
-                    {
                         return;
                     }
-                    else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+
+                    RaycastHit2D tileHitInfo = PhysicsHelper.GenerateRaycast("Tile", clickPosition);
+
+                    if (tileHitInfo.collider != null)
                     {
-                        TargetTile = selectedTile;
-                        return;
-                    }
-                    else if (!selectedTile.Reachable && !selectedTile.Visible)
-                    {
-                        Selected = false;
-                        CurrentTile.Current = false;
-                        UI.HideButtons();
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        Tile selectedTile = tileHitInfo.collider.gameObject.GetComponent<Tile>();
+
+                        if (selectedTile.Current)
+                        {
+                            return;
+                        }
+                        else if (selectedTile.Reachable && !selectedTile.Current && !selectedTile.Inhabited)
+                        {
+                            TargetTile = selectedTile;
+                            return;
+                        }
+                        else if (!selectedTile.Reachable && !selectedTile.Visible)
+                        {
+                            Selected = false;
+                            CurrentTile.Current = false;
+                            UI.HideButtons();
+                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        }
                     }
                 }
             }
@@ -208,5 +211,18 @@ public abstract class PlayerUnit : Unit
         {
             TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
         }
+    }
+
+    /// <summary>
+    /// Retrieved from stackOverflow https://stackoverflow.com/questions/43754608/unity5-when-i-click-on-a-ui-button-the-gameobject-behind-it-gets-clicked
+    /// </summary>
+    /// <returns></returns>
+    private static bool IsPointerOverUIObject()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count > 0;
     }
 }
