@@ -36,6 +36,7 @@ public abstract class ImmuneCell : Unit
     private void Start()
     {
         CurrentTile = TileMovement.CalculateCurrentTile(this);
+        ImmuneCells.Add(this);
     }
 
     private void Update()
@@ -190,11 +191,11 @@ public abstract class ImmuneCell : Unit
 
         if (count > 1)
         {
-            List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().Where(cell => cell != this).ToList();
+            List<ImmuneCell> otherImmuneCells = ImmuneCells.Where(cell => cell != this).ToList();
 
-            if (cells.Count > 0)
+            if (otherImmuneCells.Count > 0)
             {
-                foreach (ImmuneCell cell in cells)
+                foreach (ImmuneCell cell in otherImmuneCells)
                 {
                     if (cell._targetUnit != null && cell._targetUnit.CurrentTile == targetUnitTile)
                     {
@@ -223,24 +224,22 @@ public abstract class ImmuneCell : Unit
 
     private void FindNearestPathogen()
     {
-        List<PlayerUnit> playerUnits = FindObjectsOfType<PlayerUnit>().ToList();
-
-        if (playerUnits.Count > 0)
+        if (PlayerUnits.Count > 0)
         {
-            Tile closestUnitTile = TileMovement.CalculateCurrentTile(playerUnits.First());
+            Tile closestUnitTile = TileMovement.CalculateCurrentTile(PlayerUnits.First());
             float closestDistance = TileMovement.FindDistance(CurrentTile, closestUnitTile);
 
-            List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().Where(cell => cell != this).ToList();
+            List<ImmuneCell> OtherImmuneCells = ImmuneCells.Where(cell => cell != this).ToList();
 
-            foreach (PlayerUnit unit in playerUnits)
+            foreach (PlayerUnit unit in PlayerUnits)
             {
-                if (cells.Count < playerUnits.Count)
+                if (OtherImmuneCells.Count < PlayerUnits.Count)
                 {
                     bool skipUnit = false;
 
-                    foreach (ImmuneCell cell in cells)
+                    foreach (ImmuneCell otherCell in OtherImmuneCells)
                     {
-                        if (cell._targetUnit != null && cell._targetUnit == unit)
+                        if (otherCell._targetUnit != null && otherCell._targetUnit == unit)
                         {
                             skipUnit = true;
                         }

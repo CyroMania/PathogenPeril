@@ -9,7 +9,6 @@ public abstract class PlayerUnit : Unit
     private bool _isMoving;
     private bool _selected;
     private Stack<Tile> _path;
-    private UI _UI;
 
     protected bool Clone { get; set; } = false;
 
@@ -33,18 +32,11 @@ public abstract class PlayerUnit : Unit
         set => _isMoving = value;
     }
 
-    protected UI UI
-    {
-        get => _UI;
-    }
-
     public void Kill()
     {
         GameObject.Find("Canvas").GetComponent<UnitUI>().DestroyStatBars(this);
 
-        List<ImmuneCell> cells = FindObjectsOfType<ImmuneCell>().ToList();
-
-        foreach (ImmuneCell cell in cells)
+        foreach (ImmuneCell cell in ImmuneCells)
         {
             if (cell.TargetUnit == this)
             {
@@ -53,6 +45,8 @@ public abstract class PlayerUnit : Unit
         }
 
         Destroy(gameObject);
+        PlayerUnits.Remove(this);
+        CheckNoPlayerUnitsAlive();
     }
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
@@ -61,12 +55,13 @@ public abstract class PlayerUnit : Unit
         _collider = GetComponent<Collider2D>();
         _mainCamera = Camera.main;
         _isMoving = false;
-        _UI = GameObject.Find("Canvas").GetComponent<UI>();
 
         if (!Clone)
         {
             Start();
         }
+
+        PlayerUnits.Add(this);
     }
 
     private void Start()
@@ -122,8 +117,8 @@ public abstract class PlayerUnit : Unit
                     if (unitHitInfo.collider == _collider)
                     {
                         Selected = true;
-                        _UI.DisplayButtons();
-                        _UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                        UI.DisplayButtons();
+                        UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                         CurrentTile.Current = true;
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
@@ -151,7 +146,7 @@ public abstract class PlayerUnit : Unit
                     {
                         Selected = false;
                         CurrentTile.Current = false;
-                        _UI.HideButtons();
+                        UI.HideButtons();
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
                     }
                 }
@@ -161,9 +156,7 @@ public abstract class PlayerUnit : Unit
 
     private bool ConfirmNoOtherUnitMoving()
     {
-        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
-
-        foreach (PlayerUnit unit in units)
+        foreach (PlayerUnit unit in PlayerUnits)
         {
             if (unit != this && unit.IsMoving)
             {
@@ -199,9 +192,7 @@ public abstract class PlayerUnit : Unit
 
     private void DeselectOtherUnits()
     {
-        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
-
-        foreach (PlayerUnit unit in units)
+        foreach (PlayerUnit unit in PlayerUnits)
         {
             if (unit != this && unit.Selected)
             {
@@ -213,9 +204,7 @@ public abstract class PlayerUnit : Unit
 
     private void FindAllVisibleTiles()
     {
-        List<PlayerUnit> units = FindObjectsOfType<PlayerUnit>().ToList();
-
-        foreach (PlayerUnit unit in units)
+        foreach (PlayerUnit unit in PlayerUnits)
         {
             TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
         }
