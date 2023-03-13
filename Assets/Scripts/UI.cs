@@ -1,4 +1,4 @@
-using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,15 +6,21 @@ public class UI : MonoBehaviour
 {
     public Button DivideBtn;
     public Button EndTurnBtn;
+    public TextMeshProUGUI WinTxt;
+    public TextMeshProUGUI LoseTxt;
 
     private Animator _divideBtnAnim;
     private Animator _endTurnBtnAnim;
+    private Animator _WinTxtAnim;
+    private Animator _LoseTxtAnim;
 
 
     private void Start()
     {
         _divideBtnAnim = DivideBtn.GetComponent<Animator>();
-        _endTurnBtnAnim= EndTurnBtn.GetComponent<Animator>();
+        _endTurnBtnAnim = EndTurnBtn.GetComponent<Animator>();
+        _WinTxtAnim = WinTxt.GetComponent<Animator>();
+        _LoseTxtAnim = LoseTxt.GetComponent<Animator>();
     }
 
     public void NewTurn()
@@ -44,5 +50,22 @@ public class UI : MonoBehaviour
         {
             DivideBtn.interactable = false;
         }
+    }
+
+    internal void GameWon()
+    {
+        PauseGameplay();
+        _WinTxtAnim.SetTrigger("GameWon");
+    }
+
+    internal void GameLost()
+    {
+        PauseGameplay();
+        _LoseTxtAnim.SetTrigger("GameLost");
+    }
+
+    private void PauseGameplay()
+    {
+        Time.timeScale = 0;
     }
 }

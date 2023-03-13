@@ -53,20 +53,26 @@ public class UnitUI : MonoBehaviour
         foreach (KeyValuePair<PlayerUnit, StatBars> pathogenStatBars in _pathogensStatBars)
         {
             PlayerUnit pathogen = pathogenStatBars.Key;
+            GameObject energyBar = pathogenStatBars.Value.Energy;
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
                 GameObject healthBar = pathogenStatBars.Value.Health;
-                GameObject energyBar = pathogenStatBars.Value.Energy;
-
+                
                 Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
+                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
+            }
+
+            if (pathogen.BeginTurn)
+            {
+                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
             }
         }
     }
 
-    public void CreateNewStatBars(PlayerUnit newPathogen)
+    public void CreateNewStatBars(PlayerUnit pathogen)
     {
         //Health Bar Generation
         GameObject healthBar = new GameObject(HealthBarName);
@@ -85,6 +91,22 @@ public class UnitUI : MonoBehaviour
         energyBar.transform.SetParent(_UIStatBars.transform);
 
         StatBars pathogenStatBars = new StatBars(healthBar, energyBar);
-        _pathogensStatBars.Add(newPathogen, pathogenStatBars);
+        _pathogensStatBars.Add(pathogen, pathogenStatBars);
+    }
+
+    public void DestroyStatBars(PlayerUnit pathogen)
+    {
+        foreach (KeyValuePair<PlayerUnit, StatBars> statBars in _pathogensStatBars)
+        {
+            if (statBars.Key == pathogen)
+            {
+                _pathogensStatBars.Remove(statBars.Key);
+
+                Destroy(statBars.Value.Health);
+                Destroy(statBars.Value.Energy);
+
+                break;
+            }
+        }
     }
 }
