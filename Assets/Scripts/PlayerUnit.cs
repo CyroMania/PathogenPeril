@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class PlayerUnit : Unit
 {
@@ -67,7 +67,7 @@ public abstract class PlayerUnit : Unit
     private void Start()
     {
         CurrentTile = TileMovement.CalculateCurrentTile(this);
-        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+        BeginTurn = true;
     }
 
     private void Update()
@@ -77,6 +77,7 @@ public abstract class PlayerUnit : Unit
             if (BeginTurn)
             {
                 ResetUnit();
+                TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
                 BeginTurn = false;
             }
 
@@ -108,6 +109,11 @@ public abstract class PlayerUnit : Unit
 
             if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
             {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
                 Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
                 if (!_selected)
