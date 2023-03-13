@@ -215,17 +215,4 @@ public abstract class PlayerUnit : Unit
             TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
         }
     }
-
-    /// <summary>
-    /// Retrieved from stackOverflow https://stackoverflow.com/questions/43754608/unity5-when-i-click-on-a-ui-button-the-gameobject-behind-it-gets-clicked
-    /// </summary>
-    /// <returns></returns>
-    private static bool IsPointerOverUIObject()
-    {
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-        return results.Count > 0;
-    }
 }
