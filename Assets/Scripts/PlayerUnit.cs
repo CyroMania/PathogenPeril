@@ -109,6 +109,11 @@ public abstract class PlayerUnit : Unit
 
             if (Input.GetMouseButtonDown(0) && ConfirmNoOtherUnitMoving())
             {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
                 Vector2 clickPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
                 if (!_selected)
