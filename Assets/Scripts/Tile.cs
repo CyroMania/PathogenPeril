@@ -7,11 +7,13 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField]
-    private bool _reachable = false;
+    private bool _goal = false;
+    [SerializeField]
+    private bool _current = false;
     [SerializeField]
     private bool _inhabited = false;
     [SerializeField]
-    private bool _current = false;
+    private bool _reachable = false;
     [SerializeField]
     private bool _visible = false;
 
@@ -39,6 +41,12 @@ public class Tile : MonoBehaviour
         set => _reachable = value;
     }
 
+    public bool Goal 
+    {
+        get => _goal;
+        set => _goal = value;
+    }
+
     public bool Visible
     {
         get => _visible;
@@ -47,11 +55,8 @@ public class Tile : MonoBehaviour
 
     public List<Tile> NeighbouringTiles
     {
-        get { return _neighbourTiles; }
-        private set
-        {
-            _neighbourTiles = value;
-        }
+        get => _neighbourTiles;
+        private set => _neighbourTiles = value;
     }
 
     void Start()
