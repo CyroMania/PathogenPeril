@@ -124,7 +124,7 @@ public abstract class Unit : MonoBehaviour
             }
         }
 
-        ResetAllTiles(Array.Empty<string>());
+        ResetAllTiles(new string[] { nameof(Tile.Goal) });
         EndCurrentTurn();
     }
 

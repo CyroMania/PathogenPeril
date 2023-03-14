@@ -46,7 +46,7 @@ public class Bacteria : PlayerUnit
             StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position + TileMovement.UnitLayer));
  
             MovementPoints = 0;
-            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
             CurrentTile.Current = true;
             UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
             return;

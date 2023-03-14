@@ -98,7 +98,13 @@ public abstract class PlayerUnit : Unit
                     {
                         _isMoving = false;
                         SetTargetTileToCurrentTile();
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current) });
+
+                        if (CurrentTile.Goal)
+                        {
+                            Debug.Log("You've Made It!");
+                        }
+
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                         FindAllVisibleTiles();
                     }
@@ -125,7 +131,7 @@ public abstract class PlayerUnit : Unit
                         Selected = true;
                         UI.DisplayButtons();
                         UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                         CurrentTile.Current = true;
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                     }
@@ -153,7 +159,7 @@ public abstract class PlayerUnit : Unit
                         Selected = false;
                         CurrentTile.Current = false;
                         UI.HideButtons();
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                     }
                 }
             }

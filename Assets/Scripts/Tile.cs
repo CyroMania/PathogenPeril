@@ -41,7 +41,7 @@ public class Tile : MonoBehaviour
         set => _reachable = value;
     }
 
-    public bool Goal 
+    public bool Goal
     {
         get => _goal;
         set => _goal = value;
@@ -96,7 +96,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void ResetTile(params string[] ignoredProperties)
+    public void ResetTile(string[] ignoredProperties)
     {
         List<PropertyInfo> properties = GetType().GetDeclaredProperties()
             .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
@@ -116,15 +116,14 @@ public class Tile : MonoBehaviour
 
         foreach (PropertyInfo property in properties)
         {
-            foreach (string ignoredProp in ignoredProperties)
+            if (ignoredProperties.Contains(property.Name))
             {
-                if (property.Name != ignoredProp)
-                {
-                    if (property.PropertyType == typeof(bool))
-                    {
-                        property.SetValue(this, false);
-                    }
-                }
+                continue;
+            }
+
+            if (property.PropertyType == typeof(bool))
+            {
+                property.SetValue(this, false);
             }
         }
     }
