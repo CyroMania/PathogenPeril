@@ -69,7 +69,11 @@ public class Tile : MonoBehaviour
     {
         if (Unit.IsPlayerTurn)
         {
-            if (_current)
+            if (_goal)
+            {
+                renderer.material.color = Color.red;
+            }
+            else if (_current)
             {
                 renderer.material.color = Color.blue;
             }
