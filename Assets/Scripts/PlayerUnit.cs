@@ -12,6 +12,8 @@ public abstract class PlayerUnit : Unit
 
     protected bool Clone { get; set; } = false;
 
+    public static int Succeeded { get; set; }
+
     public bool Selected
     {
         get => _selected;
@@ -101,7 +103,8 @@ public abstract class PlayerUnit : Unit
 
                         if (CurrentTile.Goal)
                         {
-                            Debug.Log("You've Made It!");
+                            Succeeded++;
+                            CheckEnoughUnitsHaveSucceeded();
                         }
 
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });

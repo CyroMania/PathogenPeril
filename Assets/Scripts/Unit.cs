@@ -137,7 +137,16 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    public static void EndCurrentTurn()
+    protected static void CheckEnoughUnitsHaveSucceeded()
+    {
+        if (PlayerUnit.Succeeded >= 3)
+        {
+            Debug.Log("Game Won");
+            UI.GameWon();
+        }
+    }
+
+public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
         Debug.Log("PlayerTurn: " + _isPlayerTurn);

@@ -41,14 +41,14 @@ public abstract class ImmuneCell : Unit
 
     private void Update()
     {
-        //if (CurrentTile.Visible)
-        //{
-        //    _renderer.enabled = true;
-        //}
-        //else
-        //{
-        //    _renderer.enabled = false;
-        //}
+        if (CurrentTile.Visible)
+        {
+            _renderer.enabled = true;
+        }
+        else
+        {
+            _renderer.enabled = false;
+        }
 
         if (_path.Count > 0)
         {
