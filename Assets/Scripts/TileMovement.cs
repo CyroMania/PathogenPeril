@@ -75,6 +75,9 @@ public static class TileMovement
         {
             path.Pop();
             unit.transform.position = tilePos;
+            unit.CurrentTile.Current = false;
+            unit.CurrentTile = tile;
+            unit.CurrentTile.Current = true;
         }
         else
         {

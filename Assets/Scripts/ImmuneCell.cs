@@ -56,7 +56,6 @@ public abstract class ImmuneCell : Unit
 
             if (_path.Count == 0)
             {
-                CurrentTile = TileMovement.CalculateCurrentTile(this);
                 _finishedTurn = true;
                 CheckLastImmuneCellFinished();
 
