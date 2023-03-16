@@ -1,13 +1,20 @@
+using System.IO;
+using System.Reflection;
 using TMPro;
+using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-    public Button DivideBtn;
-    public Button EndTurnBtn;
-    public TextMeshProUGUI WinTxt;
-    public TextMeshProUGUI LoseTxt;
+    [SerializeField]
+    private Button DivideBtn;
+    [SerializeField]
+    private Button EndTurnBtn;
+    [SerializeField]
+    private TextMeshProUGUI WinTxt;
+    [SerializeField]
+    private TextMeshProUGUI LoseTxt;
 
     private Animator _divideBtnAnim;
     private Animator _endTurnBtnAnim;
@@ -28,16 +35,33 @@ public class UI : MonoBehaviour
         Unit.EndCurrentTurn();
     }
 
-    internal void DisplayButtons()
+    internal void DisplayButton(string button, bool shouldDisplay)
     {
-        _divideBtnAnim.ResetTrigger("UnitDeselected");
-        _divideBtnAnim.SetTrigger("UnitSelected");
-    }
+        FieldInfo[] fields = GetType().GetDeclaredFields();
+        Animator anim = null;
 
-    internal void HideButtons()
-    {
-        _divideBtnAnim.ResetTrigger("UnitSelected");
-        _divideBtnAnim.SetTrigger("UnitDeselected");
+        foreach (FieldInfo field in fields)
+        {
+            if (field.GetType() == typeof(Animator))
+            {
+                if (field.Name == button)
+                {
+                    anim = field.GetValue(field) as Animator;
+                }
+            }
+        }
+
+        if (anim != null)
+        {
+            if (shouldDisplay)
+            {
+                anim.SetTrigger("Show");
+            }
+            else
+            {
+                anim.SetTrigger("Hide");
+            }
+        }
     }
 
     internal void CheckButtonsUsable(short currentEnergy, short maxEnergy)

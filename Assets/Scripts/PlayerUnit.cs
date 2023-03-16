@@ -132,7 +132,7 @@ public abstract class PlayerUnit : Unit
                     if (unitHitInfo.collider == _collider)
                     {
                         Selected = true;
-                        UI.DisplayButtons();
+                        UI.DisplayButton("_divideBtnAnim", true);
                         UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                         CurrentTile.Current = true;
@@ -161,7 +161,7 @@ public abstract class PlayerUnit : Unit
                     {
                         Selected = false;
                         CurrentTile.Current = false;
-                        UI.HideButtons();
+                        UI.DisplayButton("_divideBtnAnim", false);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                     }
                 }
