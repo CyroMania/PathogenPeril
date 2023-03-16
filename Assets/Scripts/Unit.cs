@@ -52,8 +52,8 @@ public abstract class Unit : MonoBehaviour
         get => _immuneCells;
     }
 
-    protected short MaxHitPoints 
-    { 
+    protected short MaxHitPoints
+    {
         get => _maxHitPoints;
     }
 
@@ -66,10 +66,10 @@ public abstract class Unit : MonoBehaviour
 
     public short MovementPoints { get; set; }
 
-    protected short Visibility 
-    { 
-        get => _visibilityRange; 
-        set => _visibilityRange = value; 
+    protected short Visibility
+    {
+        get => _visibilityRange;
+        set => _visibilityRange = value;
     }
 
     public Tile CurrentTile { get; set; }
@@ -132,7 +132,7 @@ public abstract class Unit : MonoBehaviour
     {
         if (PlayerUnits.Count == 0)
         {
-            Debug.Log("Game Over"); 
+            Debug.Log("Game Over");
             UI.GameLost();
         }
     }
@@ -146,13 +146,20 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-public static void EndCurrentTurn()
+    public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
         Debug.Log("PlayerTurn: " + _isPlayerTurn);
 
         if (_isPlayerTurn)
         {
+            UI.DisplayButton("_endTurnBtnAnim", true);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", true);
+            }
+
             foreach (PlayerUnit unit in PlayerUnits)
             {
                 unit.BeginTurn = true;
@@ -160,11 +167,31 @@ public static void EndCurrentTurn()
         }
         else
         {
+            UI.DisplayButton("_endTurnBtnAnim", false);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", false);
+            }
+
             foreach (ImmuneCell unit in ImmuneCells)
             {
                 unit.BeginTurn = true;
                 unit.FinishedTurn = false;
             }
         }
+    }
+
+    private static bool CheckAnyPlayerUnitSelected()
+    {
+        foreach (PlayerUnit unit in PlayerUnits)
+        {
+            if (unit.Selected)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

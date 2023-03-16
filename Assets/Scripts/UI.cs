@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using TMPro;
@@ -42,12 +43,10 @@ public class UI : MonoBehaviour
 
         foreach (FieldInfo field in fields)
         {
-            if (field.GetType() == typeof(Animator))
+            if (field.Name == button)
             {
-                if (field.Name == button)
-                {
-                    anim = field.GetValue(field) as Animator;
-                }
+                anim = (Animator)field.GetValue(this);
+                break;
             }
         }
 
@@ -55,17 +54,19 @@ public class UI : MonoBehaviour
         {
             if (shouldDisplay)
             {
+                anim.ResetTrigger("Hide");
                 anim.SetTrigger("Show");
             }
             else
             {
+                anim.ResetTrigger("Show");
                 anim.SetTrigger("Hide");
             }
         }
     }
 
     internal void CheckButtonsUsable(short currentEnergy, short maxEnergy)
-    { 
+    {
         if (currentEnergy == maxEnergy)
         {
             DivideBtn.interactable = true;
