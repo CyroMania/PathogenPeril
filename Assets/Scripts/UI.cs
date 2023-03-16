@@ -52,6 +52,8 @@ public class UI : MonoBehaviour
 
         if (anim != null)
         {
+            anim.gameObject.GetComponent<Button>().interactable = shouldDisplay;
+
             if (shouldDisplay)
             {
                 anim.ResetTrigger("Hide");
