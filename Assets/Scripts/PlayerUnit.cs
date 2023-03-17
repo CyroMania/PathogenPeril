@@ -33,6 +33,7 @@ public abstract class PlayerUnit : Unit
         get => _isMoving;
         set => _isMoving = value;
     }
+    public bool IsDead { get; internal set; }
 
     public void Kill()
     {
@@ -48,6 +49,13 @@ public abstract class PlayerUnit : Unit
 
         Destroy(gameObject);
         PlayerUnits.Remove(this);
+
+        if (Selected)
+        {
+            CurrentTile.Current = false;
+        }
+
+        CurrentTile = null;
         CheckNoPlayerUnitsAlive();
     }
 
@@ -74,7 +82,7 @@ public abstract class PlayerUnit : Unit
 
     private void Update()
     {
-        if (IsPlayerTurn)
+        if (IsPlayerTurn && !IsDead)
         {
             if (BeginTurn)
             {

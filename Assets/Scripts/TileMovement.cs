@@ -148,12 +148,15 @@ public static class TileMovement
 
             foreach (Tile t in tiles)
             {
-                float tempDistance = FindDistance(unit.CurrentTile, t);
-
-                if (tempDistance < closestDistance)
+                if (!t.Inhabited)
                 {
-                    closestTile = t;
-                    closestDistance = tempDistance;
+                    float tempDistance = FindDistance(unit.CurrentTile, t);
+
+                    if (tempDistance < closestDistance)
+                    {
+                        closestTile = t;
+                        closestDistance = tempDistance;
+                    }
                 }
             }
 

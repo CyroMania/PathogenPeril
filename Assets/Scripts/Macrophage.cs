@@ -22,6 +22,8 @@ public class Macrophage : ImmuneCell
 
     IEnumerator<Vector3> AnimatePhagocytosis(PlayerUnit pathogen)
     {
+        pathogen.IsDead = true;
+
         while (Vector3.Distance(transform.position, pathogen.transform.position) > 0.03)
         {
             Vector3 newPos = Vector3.MoveTowards(pathogen.transform.position, transform.position, TileMovement.Speed / 2 * Time.deltaTime);
