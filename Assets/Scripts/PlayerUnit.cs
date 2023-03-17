@@ -79,6 +79,7 @@ public abstract class PlayerUnit : Unit
             if (BeginTurn)
             {
                 ResetUnit();
+                UnitUI.UpdateStatBarValue(this, "Energy");
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
                 BeginTurn = false;
             }

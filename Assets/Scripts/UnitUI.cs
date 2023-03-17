@@ -30,7 +30,7 @@ public class UnitUI : MonoBehaviour
 
     [SerializeField]
     //This association is needed so we can relate each health bar in the scene to a specific unit
-    private Dictionary<PlayerUnit, StatBars> _pathogensStatBars;
+    private static Dictionary<PlayerUnit, StatBars> _pathogensStatBars;
 
     private void Start()
     {
@@ -58,16 +58,12 @@ public class UnitUI : MonoBehaviour
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
                 GameObject healthBar = pathogenStatBars.Value.Health;
-                
+
                 Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
-                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
-            }
-
-            if (pathogen.BeginTurn)
-            {
-                energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
+                //energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
+                UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
             }
         }
     }
@@ -108,5 +104,38 @@ public class UnitUI : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public static void UpdateStatBarValue(PlayerUnit unit, string statBarName)
+    {
+        StatBars unitStatBars = FindStatBars(unit);
+
+        if (statBarName == nameof(unitStatBars.Health))
+        {
+            if (unitStatBars.Health != null)
+            {
+                unitStatBars.Health.GetComponent<Slider>().value = (float)unit.HitPoints / (float)unit.MaxHitPoints;
+            }
+        }
+        if (statBarName == nameof(unitStatBars.Energy))
+        {
+            if (unitStatBars.Energy != null)
+            {
+                unitStatBars.Energy.GetComponent<Slider>().value = (float)unit.MovementPoints / (float)unit.MaxMovementPoints;
+            }
+        }
+    }
+
+    private static StatBars FindStatBars(PlayerUnit unit)
+    {
+        foreach (KeyValuePair<PlayerUnit, StatBars> pathogenStatBars in _pathogensStatBars)
+        {
+            if (pathogenStatBars.Key == unit)
+            {
+                return pathogenStatBars.Value;
+            }
+        }
+
+        return new StatBars();
     }
 }
