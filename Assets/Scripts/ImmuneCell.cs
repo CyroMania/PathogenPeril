@@ -41,14 +41,7 @@ public abstract class ImmuneCell : Unit
 
     private void Update()
     {
-        if (CurrentTile.Visible)
-        {
-            _renderer.enabled = true;
-        }
-        else
-        {
-            _renderer.enabled = false;
-        }
+        UpdateRenderer();
 
         if (!IsPlayerTurn && !_finishedTurn)
         {
@@ -307,5 +300,17 @@ public abstract class ImmuneCell : Unit
         }
 
         return false;
+    }
+
+    private void UpdateRenderer()
+    {
+        if (CurrentTile.Visible)
+        {
+            _renderer.enabled = true;
+        }
+        else
+        {
+            _renderer.enabled = false;
+        }
     }
 }

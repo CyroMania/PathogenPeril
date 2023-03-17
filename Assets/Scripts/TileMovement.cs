@@ -10,55 +10,55 @@ public static class TileMovement
 
     internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath, short remainingMovementPoints)
     {
-        tilePath.Push(targetTile);
-
-        float distance = FindDistance(currentTile, targetTile);
-        Tile closestTile = null;
-
-        foreach (Tile t in targetTile.NeighbouringTiles)
+        if (currentTile != targetTile)
         {
-            if (!t.Inhabited && t.Reachable)
-            {
-                float tempDistance = FindDistance(currentTile, t);
+            tilePath.Push(targetTile);
 
-                if (tempDistance < distance && !tilePath.Contains(t))
-                {
-                    distance = tempDistance;
-                    closestTile = t;
-                }
-            }
-        }
+            float distance = FindDistance(currentTile, targetTile);
+            Tile closestTile = null;
 
-        if (closestTile == null)
-        {
             foreach (Tile t in targetTile.NeighbouringTiles)
             {
-                if (t == currentTile)
-                {
-                    return tilePath;
-                }
-
-                if (!t.Inhabited)
+                if (!t.Inhabited && t.Reachable)
                 {
                     float tempDistance = FindDistance(currentTile, t);
 
-                    if (tempDistance <= remainingMovementPoints && !tilePath.Contains(t))
+                    if (tempDistance < distance && !tilePath.Contains(t))
                     {
                         distance = tempDistance;
                         closestTile = t;
                     }
                 }
             }
-        }
 
-        if (closestTile == null) 
-        {
-            Debug.Log("Path Finding Failed");
-            return tilePath;
-        }
+            if (closestTile == null)
+            {
+                foreach (Tile t in targetTile.NeighbouringTiles)
+                {
+                    if (t == currentTile)
+                    {
+                        return tilePath;
+                    }
 
-        if (closestTile != currentTile)
-        {
+                    if (!t.Inhabited)
+                    {
+                        float tempDistance = FindDistance(currentTile, t);
+
+                        if (tempDistance <= remainingMovementPoints && !tilePath.Contains(t))
+                        {
+                            distance = tempDistance;
+                            closestTile = t;
+                        }
+                    }
+                }
+            }
+
+            if (closestTile == null)
+            {
+                Debug.Log("Path Finding Failed");
+                return tilePath;
+            }
+
             FindTilePath(currentTile, closestTile, tilePath, --remainingMovementPoints);
         }
 
@@ -143,8 +143,8 @@ public static class TileMovement
     {
         if (tiles.Count > 0)
         {
-            Tile closestTile = tiles.First();
-            float closestDistance = FindDistance(unit.CurrentTile, closestTile);
+            Tile closestTile = null;
+            float closestDistance = float.MaxValue;
 
             foreach (Tile t in tiles)
             {
@@ -152,7 +152,7 @@ public static class TileMovement
                 {
                     float tempDistance = FindDistance(unit.CurrentTile, t);
 
-                    if (tempDistance < closestDistance)
+                    if (tempDistance < closestDistance || closestTile == null)
                     {
                         closestTile = t;
                         closestDistance = tempDistance;
