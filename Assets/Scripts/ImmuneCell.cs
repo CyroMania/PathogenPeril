@@ -252,7 +252,36 @@ public abstract class ImmuneCell : Unit
 
             RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", closestUnitTile.transform.position);
             _targetUnit = hitInfo.collider.GetComponent<PlayerUnit>();
+
+            //Check that this particular unit is the closest to this target unit
+            if (otherImmuneCells.Count < PlayerUnits.Count)
+            {
+                if (CheckClosestEnemyUnit(_targetUnit.transform.position, otherImmuneCells))
+                {
+                    foreach (ImmuneCell otherCell in otherImmuneCells)
+                    {
+                        if (otherCell.TargetUnit == _targetUnit)
+                        {
+                            otherCell.TargetUnit = null;
+                            otherCell.BeginTurn = true;
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private bool CheckClosestEnemyUnit(Vector2 targetPos, List<ImmuneCell> immuneCells)
+    {
+        foreach (ImmuneCell otherCell in immuneCells)
+        {
+            if (Vector2.Distance(transform.position, targetPos) > Vector2.Distance(otherCell.transform.position, targetPos))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private Stack<Tile> FindPathClosestToTargetUnit()
@@ -276,7 +305,7 @@ public abstract class ImmuneCell : Unit
     }
 
     private void CheckCanAttack()
-    {   
+    {
         if (_canAttack)
         {
             if (this is Macrophage)
