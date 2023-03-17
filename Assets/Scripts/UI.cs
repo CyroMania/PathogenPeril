@@ -94,6 +94,9 @@ public class UI : MonoBehaviour
 
     private void PauseGameplay()
     {
+        DivideBtn.enabled = false;
+        EndTurnBtn.enabled = false;
+        CameraMovement.GameIsPaused();
         Time.timeScale = 0;
     }
 }

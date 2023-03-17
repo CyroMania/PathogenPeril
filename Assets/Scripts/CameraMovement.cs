@@ -6,6 +6,7 @@ public class CameraMovement : MonoBehaviour
     private float _zoom = 5;
     private float _positionSpeedDampener = 12f;
     private float _zoomSpeedDampener = 3;
+    private static bool _gameplayPaused = false;
 
     public bool IsMoving
     {
@@ -20,47 +21,55 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        Vector2 movementVector = Vector2.zero;
-
-        //Geneneral Positional Movement
-
-        if (Input.GetKey(KeyCode.W))
+        if (!_gameplayPaused)
         {
-            movementVector += Vector2.up;
-        }
+            Vector2 movementVector = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.S))
-        {
-            movementVector += Vector2.down;
-        }
+            //Geneneral Positional Movement
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            movementVector += Vector2.left;
-        }
+            if (Input.GetKey(KeyCode.W))
+            {
+                movementVector += Vector2.up;
+            }
 
-        if (Input.GetKey(KeyCode.D))
-        {
-            movementVector += Vector2.right;
-        }
+            if (Input.GetKey(KeyCode.S))
+            {
+                movementVector += Vector2.down;
+            }
 
-        if (movementVector != Vector2.zero)
-        {
-            _isMoving = true;
-        }
-        else
-        {
-            _isMoving = false;
-        }
+            if (Input.GetKey(KeyCode.A))
+            {
+                movementVector += Vector2.left;
+            }
 
-        //Zoom Controls
+            if (Input.GetKey(KeyCode.D))
+            {
+                movementVector += Vector2.right;
+            }
 
-        if (Input.mouseScrollDelta != Vector2.zero)
-        {
-            _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
+            if (movementVector != Vector2.zero)
+            {
+                _isMoving = true;
+            }
+            else
+            {
+                _isMoving = false;
+            }
+
+            //Zoom Controls
+
+            if (Input.mouseScrollDelta != Vector2.zero)
+            {
+                _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
+            }
+
+            GetComponent<Camera>().orthographicSize = _zoom;
+            transform.Translate(movementVector / _positionSpeedDampener);
         }
+    }
 
-        GetComponent<Camera>().orthographicSize = _zoom;
-        transform.Translate(movementVector / _positionSpeedDampener);
+    public static void GameIsPaused()
+    {
+        _gameplayPaused = true;
     }
 }
