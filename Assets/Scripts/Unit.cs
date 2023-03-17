@@ -52,7 +52,7 @@ public abstract class Unit : MonoBehaviour
         get => _immuneCells;
     }
 
-    protected short MaxHitPoints
+    public short MaxHitPoints
     {
         get => _maxHitPoints;
     }
@@ -62,7 +62,7 @@ public abstract class Unit : MonoBehaviour
         get => _maxMovementPoints;
     }
 
-    protected short HitPoints { get; set; }
+    public short HitPoints { get; set; }
 
     public short MovementPoints { get; set; }
 

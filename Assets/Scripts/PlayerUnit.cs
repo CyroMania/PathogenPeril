@@ -81,6 +81,13 @@ public abstract class PlayerUnit : Unit
                 ResetUnit();
                 UnitUI.UpdateStatBarValue(this, "Energy");
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+
+                if (Selected)
+                {
+                    CurrentTile.Current = true;
+                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                }
+
                 BeginTurn = false;
             }
 

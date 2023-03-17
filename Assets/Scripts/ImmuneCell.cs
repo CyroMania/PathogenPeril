@@ -225,8 +225,8 @@ public abstract class ImmuneCell : Unit
     {
         if (PlayerUnits.Count > 0)
         {
-            Tile closestUnitTile = TileMovement.CalculateCurrentTile(PlayerUnits.First());
-            float closestDistance = TileMovement.FindDistance(CurrentTile, closestUnitTile);
+            Tile closestUnitTile = null;
+            float closestDistance = float.MaxValue;
 
             List<ImmuneCell> OtherImmuneCells = ImmuneCells.Where(cell => cell != this).ToList();
 
@@ -240,6 +240,7 @@ public abstract class ImmuneCell : Unit
                     {
                         if (otherCell._targetUnit != null && otherCell._targetUnit == unit)
                         {
+                            Debug.Log(name + ": This Unit already Is Already Targeted!");
                             skipUnit = true;
                         }
                     }
@@ -253,7 +254,7 @@ public abstract class ImmuneCell : Unit
                 Tile currentUnitTile = TileMovement.CalculateCurrentTile(unit);
                 float currentDistance = TileMovement.FindDistance(CurrentTile, currentUnitTile);
 
-                if (currentDistance < closestDistance)
+                if (currentDistance < closestDistance || closestUnitTile == null)
                 {
                     closestDistance = currentDistance;
                     closestUnitTile = currentUnitTile;
