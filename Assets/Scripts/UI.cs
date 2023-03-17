@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Reflection;
 using TMPro;
 using Unity.VisualScripting.FullSerializer.Internal;
@@ -22,9 +20,10 @@ public class UI : MonoBehaviour
     private Animator _WinTxtAnim;
     private Animator _LoseTxtAnim;
 
-
     private void Start()
     {
+        WinTxt.gameObject.SetActive(false);
+        LoseTxt.gameObject.SetActive(false);
         _divideBtnAnim = DivideBtn.GetComponent<Animator>();
         _endTurnBtnAnim = EndTurnBtn.GetComponent<Animator>();
         _WinTxtAnim = WinTxt.GetComponent<Animator>();
@@ -82,12 +81,14 @@ public class UI : MonoBehaviour
     internal void GameWon()
     {
         PauseGameplay();
+        WinTxt.gameObject.SetActive(true);
         _WinTxtAnim.SetTrigger("GameWon");
     }
 
     internal void GameLost()
     {
         PauseGameplay();
+        LoseTxt.gameObject.SetActive(true);
         _LoseTxtAnim.SetTrigger("GameLost");
     }
 
