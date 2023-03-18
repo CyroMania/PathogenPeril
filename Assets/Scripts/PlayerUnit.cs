@@ -122,6 +122,7 @@ public abstract class PlayerUnit : Unit
                         if (CurrentTile.Goal)
                         {
                             Succeeded++;
+                            Kill();
                             CheckEnoughUnitsHaveSucceeded();
                         }
 
