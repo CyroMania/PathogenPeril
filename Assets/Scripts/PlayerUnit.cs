@@ -93,6 +93,7 @@ public abstract class PlayerUnit : Unit
                 if (Selected)
                 {
                     CurrentTile.Current = true;
+                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 

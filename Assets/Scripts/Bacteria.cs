@@ -49,6 +49,7 @@ public class Bacteria : PlayerUnit
             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
             CurrentTile.Current = true;
             UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+            UnitUI.UpdateStatBarValue(this, "Energy");
             return;
         }
     }
@@ -64,6 +65,8 @@ public class Bacteria : PlayerUnit
 
         clone.transform.position = destination;
         clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
+        UnitUI.UpdateStatBarValue(clone, "Energy");
+        UnitUI.UpdateStatBarPositions(clone, Camera.main.WorldToScreenPoint(destination));
         TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
     }
 }
