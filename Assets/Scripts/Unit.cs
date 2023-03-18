@@ -137,15 +137,6 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    protected static void CheckEnoughUnitsHaveSucceeded()
-    {
-        if (PlayerUnit.Succeeded >= 3)
-        {
-            Debug.Log("Game Won");
-            UI.GameWon();
-        }
-    }
-
     public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
