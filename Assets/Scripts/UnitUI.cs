@@ -11,8 +11,8 @@ public class UnitUI : MonoBehaviour
     private const string HealthBarName = "HealthBar";
     private const string EnergyBarName = "EnergyBar";
 
-    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -50);
-    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -70);
+    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -30);
+    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -45);
     private CameraMovement _cameraMove;
     private GameObject _UIStatBars;
 
@@ -54,15 +54,20 @@ public class UnitUI : MonoBehaviour
         {
             PlayerUnit pathogen = pathogenStatBars.Key;
             GameObject energyBar = pathogenStatBars.Value.Energy;
+            GameObject healthBar = pathogenStatBars.Value.Health;
+            Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
-                GameObject healthBar = pathogenStatBars.Value.Health;
-
-                Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
                 UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
+            }
+
+            if (_cameraMove.IsZooming) 
+            {
+                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+                energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
             }
         }
     }
