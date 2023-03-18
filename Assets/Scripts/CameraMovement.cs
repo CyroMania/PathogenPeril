@@ -9,6 +9,9 @@ public class CameraMovement : MonoBehaviour
     private float _zoomSpeedDampener = 3;
     private static bool _gameplayPaused = false;
 
+    private const float _zoomMax = 6.5f;
+    private const float _zoomMin = 3.0f;
+
     public bool IsMoving
     {
         get => _isMoving;
@@ -69,7 +72,21 @@ public class CameraMovement : MonoBehaviour
                 //We must subtract for the zoom because the Y-Value is inverted for scrolling in our case
                 //When we zoom in, we are shrinking the camera's size but this results in a greater zoom for example
                 _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
-                _isZooming = true;
+
+                if (_zoom > _zoomMax)
+                {
+                    _zoom = _zoomMax;
+                    _isZooming = false;
+                }
+                else if (_zoom < _zoomMin)
+                {
+                    _zoom = _zoomMin;
+                    _isZooming = false;
+                }
+                else
+                {
+                    _isZooming = true;
+                }
             }
             else
             {

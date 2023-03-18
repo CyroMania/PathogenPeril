@@ -11,8 +11,8 @@ public class UnitUI : MonoBehaviour
     private const string HealthBarName = "HealthBar";
     private const string EnergyBarName = "EnergyBar";
 
-    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -50);
-    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -70);
+    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -30);
+    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -45);
     private CameraMovement _cameraMove;
     private GameObject _UIStatBars;
 
