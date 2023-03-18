@@ -78,7 +78,7 @@ public abstract class ImmuneCell : Unit
                 else
                 {
                     List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
-                    Tile targetTile = selectableTiles.ToArray()[Random.Range(0, selectableTiles.Count)];
+                    Tile targetTile = selectableTiles[Random.Range(0, selectableTiles.Count)];
                     _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
                 }
 
