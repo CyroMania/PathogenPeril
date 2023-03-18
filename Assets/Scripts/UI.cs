@@ -7,32 +7,50 @@ using UnityEngine.UI;
 public class UI : MonoBehaviour
 {
     [SerializeField]
-    private Button DivideBtn;
+    private Button _divideBtn;
     [SerializeField]
-    private Button EndTurnBtn;
+    private Button _endTurnBtn;
     [SerializeField]
-    private TextMeshProUGUI WinTxt;
+    private TextMeshProUGUI _winTxt;
     [SerializeField]
-    private TextMeshProUGUI LoseTxt;
+    private TextMeshProUGUI _loseTxt;
+    [SerializeField]
+    private TextMeshProUGUI _scoreTxt;
 
     private Animator _divideBtnAnim;
     private Animator _endTurnBtnAnim;
-    private Animator _WinTxtAnim;
-    private Animator _LoseTxtAnim;
+    private Animator _winTxtAnim;
+    private Animator _loseTxtAnim;
+
+    private const int RequiredSucceededUnits = 3;
+
+    public static int SucceededUnits { get; set; } = 0;
 
     private void Start()
     {
-        WinTxt.gameObject.SetActive(false);
-        LoseTxt.gameObject.SetActive(false);
-        _divideBtnAnim = DivideBtn.GetComponent<Animator>();
-        _endTurnBtnAnim = EndTurnBtn.GetComponent<Animator>();
-        _WinTxtAnim = WinTxt.GetComponent<Animator>();
-        _LoseTxtAnim = LoseTxt.GetComponent<Animator>();
+        _winTxt.gameObject.SetActive(false);
+        _loseTxt.gameObject.SetActive(false);
+        _divideBtnAnim = _divideBtn.GetComponent<Animator>();
+        _endTurnBtnAnim = _endTurnBtn.GetComponent<Animator>();
+        _winTxtAnim = _winTxt.GetComponent<Animator>();
+        _loseTxtAnim = _loseTxt.GetComponent<Animator>();
+        _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
     }
 
     public void NewTurn()
     {
         Unit.EndCurrentTurn();
+    }
+
+    public void UpdateScoreText(int increment)
+    {
+        SucceededUnits += increment;
+        _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
+
+        if (SucceededUnits == RequiredSucceededUnits)
+        {
+            GameWon();
+        }
     }
 
     internal void DisplayButton(string button, bool shouldDisplay)
@@ -70,32 +88,32 @@ public class UI : MonoBehaviour
     {
         if (currentEnergy == maxEnergy)
         {
-            DivideBtn.interactable = true;
+            _divideBtn.interactable = true;
         }
         else
         {
-            DivideBtn.interactable = false;
+            _divideBtn.interactable = false;
         }
     }
 
     internal void GameWon()
     {
         PauseGameplay();
-        WinTxt.gameObject.SetActive(true);
-        _WinTxtAnim.SetTrigger("GameWon");
+        _winTxt.gameObject.SetActive(true);
+        _winTxtAnim.SetTrigger("GameWon");
     }
 
     internal void GameLost()
     {
         PauseGameplay();
-        LoseTxt.gameObject.SetActive(true);
-        _LoseTxtAnim.SetTrigger("GameLost");
+        _loseTxt.gameObject.SetActive(true);
+        _loseTxtAnim.SetTrigger("GameLost");
     }
 
     private void PauseGameplay()
     {
-        DivideBtn.enabled = false;
-        EndTurnBtn.enabled = false;
+        _divideBtn.enabled = false;
+        _endTurnBtn.enabled = false;
         CameraMovement.GameIsPaused();
         Time.timeScale = 0;
     }

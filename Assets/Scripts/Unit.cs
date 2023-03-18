@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -137,15 +136,6 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    protected static void CheckEnoughUnitsHaveSucceeded()
-    {
-        if (PlayerUnit.Succeeded >= 3)
-        {
-            Debug.Log("Game Won");
-            UI.GameWon();
-        }
-    }
-
     public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
@@ -174,10 +164,63 @@ public abstract class Unit : MonoBehaviour
                 UI.DisplayButton("_divideBtnAnim", false);
             }
 
+            SpawnNewEnemyUnit();
+
             foreach (ImmuneCell unit in ImmuneCells)
             {
                 unit.BeginTurn = true;
                 unit.FinishedTurn = false;
+            }
+        }
+    }
+
+    private static void SpawnNewEnemyUnit()
+    {
+        //We use a range of 0,1 to make a new random unit spawn only half the time approximately
+        int spawn = Random.Range(0, 2);
+        Debug.Log(spawn);
+
+        if (spawn == 1)
+        {
+            List<Tile> AllTiles = FindObjectsOfType<Tile>().ToList();
+            List<Tile> AcceptableTiles = new List<Tile>();
+
+            foreach (Tile t in AllTiles)
+            {
+                bool skipTile = false;
+
+                foreach (ImmuneCell cells in ImmuneCells)
+                {
+                    if (cells.CurrentTile == t)
+                    {
+                        skipTile = true;
+                        break;
+                    }
+                }
+
+                if (skipTile)
+                {
+                    continue;
+                }
+
+                if (t.Visible)
+                {
+                    continue;
+                }
+
+                if (t.Goal)
+                {
+                    continue;
+                }
+
+                AcceptableTiles.Add(t);
+            }
+
+            if (AcceptableTiles.Count > 0)
+            {
+                Tile spawnTile = AcceptableTiles[Random.Range(0, AcceptableTiles.Count)];
+                Macrophage macrophage = Instantiate<Macrophage>(FindObjectOfType<Macrophage>(), spawnTile.transform.position, Quaternion.identity);
+                macrophage.GetComponent<Macrophage>().CurrentTile = spawnTile;
             }
         }
     }
