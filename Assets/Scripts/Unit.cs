@@ -52,8 +52,8 @@ public abstract class Unit : MonoBehaviour
         get => _immuneCells;
     }
 
-    protected short MaxHitPoints 
-    { 
+    public short MaxHitPoints
+    {
         get => _maxHitPoints;
     }
 
@@ -62,14 +62,14 @@ public abstract class Unit : MonoBehaviour
         get => _maxMovementPoints;
     }
 
-    protected short HitPoints { get; set; }
+    public short HitPoints { get; set; }
 
     public short MovementPoints { get; set; }
 
-    protected short Visibility 
-    { 
-        get => _visibilityRange; 
-        set => _visibilityRange = value; 
+    protected short Visibility
+    {
+        get => _visibilityRange;
+        set => _visibilityRange = value;
     }
 
     public Tile CurrentTile { get; set; }
@@ -124,7 +124,7 @@ public abstract class Unit : MonoBehaviour
             }
         }
 
-        ResetAllTiles(Array.Empty<string>());
+        ResetAllTiles(new string[] { nameof(Tile.Goal) });
         EndCurrentTurn();
     }
 
@@ -132,8 +132,17 @@ public abstract class Unit : MonoBehaviour
     {
         if (PlayerUnits.Count == 0)
         {
-            Debug.Log("Game Over"); 
+            Debug.Log("Game Over");
             UI.GameLost();
+        }
+    }
+
+    protected static void CheckEnoughUnitsHaveSucceeded()
+    {
+        if (PlayerUnit.Succeeded >= 3)
+        {
+            Debug.Log("Game Won");
+            UI.GameWon();
         }
     }
 
@@ -144,6 +153,13 @@ public abstract class Unit : MonoBehaviour
 
         if (_isPlayerTurn)
         {
+            UI.DisplayButton("_endTurnBtnAnim", true);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", true);
+            }
+
             foreach (PlayerUnit unit in PlayerUnits)
             {
                 unit.BeginTurn = true;
@@ -151,11 +167,31 @@ public abstract class Unit : MonoBehaviour
         }
         else
         {
+            UI.DisplayButton("_endTurnBtnAnim", false);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", false);
+            }
+
             foreach (ImmuneCell unit in ImmuneCells)
             {
                 unit.BeginTurn = true;
                 unit.FinishedTurn = false;
             }
         }
+    }
+
+    private static bool CheckAnyPlayerUnitSelected()
+    {
+        foreach (PlayerUnit unit in PlayerUnits)
+        {
+            if (unit.Selected)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -7,11 +7,13 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField]
-    private bool _reachable = false;
+    private bool _goal = false;
+    [SerializeField]
+    private bool _current = false;
     [SerializeField]
     private bool _inhabited = false;
     [SerializeField]
-    private bool _current = false;
+    private bool _reachable = false;
     [SerializeField]
     private bool _visible = false;
 
@@ -39,6 +41,12 @@ public class Tile : MonoBehaviour
         set => _reachable = value;
     }
 
+    public bool Goal
+    {
+        get => _goal;
+        set => _goal = value;
+    }
+
     public bool Visible
     {
         get => _visible;
@@ -47,11 +55,8 @@ public class Tile : MonoBehaviour
 
     public List<Tile> NeighbouringTiles
     {
-        get { return _neighbourTiles; }
-        private set
-        {
-            _neighbourTiles = value;
-        }
+        get => _neighbourTiles;
+        private set => _neighbourTiles = value;
     }
 
     void Start()
@@ -64,7 +69,11 @@ public class Tile : MonoBehaviour
     {
         if (Unit.IsPlayerTurn)
         {
-            if (_current)
+            if (_goal)
+            {
+                renderer.material.color = Color.red;
+            }
+            else if (_current)
             {
                 renderer.material.color = Color.blue;
             }
@@ -87,7 +96,7 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void ResetTile(params string[] ignoredProperties)
+    public void ResetTile(string[] ignoredProperties)
     {
         List<PropertyInfo> properties = GetType().GetDeclaredProperties()
             .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
@@ -107,15 +116,14 @@ public class Tile : MonoBehaviour
 
         foreach (PropertyInfo property in properties)
         {
-            foreach (string ignoredProp in ignoredProperties)
+            if (ignoredProperties.Contains(property.Name))
             {
-                if (property.Name != ignoredProp)
-                {
-                    if (property.PropertyType == typeof(bool))
-                    {
-                        property.SetValue(this, false);
-                    }
-                }
+                continue;
+            }
+
+            if (property.PropertyType == typeof(bool))
+            {
+                property.SetValue(this, false);
             }
         }
     }

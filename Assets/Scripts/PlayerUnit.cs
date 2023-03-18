@@ -12,6 +12,8 @@ public abstract class PlayerUnit : Unit
 
     protected bool Clone { get; set; } = false;
 
+    public static int Succeeded { get; set; }
+
     public bool Selected
     {
         get => _selected;
@@ -31,6 +33,7 @@ public abstract class PlayerUnit : Unit
         get => _isMoving;
         set => _isMoving = value;
     }
+    public bool IsDead { get; internal set; }
 
     public void Kill()
     {
@@ -46,6 +49,13 @@ public abstract class PlayerUnit : Unit
 
         Destroy(gameObject);
         PlayerUnits.Remove(this);
+
+        if (Selected)
+        {
+            CurrentTile.Current = false;
+        }
+
+        CurrentTile = null;
         CheckNoPlayerUnitsAlive();
     }
 
@@ -72,12 +82,22 @@ public abstract class PlayerUnit : Unit
 
     private void Update()
     {
-        if (IsPlayerTurn)
+        if (IsPlayerTurn && !IsDead)
         {
             if (BeginTurn)
             {
                 ResetUnit();
+                UnitUI.UpdateStatBarValue(this, "Energy");
+                UnitUI.UpdateStatBarPositions(this, _mainCamera.WorldToScreenPoint(gameObject.transform.position));
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+
+                if (Selected)
+                {
+                    CurrentTile.Current = true;
+                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                    FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                }
+
                 BeginTurn = false;
             }
 
@@ -98,7 +118,14 @@ public abstract class PlayerUnit : Unit
                     {
                         _isMoving = false;
                         SetTargetTileToCurrentTile();
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current) });
+
+                        if (CurrentTile.Goal)
+                        {
+                            Succeeded++;
+                            CheckEnoughUnitsHaveSucceeded();
+                        }
+
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                         FindAllVisibleTiles();
                     }
@@ -123,9 +150,9 @@ public abstract class PlayerUnit : Unit
                     if (unitHitInfo.collider == _collider)
                     {
                         Selected = true;
-                        UI.DisplayButtons();
+                        UI.DisplayButton("_divideBtnAnim", true);
                         UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                         CurrentTile.Current = true;
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                     }
@@ -152,8 +179,8 @@ public abstract class PlayerUnit : Unit
                     {
                         Selected = false;
                         CurrentTile.Current = false;
-                        UI.HideButtons();
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible) });
+                        UI.DisplayButton("_divideBtnAnim", false);
+                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                     }
                 }
             }
