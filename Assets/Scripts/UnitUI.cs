@@ -11,10 +11,10 @@ public class UnitUI : MonoBehaviour
     private const string HealthBarName = "HealthBar";
     private const string EnergyBarName = "EnergyBar";
 
+    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -50);
+    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -70);
     private CameraMovement _cameraMove;
     private GameObject _UIStatBars;
-    private readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -50);
-    private readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -70);
 
     struct StatBars
     {
@@ -62,7 +62,6 @@ public class UnitUI : MonoBehaviour
                 Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
-                //energyBar.GetComponent<Slider>().value = (float)pathogen.MovementPoints / (float)pathogen.MaxMovementPoints;
                 UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
             }
         }
@@ -117,7 +116,7 @@ public class UnitUI : MonoBehaviour
                 unitStatBars.Health.GetComponent<Slider>().value = (float)unit.HitPoints / (float)unit.MaxHitPoints;
             }
         }
-        if (statBarName == nameof(unitStatBars.Energy))
+        else if (statBarName == nameof(unitStatBars.Energy))
         {
             if (unitStatBars.Energy != null)
             {
@@ -137,5 +136,13 @@ public class UnitUI : MonoBehaviour
         }
 
         return new StatBars();
+    }
+
+    public static void UpdateStatBarPositions(PlayerUnit pathogen, Vector2 screenPos)
+    {
+        StatBars unitStatBars = FindStatBars(pathogen);
+
+        unitStatBars.Health.GetComponent<RectTransform>().position = screenPos + _healthBarTranslationOffset;
+        unitStatBars.Energy.GetComponent<RectTransform>().position = screenPos + _energyBarTranslationOffset;
     }
 }

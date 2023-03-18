@@ -88,6 +88,7 @@ public abstract class PlayerUnit : Unit
             {
                 ResetUnit();
                 UnitUI.UpdateStatBarValue(this, "Energy");
+                UnitUI.UpdateStatBarPositions(this, _mainCamera.WorldToScreenPoint(gameObject.transform.position));
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
 
                 if (Selected)
