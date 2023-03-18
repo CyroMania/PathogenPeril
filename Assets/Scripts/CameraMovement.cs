@@ -3,6 +3,7 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
     private bool _isMoving;
+    private bool _isZooming;
     private float _zoom = 5;
     private float _positionSpeedDampener = 12f;
     private float _zoomSpeedDampener = 3;
@@ -11,7 +12,11 @@ public class CameraMovement : MonoBehaviour
     public bool IsMoving
     {
         get => _isMoving;
-        set => _isMoving = value;
+    }
+
+    public bool IsZooming
+    {
+        get => _isZooming;
     }
 
     private void Start()
@@ -47,6 +52,7 @@ public class CameraMovement : MonoBehaviour
                 movementVector += Vector2.right;
             }
 
+            //We check this to confirm its ready to Update UI Elements
             if (movementVector != Vector2.zero)
             {
                 _isMoving = true;
@@ -60,7 +66,14 @@ public class CameraMovement : MonoBehaviour
 
             if (Input.mouseScrollDelta != Vector2.zero)
             {
+                //We must subtract for the zoom because the Y-Value is inverted for scrolling in our case
+                //When we zoom in, we are shrinking the camera's size but this results in a greater zoom for example
                 _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
+                _isZooming = true;
+            }
+            else
+            {
+                _isZooming = false;
             }
 
             GetComponent<Camera>().orthographicSize = _zoom;

@@ -54,15 +54,20 @@ public class UnitUI : MonoBehaviour
         {
             PlayerUnit pathogen = pathogenStatBars.Key;
             GameObject energyBar = pathogenStatBars.Value.Energy;
+            GameObject healthBar = pathogenStatBars.Value.Health;
+            Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
-                GameObject healthBar = pathogenStatBars.Value.Health;
-
-                Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
                 UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
+            }
+
+            if (_cameraMove.IsZooming) 
+            {
+                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+                energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
             }
         }
     }
