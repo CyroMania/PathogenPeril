@@ -41,7 +41,7 @@ public abstract class ImmuneCell : Unit
 
     private void Update()
     {
-        UpdateRenderer();
+        //UpdateRenderer();
 
         if (!IsPlayerTurn && !_finishedTurn)
         {
@@ -57,17 +57,20 @@ public abstract class ImmuneCell : Unit
                 {
                     if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile, out bool collided))
                     {
+                        if (CheckClosestEnemyUnit(_targetUnit.CurrentTile.transform.position, ImmuneCells.Where(cell => cell != this).ToList()))
+                        {
+                            Debug.Log(gameObject.name + " I can attack");
+                            _canAttack = true;
+                        }
                         if (collided)
                         {
                             Debug.Log(gameObject.name + ": Tile is Taken!");
-
-                            Tile closestNeighbourTile = TileMovement.FindClosestTileInCollection(this, _targetUnit.CurrentTile.NeighbouringTiles);
-                            _path = TileMovement.FindTilePath(CurrentTile, closestNeighbourTile, new Stack<Tile>(), MovementPoints);
+                            _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
                         }
                         else
                         {
+                            Debug.Log(gameObject.name + ": No collision happened");
                             _path = FindTargetUnitNearestNeighbourTile();
-                            _canAttack = true;
                         }
                     }
                     else
@@ -94,8 +97,9 @@ public abstract class ImmuneCell : Unit
                 else if (_path.Count == 0)
                 {
                     CheckCanAttack();
-
                     _finishedTurn = true;
+                    _targetUnit = null;
+                    TargetTile = null;
                     CheckLastImmuneCellFinished();
                 }
             }
@@ -112,16 +116,16 @@ public abstract class ImmuneCell : Unit
 
         List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
 
-        Tile closestTile = _targetUnit.CurrentTile.NeighbouringTiles.FirstOrDefault();
-        float closestDistance = TileMovement.FindDistance(CurrentTile, closestTile);
+        Tile closestTile = null;
+        float closestDistance = float.MaxValue;
 
         foreach (Tile neighbourTile in _targetUnit.CurrentTile.NeighbouringTiles)
         {
-            if (selectableTiles.Contains(neighbourTile))
+            if (selectableTiles.Contains(neighbourTile) && !neighbourTile.Inhabited)
             {
                 float tempDistance = TileMovement.FindDistance(CurrentTile, neighbourTile);
 
-                if (tempDistance < closestDistance)
+                if (tempDistance < closestDistance || closestTile == null)
                 {
                     closestTile = neighbourTile;
                     closestDistance = tempDistance;
@@ -158,7 +162,7 @@ public abstract class ImmuneCell : Unit
     }
 
     private bool CheckUnitReachable(Tile currentTile, Tile targetUnitTile, out bool collided)
-    {
+    {  
         collided = false;
 
         if (TileMovement.FindDistance(CurrentTile, targetUnitTile) > MovementPoints)
@@ -182,7 +186,7 @@ public abstract class ImmuneCell : Unit
             }
         }
 
-        if (count > 1)
+        if (count >= 1)
         {
             List<ImmuneCell> otherImmuneCells = ImmuneCells.Where(cell => cell != this).ToList();
 
@@ -190,8 +194,9 @@ public abstract class ImmuneCell : Unit
             {
                 foreach (ImmuneCell cell in otherImmuneCells)
                 {
-                    if (cell._targetUnit != null && cell._targetUnit.CurrentTile == targetUnitTile)
+                    if (cell.TargetUnit != null && cell.TargetUnit.CurrentTile == targetUnitTile)
                     {
+                        AssignRandomTargetTileFromCollection(this, targetUnitTile.NeighbouringTiles);
                         collided = true;
                     }
                 }
@@ -215,6 +220,42 @@ public abstract class ImmuneCell : Unit
         }
     }
 
+    //This is to give the unit arriving here a new target tile so they don't end up with the same current tile
+    private void AssignRandomTargetTileFromCollection(ImmuneCell cell, List<Tile> tiles)
+    {
+        List<Tile> exploredTiles = new List<Tile>() { cell.TargetTile };
+        cell.TargetTile = GetAvailableTile(tiles, exploredTiles);
+        Debug.Log("Assigned new tile to unit: " + cell.TargetTile.name);
+    }
+
+    //this recursively calls itself until an available tile is found
+    private Tile GetAvailableTile(List<Tile> tiles, List<Tile> exploredTiles)
+    {
+        List<Tile> availableTiles = new List<Tile>();
+
+        foreach (Tile t in tiles)
+        {
+            if (!t.Inhabited && !exploredTiles.Contains(t))
+            {
+                availableTiles.Add(t);
+            }
+        }
+
+        if (availableTiles.Count > 0)
+        {
+            return tiles[Random.Range(0, tiles.Count)];
+        }
+        else
+        {
+            Tile randomTile = tiles[Random.Range(0, tiles.Count)];
+            exploredTiles.Add(randomTile);
+            GetAvailableTile(randomTile.NeighbouringTiles, exploredTiles);
+        }
+
+        Debug.Log("We should never hit this!");
+        return null;
+    }
+
     /// <summary>
     /// Sets the nearest available player unit as the target Unit
     /// </summary>
@@ -229,17 +270,17 @@ public abstract class ImmuneCell : Unit
 
             foreach (PlayerUnit unit in PlayerUnits)
             {
-                if (otherImmuneCells.Count < PlayerUnits.Count)
+                //make units target different units for simplicity if there are more playerUnits
+                if (ImmuneCells.Count <= PlayerUnits.Count)
                 {
                     //We confirm that no other Unit has already targeted this Player Unit before targeting them ourselves
-                    bool skipUnit = CheckUnitAlreadyATarget(otherImmuneCells, unit);
-
-                    if (skipUnit)
+                    if (CheckUnitAlreadyATarget(otherImmuneCells, unit))
                     {
                         continue;
                     }
                 }
 
+                //All units otherwise target their nearest unit
                 Tile currentUnitTile = TileMovement.CalculateCurrentTile(unit);
                 float currentDistance = TileMovement.FindDistance(CurrentTile, currentUnitTile);
 
@@ -252,22 +293,6 @@ public abstract class ImmuneCell : Unit
 
             RaycastHit2D hitInfo = PhysicsHelper.GenerateRaycast("Unit", closestUnitTile.transform.position);
             _targetUnit = hitInfo.collider.GetComponent<PlayerUnit>();
-
-            //Check that this particular unit is the closest to this target unit
-            if (otherImmuneCells.Count < PlayerUnits.Count)
-            {
-                if (CheckClosestEnemyUnit(_targetUnit.transform.position, otherImmuneCells))
-                {
-                    foreach (ImmuneCell otherCell in otherImmuneCells)
-                    {
-                        if (otherCell.TargetUnit == _targetUnit)
-                        {
-                            otherCell.TargetUnit = null;
-                            otherCell.BeginTurn = true;
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -280,7 +305,7 @@ public abstract class ImmuneCell : Unit
                 return false;
             }
         }
-
+        
         return true;
     }
 
