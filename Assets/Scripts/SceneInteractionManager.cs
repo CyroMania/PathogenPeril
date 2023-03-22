@@ -8,6 +8,11 @@ public class SceneInteractionManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    //This is needed for the retry button functionalitys
+    public static void ReloadCurrentLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 
     public static void LoadMainMenu()
     {

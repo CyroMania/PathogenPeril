@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 340083356}
   - component: {fileID: 340083355}
   - component: {fileID: 340083360}
+  - component: {fileID: 340083361}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -544,6 +545,18 @@ MonoBehaviour:
   _winTxt: {fileID: 218277148}
   _loseTxt: {fileID: 1436529161}
   _scoreTxt: {fileID: 370111176}
+--- !u!114 &340083361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340083354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80b9889cd01a9b1499b0bc8de4541a1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &370111174
 GameObject:
   m_ObjectHideFlags: 0
@@ -1264,7 +1277,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 931772015}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 340083361}
+        m_TargetAssemblyTypeName: SceneInteractionManager, Assembly-CSharp
+        m_MethodName: LoadMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &931772015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1386,7 +1411,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1059778810}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 340083360}
+        m_TargetAssemblyTypeName: UI, Assembly-CSharp
+        m_MethodName: PauseGameplay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1059778810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2263,7 +2300,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1605020538}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 340083361}
+        m_TargetAssemblyTypeName: SceneInteractionManager, Assembly-CSharp
+        m_MethodName: ReloadCurrentLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1605020538
 MonoBehaviour:
   m_ObjectHideFlags: 0

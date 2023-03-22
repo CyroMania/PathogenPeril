@@ -120,7 +120,7 @@ public class UI : MonoBehaviour
         _loseTxtAnim.SetTrigger("GameLost");
     }
 
-    private void PauseGameplay()
+    public void PauseGameplay()
     {
         GameplayPaused = !GameplayPaused;
 
