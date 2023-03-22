@@ -7,7 +7,6 @@ public class CameraMovement : MonoBehaviour
     private float _zoom = 5;
     private float _positionSpeedDampener = 12f;
     private float _zoomSpeedDampener = 3;
-    private static bool _gameplayPaused = false;
 
     private const float _zoomMax = 6.5f;
     private const float _zoomMin = 3.0f;
@@ -29,7 +28,7 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameplayPaused)
+        if (!UI.GameplayPaused)
         {
             Vector2 movementVector = Vector2.zero;
 
@@ -96,10 +95,5 @@ public class CameraMovement : MonoBehaviour
             GetComponent<Camera>().orthographicSize = _zoom;
             transform.Translate(movementVector / _positionSpeedDampener);
         }
-    }
-
-    public static void GameIsPaused()
-    {
-        _gameplayPaused = true;
     }
 }

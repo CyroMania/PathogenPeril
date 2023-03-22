@@ -26,6 +26,8 @@ public class UI : MonoBehaviour
 
     public static int SucceededUnits { get; set; } = 0;
 
+    public static bool GameplayPaused { get; private set; } = false;
+
     private void Start()
     {
         _winTxt.gameObject.SetActive(false);
@@ -35,6 +37,14 @@ public class UI : MonoBehaviour
         _winTxtAnim = _winTxt.GetComponent<Animator>();
         _loseTxtAnim = _loseTxt.GetComponent<Animator>();
         _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseGameplay();
+        }
     }
 
     public void NewTurn()
@@ -112,9 +122,19 @@ public class UI : MonoBehaviour
 
     private void PauseGameplay()
     {
-        _divideBtn.enabled = false;
-        _endTurnBtn.enabled = false;
-        CameraMovement.GameIsPaused();
-        Time.timeScale = 0;
+        GameplayPaused = !GameplayPaused;
+
+        if (!GameplayPaused)
+        {
+            _divideBtn.enabled = false;
+            _endTurnBtn.enabled = false;
+            Time.timeScale = 0;
+        }
+        else
+        {
+            _divideBtn.enabled = true;
+            _endTurnBtn.enabled = true;
+            Time.timeScale = 1;
+        }
     }
 }
