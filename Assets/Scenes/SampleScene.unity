@@ -545,6 +545,7 @@ MonoBehaviour:
   _winTxt: {fileID: 218277148}
   _loseTxt: {fileID: 1436529161}
   _scoreTxt: {fileID: 370111176}
+  _pauseMenuPanel: {fileID: 1827592967}
 --- !u!114 &340083361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3077,7 +3078,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1827592968
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3115,7 +3116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0, g: 1, b: 0.054581404, a: 0.4117647}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3152,7 +3153,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: efe40cb8f05f26b4dab6911594c689db, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
