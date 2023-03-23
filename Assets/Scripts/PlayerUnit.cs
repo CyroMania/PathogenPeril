@@ -57,6 +57,20 @@ public abstract class PlayerUnit : Unit
         CheckNoPlayerUnitsAlive();
     }
 
+    public static void DeselectAllUnits()
+    {
+        foreach (PlayerUnit unit in PlayerUnits)
+        {
+            if (unit.Selected)
+            {
+                unit.Selected = false;
+                unit.CurrentTile.Current = false;
+            }
+        }
+
+        UI.DisplayButton("_divideBtnAnim", false);
+    }
+
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibilityRange);

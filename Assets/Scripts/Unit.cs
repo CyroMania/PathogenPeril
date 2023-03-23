@@ -81,6 +81,16 @@ public abstract class Unit : MonoBehaviour
         set => _isPlayerTurn = value;
     }
 
+    public static void ResetAllTiles(params string[] ignoredProps)
+    {
+        List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
+
+        foreach (Tile t in tiles)
+        {
+            t.ResetTile(ignoredProps);
+        }
+    }
+
     protected void ResetUnit()
     {
         MovementPoints = _maxMovementPoints;
@@ -93,16 +103,6 @@ public abstract class Unit : MonoBehaviour
         _visibilityRange = visibilityRange;
 
         Start();
-    }
-
-    protected void ResetAllTiles(params string[] ignoredProps)
-    {
-        List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
-
-        foreach (Tile t in tiles)
-        {
-            t.ResetTile(ignoredProps);
-        }
     }
 
     protected void SetTargetTileToCurrentTile()
@@ -225,7 +225,7 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
-    private static bool CheckAnyPlayerUnitSelected()
+    public static bool CheckAnyPlayerUnitSelected()
     {
         foreach (PlayerUnit unit in PlayerUnits)
         {

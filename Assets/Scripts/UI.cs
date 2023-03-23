@@ -27,12 +27,14 @@ public class UI : MonoBehaviour
 
     private const int RequiredSucceededUnits = 3;
 
-    public static int SucceededUnits { get; set; } = 0;
+    public static int SucceededUnits { get; set; }
 
-    public static bool GameplayPaused { get; private set; } = false;
+    public static bool GameplayPaused { get; private set; }
 
     private void Start()
     {
+        SucceededUnits = 0;
+        GameplayPaused = false;
         _pauseMenuPanel.SetActive(true);
         _winTxt.gameObject.SetActive(false);
         _loseTxt.gameObject.SetActive(false);
@@ -48,6 +50,13 @@ public class UI : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
+            {
+                PlayerUnit.DeselectAllUnits();
+                Unit.ResetAllTiles(new string[] { nameof(Tile.Goal), nameof(Tile.Visible) });
+                return;
+            }
+
             if (!GameplayPaused)
             {
                 _pauseMenuAnim.SetBool("ShowWindow", true);
@@ -146,14 +155,14 @@ public class UI : MonoBehaviour
                 _pauseMenuAnim.SetBool("ShowWindow", false);
             }
 
-            _divideBtn.enabled = true;
-            _endTurnBtn.enabled = true;
+            _divideBtn.gameObject.SetActive(true);
+            _endTurnBtn.gameObject.SetActive(true);
             Time.timeScale = 1;
         }
         else
         {
-            _divideBtn.enabled = false;
-            _endTurnBtn.enabled = false;
+            _divideBtn.gameObject.SetActive(false);
+            _endTurnBtn.gameObject.SetActive(false);
             Time.timeScale = 0;
         }
     }
