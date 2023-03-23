@@ -139,8 +139,17 @@ public abstract class PlayerUnit : Unit
                             return;
                         }
 
-                        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });
-                        FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                        if (Selected)
+                        {
+                            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });
+                            FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                        }
+                        else
+                        {
+                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Goal) });
+                        }
+
                         FindAllVisibleTiles();
                     }
 
