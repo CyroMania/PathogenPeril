@@ -16,25 +16,58 @@ public class UI : MonoBehaviour
     private TextMeshProUGUI _loseTxt;
     [SerializeField]
     private TextMeshProUGUI _scoreTxt;
+    [SerializeField]
+    private GameObject _pauseMenuPanel;
 
     private Animator _divideBtnAnim;
     private Animator _endTurnBtnAnim;
     private Animator _winTxtAnim;
     private Animator _loseTxtAnim;
+    private Animator _pauseMenuAnim;
 
     private const int RequiredSucceededUnits = 3;
 
-    public static int SucceededUnits { get; set; } = 0;
+    public static int SucceededUnits { get; set; }
+
+    public static bool GameplayPaused { get; private set; }
 
     private void Start()
     {
+        SucceededUnits = 0;
+        GameplayPaused = false;
+        _pauseMenuPanel.SetActive(true);
         _winTxt.gameObject.SetActive(false);
         _loseTxt.gameObject.SetActive(false);
         _divideBtnAnim = _divideBtn.GetComponent<Animator>();
         _endTurnBtnAnim = _endTurnBtn.GetComponent<Animator>();
         _winTxtAnim = _winTxt.GetComponent<Animator>();
         _loseTxtAnim = _loseTxt.GetComponent<Animator>();
+        _pauseMenuAnim = _pauseMenuPanel.GetComponent<Animator>();
         _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
+            {
+                PlayerUnit.DeselectAllUnits();
+                Unit.ResetAllTiles(new string[] { nameof(Tile.Goal), nameof(Tile.Visible) });
+                return;
+            }
+
+            if (!GameplayPaused)
+            {
+                _pauseMenuAnim.SetBool("ShowWindow", true);
+            }
+            else
+            {
+                _pauseMenuAnim.SetBool("ShowWindow", false);
+            }
+
+            PauseGameplay();
+        }
     }
 
     public void NewTurn()
@@ -110,11 +143,27 @@ public class UI : MonoBehaviour
         _loseTxtAnim.SetTrigger("GameLost");
     }
 
-    private void PauseGameplay()
+    public void PauseGameplay()
     {
-        _divideBtn.enabled = false;
-        _endTurnBtn.enabled = false;
-        CameraMovement.GameIsPaused();
-        Time.timeScale = 0;
+        GameplayPaused = !GameplayPaused;
+
+        if (!GameplayPaused)
+        {
+            //Closes the window incase it is open.
+            if (_pauseMenuAnim.GetBool("ShowWindow"))
+            {
+                _pauseMenuAnim.SetBool("ShowWindow", false);
+            }
+
+            _divideBtn.gameObject.SetActive(true);
+            _endTurnBtn.gameObject.SetActive(true);
+            Time.timeScale = 1;
+        }
+        else
+        {
+            _divideBtn.gameObject.SetActive(false);
+            _endTurnBtn.gameObject.SetActive(false);
+            Time.timeScale = 0;
+        }
     }
 }
