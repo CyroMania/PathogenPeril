@@ -133,8 +133,8 @@ public abstract class PlayerUnit : Unit
 
                         if (CurrentTile.Goal)
                         {
-                            Kill();
                             UI.UpdateScoreText(1);
+                            Kill();
                             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                             return;
                         }

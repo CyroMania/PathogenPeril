@@ -129,7 +129,7 @@ public abstract class Unit : MonoBehaviour
 
     protected static void CheckNoPlayerUnitsAlive()
     {
-        if (PlayerUnits.Count == 0)
+        if (PlayerUnits.Count == 0 && UI.SucceededUnits != UI.RequiredSucceededUnits)
         {
             Debug.Log("Game Over");
             UI.GameLost();
