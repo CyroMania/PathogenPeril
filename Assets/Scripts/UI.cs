@@ -25,7 +25,7 @@ public class UI : MonoBehaviour
     private Animator _loseTxtAnim;
     private Animator _pauseMenuAnim;
 
-    private const int RequiredSucceededUnits = 3;
+    public readonly int RequiredSucceededUnits = 3;
 
     public static int SucceededUnits { get; set; }
 

@@ -14,7 +14,7 @@ public class Grid : MonoBehaviour
     [SerializeField]
     private Tile tile;
 
-    void Start()
+    private void Start()
     {
         List<Tile> tiles = FindObjectsOfType<Tile>().ToList();
 
