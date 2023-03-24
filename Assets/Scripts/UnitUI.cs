@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UnitUI : MonoBehaviour
 {
-    public Camera mainCamera;
+    public Camera _mainCamera;
+    public GameObject _statBar;
 
     private const string statBarsContainerName = "StatBars";
     private const string HealthBarName = "HealthBar";
@@ -35,7 +37,7 @@ public class UnitUI : MonoBehaviour
     private void Start()
     {
         _UIStatBars = new GameObject(statBarsContainerName);
-        _cameraMove = mainCamera.GetComponent<CameraMovement>();
+        _cameraMove = _mainCamera.GetComponent<CameraMovement>();
         _pathogensStatBars = new Dictionary<PlayerUnit, StatBars>();
         List<PlayerUnit> pathogens = FindObjectsOfType<PlayerUnit>().ToList();
 
@@ -55,7 +57,7 @@ public class UnitUI : MonoBehaviour
             PlayerUnit pathogen = pathogenStatBars.Key;
             GameObject energyBar = pathogenStatBars.Value.Energy;
             GameObject healthBar = pathogenStatBars.Value.Health;
-            Vector2 worldToScreenPoint = mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
+            Vector2 worldToScreenPoint = _mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
@@ -64,7 +66,7 @@ public class UnitUI : MonoBehaviour
                 UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
             }
 
-            if (_cameraMove.IsZooming) 
+            if (_cameraMove.IsZooming)
             {
                 healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
@@ -75,19 +77,15 @@ public class UnitUI : MonoBehaviour
     public void CreateNewStatBars(PlayerUnit pathogen)
     {
         //Health Bar Generation
-        GameObject healthBar = new GameObject(HealthBarName);
-        healthBar.AddComponent<RectTransform>();
-        healthBar.AddComponent<StatBar>();
-        healthBar.GetComponent<StatBar>().Color = Color.red;
-        healthBar.AddComponent<Slider>();
+        GameObject healthBar = Instantiate(_statBar);
+        healthBar.name = "HealthBar";
+        healthBar.GetComponentInChildren<Image>().color = Color.red;
         healthBar.transform.SetParent(_UIStatBars.transform);
 
         //Energy Bar Generation
-        GameObject energyBar = new GameObject(EnergyBarName);
-        energyBar.AddComponent<RectTransform>();
-        energyBar.AddComponent<StatBar>();
-        energyBar.GetComponent<StatBar>().Color = Color.green;
-        energyBar.AddComponent<Slider>();
+        GameObject energyBar = Instantiate(_statBar);
+        energyBar.name = "EnergyBar";
+        energyBar.GetComponentInChildren<Image>().color = Color.green;
         energyBar.transform.SetParent(_UIStatBars.transform);
 
         StatBars pathogenStatBars = new StatBars(healthBar, energyBar);
