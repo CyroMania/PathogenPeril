@@ -86,6 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 921718475545667664}
   - component: {fileID: 1386184900004073229}
+  - component: {fileID: -222975041688290017}
   m_Layer: 0
   m_Name: StatBar
   m_TagString: Untagged
@@ -166,6 +167,17 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!210 &-222975041688290017
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333781432660404396}
+  m_Enabled: 1
+  m_SortingLayerID: -602040265
+  m_SortingLayer: 3
+  m_SortingOrder: 0
 --- !u!1 &8823981155997118730
 GameObject:
   m_ObjectHideFlags: 0

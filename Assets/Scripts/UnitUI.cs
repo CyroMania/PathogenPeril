@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,9 +9,6 @@ public class UnitUI : MonoBehaviour
     public GameObject _statBar;
 
     private const string statBarsContainerName = "StatBars";
-    private const string HealthBarName = "HealthBar";
-    private const string EnergyBarName = "EnergyBar";
-
     private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -30);
     private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -45);
     private CameraMovement _cameraMove;
@@ -37,11 +33,10 @@ public class UnitUI : MonoBehaviour
     private void Start()
     {
         _UIStatBars = new GameObject(statBarsContainerName);
+        _UIStatBars.transform.parent = GameObject.Find("Canvas").transform;
         _cameraMove = _mainCamera.GetComponent<CameraMovement>();
         _pathogensStatBars = new Dictionary<PlayerUnit, StatBars>();
         List<PlayerUnit> pathogens = FindObjectsOfType<PlayerUnit>().ToList();
-
-        _UIStatBars.transform.SetParent(FindObjectOfType<Canvas>().transform);
         _UIStatBars.AddComponent<RectTransform>();
 
         foreach (PlayerUnit pathogen in pathogens)
