@@ -88,6 +88,10 @@ public class UnitUI : MonoBehaviour
         energyBar.GetComponentInChildren<Image>().color = Color.green;
         energyBar.transform.SetParent(_UIStatBars.transform);
 
+        Vector2 worldToScreenPoint = _mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
+        healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+        energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
+
         StatBars pathogenStatBars = new StatBars(healthBar, energyBar);
         _pathogensStatBars.Add(pathogen, pathogenStatBars);
     }
