@@ -51,6 +51,7 @@ public abstract class ImmuneCell : Unit
                 ResetUnit();
                 BeginTurn = false;
                 TargetUnit = null;
+                TargetTile = null;
 
                 FindNearestPathogen();
                 List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
@@ -210,7 +211,7 @@ public abstract class ImmuneCell : Unit
 
         foreach (Tile t in targetUnitTile.NeighbouringTiles)
         {
-            if (t.Reachable)
+            if (selectableTiles.Contains(t))
             {
                 count++;
             }
@@ -228,6 +229,11 @@ public abstract class ImmuneCell : Unit
                         collided = true;
                     }
                 }
+            }
+
+            if (!collided && _targetUnit != null)
+            {
+                _canAttack = true;
             }
 
             return true;
@@ -253,7 +259,10 @@ public abstract class ImmuneCell : Unit
     {
         List<Tile> exploredTiles = new List<Tile>() { cell.TargetTile };
         cell.TargetTile = GetAvailableTile(tiles, exploredTiles);
-        Debug.Log("Assigned new tile to unit: " + cell.TargetTile.name);
+        if (cell.TargetTile != null)
+        {
+            Debug.Log("Assigned new tile to unit: " + cell.TargetTile.name);
+        }
     }
 
     //this recursively calls itself until an available tile is found
