@@ -28,14 +28,19 @@ public class UI : MonoBehaviour
     private Animator _loseTxtAnim;
     private Animator _pauseMenuAnim;
 
+    private static bool _gameOver;
+
     public readonly int RequiredSucceededUnits = 3;
 
     public static int SucceededUnits { get; set; }
 
     public static bool GameplayPaused { get; private set; }
 
+
+
     private void Start()
     {
+        _gameOver = false;
         SucceededUnits = 0;
         GameplayPaused = false;
         _finishedGamePanel.SetActive(false);
@@ -52,25 +57,28 @@ public class UI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (!_gameOver)
         {
-            if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                PlayerUnit.DeselectAllUnits();
-                Unit.ResetAllTiles(new string[] { nameof(Tile.Goal), nameof(Tile.Visible) });
-                return;
-            }
+                if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
+                {
+                    PlayerUnit.DeselectAllUnits();
+                    Unit.ResetAllTiles(new string[] { nameof(Tile.Goal), nameof(Tile.Visible) });
+                    return;
+                }
 
-            if (!GameplayPaused)
-            {
-                _pauseMenuAnim.SetBool("ShowWindow", true);
-            }
-            else
-            {
-                _pauseMenuAnim.SetBool("ShowWindow", false);
-            }
+                if (!GameplayPaused)
+                {
+                    _pauseMenuAnim.SetBool("ShowWindow", true);
+                }
+                else
+                {
+                    _pauseMenuAnim.SetBool("ShowWindow", false);
+                }
 
-            PauseGameplay();
+                PauseGameplay();
+            }
         }
     }
 
@@ -159,6 +167,7 @@ public class UI : MonoBehaviour
 
     internal void GameWon()
     {
+        _gameOver = true;
         PauseGameplay();
         _winTxt.gameObject.SetActive(true);
         _winTxtAnim.SetTrigger("GameWon");
@@ -167,6 +176,7 @@ public class UI : MonoBehaviour
 
     internal void GameLost()
     {
+        _gameOver = true;
         PauseGameplay();
         _loseTxt.gameObject.SetActive(true);
         _loseTxtAnim.SetTrigger("GameLost");
