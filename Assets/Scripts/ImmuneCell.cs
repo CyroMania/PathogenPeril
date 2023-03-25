@@ -50,6 +50,7 @@ public abstract class ImmuneCell : Unit
             {
                 ResetUnit();
                 BeginTurn = false;
+                TargetUnit = null;
 
                 FindNearestPathogen();
 

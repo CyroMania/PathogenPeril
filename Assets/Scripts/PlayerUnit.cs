@@ -135,7 +135,8 @@ public abstract class PlayerUnit : Unit
                         {
                             UI.UpdateScoreText(1);
                             Kill();
-                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
+                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Goal) });
+                            FindAllVisibleTiles();
                             return;
                         }
 
