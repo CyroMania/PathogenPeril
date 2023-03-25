@@ -15,19 +15,21 @@ public abstract class Unit : MonoBehaviour
     private short _maxMovementPoints;
     private short _visibilityRange;
 
-    private static bool staticsSetUp = false;
+    public static bool StaticsSetup { get; set; }
+
+    private void Awake()
+    {
+        if (!StaticsSetup)
+        {
+            UI = GameObject.Find("Canvas").GetComponent<UI>();
+            _playerUnits = new List<PlayerUnit>();
+            _immuneCells = new List<ImmuneCell>();
+            StaticsSetup = true;
+        }
+    }
 
     private void Start()
     {
-        if (!staticsSetUp)
-        {
-            _playerUnits = new List<PlayerUnit>();
-            _immuneCells = new List<ImmuneCell>();
-            UI = GameObject.Find("Canvas").GetComponent<UI>();
-
-            staticsSetUp = true;
-        }
-
         MovementPoints = _maxMovementPoints;
         HitPoints = _maxHitPoints;
 

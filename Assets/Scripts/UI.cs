@@ -38,8 +38,9 @@ public class UI : MonoBehaviour
 
 
 
-    private void Start()
+    private void Awake()
     {
+        Unit.StaticsSetup = false;
         _gameOver = false;
         SucceededUnits = 0;
         GameplayPaused = false;
