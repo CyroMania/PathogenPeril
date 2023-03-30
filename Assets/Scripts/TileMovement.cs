@@ -10,7 +10,7 @@ public static class TileMovement
 
     internal static Stack<Tile> FindTilePath(Tile currentTile, Tile targetTile, Stack<Tile> tilePath, short remainingMovementPoints)
     {
-        if (currentTile != targetTile)
+        if (targetTile != null && currentTile != targetTile)
         {
             tilePath.Push(targetTile);
 
