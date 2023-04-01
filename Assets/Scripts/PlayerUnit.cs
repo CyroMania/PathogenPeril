@@ -86,6 +86,19 @@ public abstract class PlayerUnit : Unit
         PlayerUnits.Add(this);
     }
 
+    protected bool IsFullySurrounded()
+    {
+        foreach (Tile t in CurrentTile.NeighbouringTiles)
+        {
+            if (!t.Inhabited)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void Start()
     {
         CurrentTile = TileMovement.CalculateCurrentTile(this);
@@ -106,7 +119,7 @@ public abstract class PlayerUnit : Unit
                 if (Selected)
                 {
                     CurrentTile.Current = true;
-                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+                    UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints, IsFullySurrounded());
                     FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
                 }
 
@@ -142,9 +155,9 @@ public abstract class PlayerUnit : Unit
 
                         if (Selected)
                         {
-                            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Current), nameof(Tile.Goal) });
                             FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints, IsFullySurrounded());
                         }
                         else
                         {
@@ -175,10 +188,10 @@ public abstract class PlayerUnit : Unit
                     {
                         Selected = true;
                         UI.DisplayButton("_divideBtnAnim", true);
-                        UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                         CurrentTile.Current = true;
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
+                        UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints, IsFullySurrounded());
                     }
 
                     return;

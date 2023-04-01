@@ -154,9 +154,9 @@ public class UI : MonoBehaviour
         }
     }
 
-    internal void CheckButtonsUsable(short currentEnergy, short maxEnergy)
+    internal void CheckButtonsUsable(short currentEnergy, short maxEnergy, bool fullySurrounded)
     {
-        if (currentEnergy == maxEnergy)
+        if (currentEnergy == maxEnergy && !fullySurrounded)
         {
             _divideBtn.interactable = true;
         }
