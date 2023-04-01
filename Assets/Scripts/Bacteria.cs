@@ -48,7 +48,7 @@ public class Bacteria : PlayerUnit
             MovementPoints = 0;
             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
             CurrentTile.Current = true;
-            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints);
+            UI.CheckButtonsUsable(MovementPoints, MaxMovementPoints, IsFullySurrounded());
             UnitUI.UpdateStatBarValue(this, "Energy");
             return;
         }
