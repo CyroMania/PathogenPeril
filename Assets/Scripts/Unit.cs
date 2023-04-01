@@ -93,6 +93,57 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
+    public static bool CheckAnyPlayerUnitSelected()
+    {
+        foreach (PlayerUnit unit in PlayerUnits)
+        {
+            if (unit.Selected)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static void EndCurrentTurn()
+    {
+        _isPlayerTurn = !_isPlayerTurn;
+        Debug.Log("PlayerTurn: " + _isPlayerTurn);
+
+        if (_isPlayerTurn)
+        {
+            UI.DisplayButton("_endTurnBtnAnim", true);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", true);
+            }
+
+            foreach (PlayerUnit unit in PlayerUnits)
+            {
+                unit.BeginTurn = true;
+            }
+        }
+        else
+        {
+            UI.DisplayButton("_endTurnBtnAnim", false);
+
+            if (CheckAnyPlayerUnitSelected())
+            {
+                UI.DisplayButton("_divideBtnAnim", false);
+            }
+
+            SpawnNewEnemyUnit();
+
+            foreach (ImmuneCell unit in ImmuneCells)
+            {
+                unit.BeginTurn = true;
+                unit.FinishedTurn = false;
+            }
+        }
+    }
+
     protected void ResetUnit()
     {
         MovementPoints = _maxMovementPoints;
@@ -135,44 +186,6 @@ public abstract class Unit : MonoBehaviour
         {
             Debug.Log("Game Over");
             UI.GameLost();
-        }
-    }
-
-    public static void EndCurrentTurn()
-    {
-        _isPlayerTurn = !_isPlayerTurn;
-        Debug.Log("PlayerTurn: " + _isPlayerTurn);
-
-        if (_isPlayerTurn)
-        {
-            UI.DisplayButton("_endTurnBtnAnim", true);
-
-            if (CheckAnyPlayerUnitSelected())
-            {
-                UI.DisplayButton("_divideBtnAnim", true);
-            }
-
-            foreach (PlayerUnit unit in PlayerUnits)
-            {
-                unit.BeginTurn = true;
-            }
-        }
-        else
-        {
-            UI.DisplayButton("_endTurnBtnAnim", false);
-
-            if (CheckAnyPlayerUnitSelected())
-            {
-                UI.DisplayButton("_divideBtnAnim", false);
-            }
-
-            SpawnNewEnemyUnit();
-
-            foreach (ImmuneCell unit in ImmuneCells)
-            {
-                unit.BeginTurn = true;
-                unit.FinishedTurn = false;
-            }
         }
     }
 
@@ -225,18 +238,5 @@ public abstract class Unit : MonoBehaviour
                 macrophage.GetComponent<Macrophage>().CurrentTile = spawnTile;
             }
         }
-    }
-
-    public static bool CheckAnyPlayerUnitSelected()
-    {
-        foreach (PlayerUnit unit in PlayerUnits)
-        {
-            if (unit.Selected)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
