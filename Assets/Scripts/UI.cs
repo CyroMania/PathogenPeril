@@ -21,6 +21,8 @@ public class UI : MonoBehaviour
     private GameObject _pauseMenuPanel;
     [SerializeField]
     private GameObject _finishedGamePanel;
+    [SerializeField]
+    private GameObject _helpMenuPanel;
 
     private Animator _divideBtnAnim;
     private Animator _endTurnBtnAnim;
@@ -36,14 +38,13 @@ public class UI : MonoBehaviour
 
     public static bool GameplayPaused { get; private set; }
 
-
-
     private void Awake()
     {
         Unit.StaticsSetup = false;
         _gameOver = false;
         SucceededUnits = 0;
-        GameplayPaused = false;
+        GameplayPaused = true;
+        _helpMenuPanel.SetActive(true);
         _finishedGamePanel.SetActive(false);
         _pauseMenuPanel.SetActive(true);
         _winTxt.gameObject.SetActive(false);
@@ -58,7 +59,7 @@ public class UI : MonoBehaviour
 
     private void Update()
     {
-        if (!_gameOver)
+        if (!_gameOver && !_helpMenuPanel.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -120,6 +121,24 @@ public class UI : MonoBehaviour
             _divideBtn.gameObject.SetActive(false);
             _endTurnBtn.gameObject.SetActive(false);
             Time.timeScale = 0;
+        }
+    }
+
+    public void DisplayInfoMenu(bool display)
+    {
+        if (display)
+        {
+            GameplayPaused = true;
+            _helpMenuPanel.SetActive(true);
+        }
+        else
+        {
+            if (!_pauseMenuAnim.GetBool("ShowWindow"))
+            {
+                GameplayPaused = false;
+            }
+
+            _helpMenuPanel.SetActive(false);
         }
     }
 
