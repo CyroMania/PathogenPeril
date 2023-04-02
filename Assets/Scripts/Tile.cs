@@ -71,7 +71,14 @@ public class Tile : MonoBehaviour
         {
             if (_goal)
             {
-                renderer.material.color = Color.red;
+                if (_reachable)
+                {
+                    renderer.material.color = Vector4.Lerp(Color.red, Color.yellow, 0.7f);
+                }
+                else
+                {
+                    renderer.material.color = Color.red;
+                }
             }
             else if (_current)
             {
