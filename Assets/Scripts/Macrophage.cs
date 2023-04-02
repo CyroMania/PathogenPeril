@@ -35,7 +35,10 @@ public class Macrophage : ImmuneCell
             yield return newPos;
         }
 
-        pathogen.transform.position = transform.position;
+        if (pathogen != null)
+        {
+            pathogen.transform.position = transform.position;
+        }
 
         while (pathogen != null && pathogen.transform.localScale.magnitude >= 0.05f)
         {
@@ -46,4 +49,4 @@ public class Macrophage : ImmuneCell
 
         pathogen.Kill();
     }
-} 
+}
