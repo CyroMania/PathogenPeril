@@ -43,7 +43,7 @@ public abstract class ImmuneCell : Unit
 
     private void Update()
     {
-        //UpdateRenderer();
+        UpdateRenderer();
 
         if (!IsPlayerTurn && !_finishedTurn)
         {

@@ -191,12 +191,17 @@ public abstract class Unit : MonoBehaviour
 
     private static void SpawnNewEnemyUnit()
     {
-        //We use a range of 0,1 to make a new random unit spawn only half the time approximately
-        int spawn = Random.Range(0, 2);
-        Debug.Log(spawn);
+        //The odds will better reflect reality if we account for how many units you have
+        // 1 Pathogen => 25%
+        // 3 Pathogens => 50%
+        // 6 Pathogens => 75%
+        // 9 Pathogens => 80%
+        int spawn = Random.Range(0, ImmuneCells.Count + 3);
 
-        if (spawn == 1)
+        if (spawn < ImmuneCells.Count)
         {
+            Debug.Log("Unit Spawned");
+
             List<Tile> AllTiles = FindObjectsOfType<Tile>().ToList();
             List<Tile> AcceptableTiles = new List<Tile>();
 

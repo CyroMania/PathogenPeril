@@ -80,7 +80,7 @@ public class UnitUI : MonoBehaviour
         //Energy Bar Generation
         GameObject energyBar = Instantiate(_statBar);
         energyBar.name = "EnergyBar";
-        energyBar.GetComponentInChildren<Image>().color = Color.green;
+        energyBar.GetComponentInChildren<Image>().color = new Color(0, 0.8f, 0, 1);
         energyBar.transform.SetParent(_UIStatBars.transform);
 
         Vector2 worldToScreenPoint = _mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
