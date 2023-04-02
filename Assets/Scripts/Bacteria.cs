@@ -20,6 +20,7 @@ public class Bacteria : PlayerUnit
 
         if (Clone)
         {
+            JustDivided = true;
             MovementPoints = 0;
         }
     }
@@ -41,6 +42,7 @@ public class Bacteria : PlayerUnit
             Tile chosenTile = acceptableTiles[Random.Range(0, acceptableTiles.Count)];
             Bacteria clone = Instantiate(this, transform.position, Quaternion.identity);
             GameObject.Find("Canvas").GetComponent<UnitUI>().CreateNewStatBars(clone);
+            JustDivided = true;
             clone.name = "Bacteria";
             clone.Clone = true; 
             StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position + TileMovement.UnitLayer));

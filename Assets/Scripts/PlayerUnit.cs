@@ -12,6 +12,8 @@ public abstract class PlayerUnit : Unit
 
     protected bool Clone { get; set; } = false;
 
+    protected bool JustDivided { get; set; }
+
     public bool Selected
     {
         get => _selected;
@@ -45,7 +47,11 @@ public abstract class PlayerUnit : Unit
             }
         }
 
-        Destroy(gameObject);
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
+
         PlayerUnits.Remove(this);
 
         if (Selected)
@@ -111,7 +117,16 @@ public abstract class PlayerUnit : Unit
         {
             if (BeginTurn)
             {
-                ResetUnit();
+                if (JustDivided)
+                {
+                    MovementPoints = (short)(MaxMovementPoints - 1);
+                    JustDivided = false;
+                }
+                else
+                {
+                    ResetUnit();
+                }
+
                 UnitUI.UpdateStatBarValue(this, "Energy");
                 UnitUI.UpdateStatBarPositions(this, _mainCamera.WorldToScreenPoint(gameObject.transform.position));
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
