@@ -9,19 +9,19 @@ public class UnitUI : MonoBehaviour
     public GameObject _statBar;
 
     private const string statBarsContainerName = "StatBars";
-    private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -30);
-    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -45);
+    //private static readonly Vector2 _healthBarTranslationOffset = new Vector2(0, -30);
+    private static readonly Vector2 _energyBarTranslationOffset = new Vector2(0, -60);
     private CameraMovement _cameraMove;
     private GameObject _UIStatBars;
 
     struct StatBars
     {
-        public GameObject Health;
+        //public GameObject Health;
         public GameObject Energy;
 
-        public StatBars(GameObject healthBar, GameObject energyBar)
+        public StatBars(GameObject energyBar)
         {
-            Health = healthBar;
+            //Health = healthBar;
             Energy = energyBar;
         }
     }
@@ -33,11 +33,15 @@ public class UnitUI : MonoBehaviour
     private void Start()
     {
         _UIStatBars = new GameObject(statBarsContainerName);
+        _UIStatBars.layer = LayerMask.NameToLayer("UI");
         _UIStatBars.transform.parent = GameObject.Find("Canvas").transform;
         _cameraMove = _mainCamera.GetComponent<CameraMovement>();
         _pathogensStatBars = new Dictionary<PlayerUnit, StatBars>();
         List<PlayerUnit> pathogens = FindObjectsOfType<PlayerUnit>().ToList();
         _UIStatBars.AddComponent<RectTransform>();
+        _UIStatBars.AddComponent<Canvas>();
+        _UIStatBars.GetComponent<Canvas>().overrideSorting = true;
+        _UIStatBars.GetComponent<Canvas>().sortingLayerID = 0;
 
         foreach (PlayerUnit pathogen in pathogens)
         {
@@ -51,19 +55,19 @@ public class UnitUI : MonoBehaviour
         {
             PlayerUnit pathogen = pathogenStatBars.Key;
             GameObject energyBar = pathogenStatBars.Value.Energy;
-            GameObject healthBar = pathogenStatBars.Value.Health;
+            //GameObject healthBar = pathogenStatBars.Value.Health;
             Vector2 worldToScreenPoint = _mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
 
             if (pathogen.IsMoving || _cameraMove.IsMoving)
             {
-                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+                //healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
                 UpdateStatBarValue(pathogen, nameof(StatBars.Energy));
             }
 
             if (_cameraMove.IsZooming)
             {
-                healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+                //healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
                 energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
             }
         }
@@ -72,10 +76,10 @@ public class UnitUI : MonoBehaviour
     public void CreateNewStatBars(PlayerUnit pathogen)
     {
         //Health Bar Generation
-        GameObject healthBar = Instantiate(_statBar);
-        healthBar.name = "HealthBar";
-        healthBar.GetComponentInChildren<Image>().color = Color.red;
-        healthBar.transform.SetParent(_UIStatBars.transform);
+        //GameObject healthBar = Instantiate(_statBar);
+        //healthBar.name = "HealthBar";
+        //healthBar.GetComponentInChildren<Image>().color = Color.red;
+        //healthBar.transform.SetParent(_UIStatBars.transform);
 
         //Energy Bar Generation
         GameObject energyBar = Instantiate(_statBar);
@@ -84,10 +88,10 @@ public class UnitUI : MonoBehaviour
         energyBar.transform.SetParent(_UIStatBars.transform);
 
         Vector2 worldToScreenPoint = _mainCamera.WorldToScreenPoint(pathogen.gameObject.transform.position);
-        healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
+        //healthBar.GetComponent<RectTransform>().position = worldToScreenPoint + _healthBarTranslationOffset;
         energyBar.GetComponent<RectTransform>().position = worldToScreenPoint + _energyBarTranslationOffset;
 
-        StatBars pathogenStatBars = new StatBars(healthBar, energyBar);
+        StatBars pathogenStatBars = new StatBars(energyBar);
         _pathogensStatBars.Add(pathogen, pathogenStatBars);
     }
 
@@ -99,7 +103,7 @@ public class UnitUI : MonoBehaviour
             {
                 _pathogensStatBars.Remove(statBars.Key);
 
-                Destroy(statBars.Value.Health);
+                //Destroy(statBars.Value.Health);
                 Destroy(statBars.Value.Energy);
 
                 break;
@@ -111,14 +115,14 @@ public class UnitUI : MonoBehaviour
     {
         StatBars unitStatBars = FindStatBars(unit);
 
-        if (statBarName == nameof(unitStatBars.Health))
-        {
-            if (unitStatBars.Health != null)
-            {
-                unitStatBars.Health.GetComponent<Slider>().value = (float)unit.HitPoints / (float)unit.MaxHitPoints;
-            }
-        }
-        else if (statBarName == nameof(unitStatBars.Energy))
+        //if (statBarName == nameof(unitStatBars.Health))
+        //{
+        //    if (unitStatBars.Health != null)
+        //    {
+        //        unitStatBars.Health.GetComponent<Slider>().value = (float)unit.HitPoints / (float)unit.MaxHitPoints;
+        //    }
+        //}
+        if (statBarName == nameof(unitStatBars.Energy))
         {
             if (unitStatBars.Energy != null)
             {
@@ -144,7 +148,7 @@ public class UnitUI : MonoBehaviour
     {
         StatBars unitStatBars = FindStatBars(pathogen);
 
-        unitStatBars.Health.GetComponent<RectTransform>().position = screenPos + _healthBarTranslationOffset;
+        //unitStatBars.Health.GetComponent<RectTransform>().position = screenPos + _healthBarTranslationOffset;
         unitStatBars.Energy.GetComponent<RectTransform>().position = screenPos + _energyBarTranslationOffset;
     }
 }

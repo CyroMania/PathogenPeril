@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -0.03000021}
+  m_AnchoredPosition: {x: 0, y: -0.030000687}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4576401018266145900
@@ -86,7 +86,6 @@ GameObject:
   m_Component:
   - component: {fileID: 921718475545667664}
   - component: {fileID: 1386184900004073229}
-  - component: {fileID: -222975041688290017}
   m_Layer: 0
   m_Name: StatBar
   m_TagString: Untagged
@@ -103,7 +102,7 @@ RectTransform:
   m_GameObject: {fileID: 2333781432660404396}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6818507135624880227}
@@ -114,7 +113,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 779.8, y: 101.2}
-  m_SizeDelta: {x: 50, y: 10}
+  m_SizeDelta: {x: 80, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1386184900004073229
 MonoBehaviour:
@@ -167,17 +166,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!210 &-222975041688290017
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333781432660404396}
-  m_Enabled: 1
-  m_SortingLayerID: -602040265
-  m_SortingLayer: 3
-  m_SortingOrder: 0
 --- !u!1 &8823981155997118730
 GameObject:
   m_ObjectHideFlags: 0
