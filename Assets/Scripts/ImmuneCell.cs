@@ -12,6 +12,8 @@ public abstract class ImmuneCell : Unit
     private bool _finishedTurn = false;
     private bool _canAttack = false;
 
+    private bool _firstCheckedClosestUnit = false;
+
     public bool FinishedTurn
     {
         get => _finishedTurn;
@@ -41,7 +43,7 @@ public abstract class ImmuneCell : Unit
 
     private void Update()
     {
-        //UpdateRenderer();
+        UpdateRenderer();
 
         if (!IsPlayerTurn && !_finishedTurn)
         {
@@ -49,6 +51,7 @@ public abstract class ImmuneCell : Unit
             if (BeginTurn)
             {
                 ResetUnit();
+                _firstCheckedClosestUnit = false;
                 BeginTurn = false;
                 TargetUnit = null;
                 TargetTile = null;
@@ -65,6 +68,7 @@ public abstract class ImmuneCell : Unit
                             Debug.Log(gameObject.name + " I can attack");
                             _canAttack = true;
                         }
+
                         if (collided)
                         {
                             Debug.Log(gameObject.name + ": Tile is Taken!");
@@ -179,7 +183,7 @@ public abstract class ImmuneCell : Unit
         {
             List<ImmuneCell> neighbours = new List<ImmuneCell>();
 
-            foreach  (Tile t in targetUnitTile.NeighbouringTiles.Where(t => t != currentTile))
+            foreach (Tile t in targetUnitTile.NeighbouringTiles.Where(t => t != currentTile))
             {
                 if (t.Inhabited)
                 {
@@ -225,8 +229,15 @@ public abstract class ImmuneCell : Unit
                 {
                     if (cell.TargetUnit != null && cell.TargetUnit.CurrentTile == targetUnitTile)
                     {
-                        AssignRandomTargetTileFromCollection(this, targetUnitTile.NeighbouringTiles);
-                        collided = true;
+                        if (!CheckClosestEnemyUnit(_targetUnit.CurrentTile.transform.position, ImmuneCells.Where(cell => cell != this).ToList()))
+                        {
+                            AssignRandomTargetTileFromCollection(this, targetUnitTile.NeighbouringTiles);
+                            collided = true;
+                        }
+                        else
+                        {
+                            _canAttack = true;
+                        }
                     }
                 }
             }
@@ -341,8 +352,20 @@ public abstract class ImmuneCell : Unit
             {
                 return false;
             }
+            else if (Vector2.Distance(transform.position, targetPos) == Vector2.Distance(otherCell.transform.position, targetPos))
+            {
+                foreach (ImmuneCell otherCell2 in immuneCells)
+                {
+                    if (otherCell2._firstCheckedClosestUnit)
+                    {
+                        return false;
+                    }
+                }
+
+                _firstCheckedClosestUnit = true;
+            }
         }
-        
+
         return true;
     }
 
