@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -103,9 +102,9 @@ public class Tile : MonoBehaviour
         }
     }
 
-    public void ResetTile(string[] ignoredProperties)
+    public void ResetTile(string[] ignoredProperties) 
     {
-        List<PropertyInfo> properties = GetType().GetDeclaredProperties()
+        List<PropertyInfo> properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
             .Where(prop => prop.Name != nameof(NeighbouringTiles)).ToList();
 
         if (ignoredProperties.Length == 0)

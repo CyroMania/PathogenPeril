@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using TMPro;
-using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -144,7 +143,7 @@ public class UI : MonoBehaviour
 
     internal void DisplayButton(string button, bool shouldDisplay)
     {
-        FieldInfo[] fields = GetType().GetDeclaredFields();
+        FieldInfo[] fields = GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         Animator anim = null;
 
         foreach (FieldInfo field in fields)
