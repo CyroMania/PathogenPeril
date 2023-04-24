@@ -10,6 +10,6 @@ public class NewTestScript
     [Test]
     public void NewTestScriptSimplePasses()
     {
-        Bacteria wow = new Bacteria();
+        
     }
 }
