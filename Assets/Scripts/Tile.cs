@@ -21,7 +21,6 @@ public class Tile : MonoBehaviour
     [SerializeField]
     private List<Tile> _neighbourTiles;
 
-
     public bool Current
     {
         get => _current;
