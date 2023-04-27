@@ -6,6 +6,8 @@ using UnityEngine.TestTools;
 [TestFixture]
 public class TileTests
 {
+    private Color orange = Vector4.Lerp(Color.red, Color.yellow, 0.7f);
+
     private void AssertTileColour(Color colour, GameObject tile)
     {
         Assert.AreEqual(colour, tile.GetComponent<Renderer>().material.color);
@@ -81,5 +83,17 @@ public class TileTests
         yield return null;
 
         AssertTileColour(Color.grey, tile.gameObject);
+    }
+
+    [UnityTest]
+    public IEnumerator Update_TileIsReachableAndGoal_TileIsOrange()
+    {
+        Tile tile = SetupTile();
+
+        tile.Goal = true;
+        tile.Reachable = true;
+        yield return null;
+
+        AssertTileColour(orange, tile.gameObject);
     }
 }

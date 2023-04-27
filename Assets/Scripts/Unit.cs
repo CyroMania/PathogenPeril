@@ -15,6 +15,8 @@ public abstract class Unit : MonoBehaviour
     private short _maxMovementPoints;
     private short _visibilityRange;
 
+    public static bool UnitTesting { get; set; } = false;
+
     public static bool StaticsSetup { get; set; }
 
     private void Awake()

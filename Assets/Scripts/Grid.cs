@@ -9,7 +9,7 @@ public class Grid : MonoBehaviour
     private int gridWidth = 10;
 
     [SerializeField]
-    private int gridHeight = 10;
+    private int gridHeight = 30;
 
     [SerializeField]
     private Tile tile;
@@ -18,13 +18,14 @@ public class Grid : MonoBehaviour
 
     private void Start()
     {
-        GenerateTiles(gridWidth, gridHeight, tile);
+        if (tiles.Count == 0)
+        {
+            GenerateTiles(gridWidth, gridHeight, tile);
+        }
     }
 
     public void GenerateTiles(int width, int height, Tile tile)
     {
-
-
         for (float x = 0; x < width; x++)
         {
             for (float y = 0; y < height; y++)
@@ -41,10 +42,6 @@ public class Grid : MonoBehaviour
                     }
 
                     tiles.Add(clone);
-
-                    GameObject first = tiles.First().gameObject;
-                    Destroy(first);
-                    tiles.RemoveAt(0);
                 }
                 else
                 {
@@ -67,6 +64,11 @@ public class Grid : MonoBehaviour
             }
         }
 
-
+        if (tile != null)
+        {
+            GameObject first = tiles.First().gameObject;
+            Destroy(first);
+            tiles.RemoveAt(0);
+        }
     }
 }
