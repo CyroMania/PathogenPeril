@@ -131,7 +131,6 @@ public abstract class PlayerUnit : Unit
                 {
                     UnitUI.UpdateStatBarValue(this, "Energy");
                     UnitUI.UpdateStatBarPositions(this, _mainCamera.WorldToScreenPoint(gameObject.transform.position));
-
                 }
                 TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
 

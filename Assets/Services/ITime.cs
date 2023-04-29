@@ -1,18 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class ITime : MonoBehaviour
+public interface ITime
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float SetScale(float timeScale);
+}
 
-    // Update is called once per frame
-    void Update()
+public class GameTime : ITime
+{
+    public float SetScale(float timeScale)
     {
-        
+        return timeScale;
     }
 }

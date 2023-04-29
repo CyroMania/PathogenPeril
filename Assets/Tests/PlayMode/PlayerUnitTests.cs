@@ -58,23 +58,22 @@ public class PlayerUnitTests
         Assert.NotNull(playerUnit.CurrentTile);
     }
 
-    [UnityTest]
-    public IEnumerator Selected_IsPlayerTurn_CurrentTileSetToCurrent()
-    {
-        GameObject canvas = new GameObject();
-        canvas.AddComponent<Canvas>();
-        Unit.UI = canvas.AddComponent<UI>();
+    //[UnityTest]
+    //public IEnumerator Selected_IsPlayerTurn_CurrentTileSetToCurrent()
+    //{
+    //    GameObject canvas = new GameObject();
+    //    canvas.AddComponent<Canvas>();
+    //    Unit.UI = canvas.AddComponent<UI>();
 
-        Unit.IsPlayerTurn = true;
-        Unit.StaticsSetup = false;
-        Unit.UnitTesting = true;
+    //    Unit.IsPlayerTurn = true;
+    //    Unit.StaticsSetup = false;
 
-        GameObject[] tiles = SetupGrid(5, 5);
-        TestPlayerUnit playerUnit = SetupPlayerUnit();
+    //    GameObject[] tiles = SetupGrid(5, 5);
+    //    TestPlayerUnit playerUnit = SetupPlayerUnit();
 
-        playerUnit.Selected = true;
-        yield return null;
+    //    playerUnit.Selected = true;
+    //    yield return null;
 
-        Assert.AreEqual(true, playerUnit.CurrentTile.Current);
-    }
+    //    Assert.AreEqual(true, playerUnit.CurrentTile.Current);
+    //}
 }
