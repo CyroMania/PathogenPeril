@@ -25,7 +25,7 @@ public class UI : MonoBehaviour
 
     private static bool _gameOver;
 
-    public readonly int RequiredSucceededUnits = 3; 
+    public readonly int RequiredSucceededUnits = 3;
 
 
     //Needed for Tests
@@ -151,38 +151,21 @@ public class UI : MonoBehaviour
                 GameplayPaused = false;
             }
 
-            UIService.SetActive(nameof(_helpMenuPanel),false);
+            UIService.SetActive(nameof(_helpMenuPanel), false);
         }
     }
 
     internal void DisplayButton(string button, bool shouldDisplay)
     {
-        FieldInfo[] fields = GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        Animator anim = null;
-
-        foreach (FieldInfo field in fields)
+        if (shouldDisplay)
         {
-            if (field.Name == button)
-            {
-                anim = (Animator)field.GetValue(this);
-                break;
-            }
+            UIService.ResetAnimTrigger(button, "Hide");
+            UIService.SetAnimTrigger(button, "Show");
         }
-
-        if (anim != null)
+        else
         {
-            anim.gameObject.GetComponent<Button>().interactable = shouldDisplay;
-
-            if (shouldDisplay)
-            {
-                anim.ResetTrigger("Hide");
-                anim.SetTrigger("Show");
-            }
-            else
-            {
-                anim.ResetTrigger("Show");
-                anim.SetTrigger("Hide");
-            }
+            UIService.ResetAnimTrigger(button, "Show");
+            UIService.SetAnimTrigger(button, "Hide");
         }
     }
 
@@ -203,7 +186,7 @@ public class UI : MonoBehaviour
         _gameOver = true;
         PauseGameplay();
         UIService.SetActive(nameof(_winTxt), true);
-        UIService.SetAnimTrigger(nameof(_winTxt),"GameWon");
+        UIService.SetAnimTrigger(nameof(_winTxt), "GameWon");
         UIService.SetActive(nameof(_finishedGamePanel), true);
     }
 

@@ -10,6 +10,8 @@ public abstract class PlayerUnit : Unit
     private bool _selected;
     private Stack<Tile> _path;
 
+    private const string DivideBtnName = "_divideBtn";
+
     protected bool Clone { get; set; } = false;
 
     protected bool JustDivided { get; set; }
@@ -74,7 +76,7 @@ public abstract class PlayerUnit : Unit
             }
         }
 
-        UI.DisplayButton("_divideBtnAnim", false);
+        UI.DisplayButton(DivideBtnName, false);
     }
 
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
@@ -205,7 +207,7 @@ public abstract class PlayerUnit : Unit
                     if (unitHitInfo.collider == _collider)
                     {
                         Selected = true;
-                        UI.DisplayButton("_divideBtnAnim", true);
+                        UI.DisplayButton(DivideBtnName, true);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                         CurrentTile.Current = true;
                         FindSelectableTiles(CurrentTile, new Queue<Tile>(), 1);
@@ -234,7 +236,7 @@ public abstract class PlayerUnit : Unit
                     {
                         Selected = false;
                         CurrentTile.Current = false;
-                        UI.DisplayButton("_divideBtnAnim", false);
+                        UI.DisplayButton(DivideBtnName, false);
                         ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
                     }
                 }

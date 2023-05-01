@@ -115,11 +115,11 @@ public abstract class Unit : MonoBehaviour
 
         if (_isPlayerTurn)
         {
-            UI.DisplayButton("_endTurnBtnAnim", true);
+            UI.DisplayButton("_endTurnBtn", true);
 
             if (CheckAnyPlayerUnitSelected())
             {
-                UI.DisplayButton("_divideBtnAnim", true);
+                UI.DisplayButton("_divideBtn", true);
             }
 
             foreach (PlayerUnit unit in PlayerUnits)
@@ -129,11 +129,11 @@ public abstract class Unit : MonoBehaviour
         }
         else
         {
-            UI.DisplayButton("_endTurnBtnAnim", false);
+            UI.DisplayButton("_endTurnBtn", false);
 
             if (CheckAnyPlayerUnitSelected())
             {
-                UI.DisplayButton("_divideBtnAnim", false);
+                UI.DisplayButton("_divideBtn", false);
             }
 
             SpawnNewEnemyUnit();

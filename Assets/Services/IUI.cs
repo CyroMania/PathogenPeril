@@ -1,9 +1,6 @@
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using TMPro;
-using UnityEditor.AnimatedValues;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,7 +53,7 @@ public class GameUI : IUI
 
     public bool GetAnimBool(string field, string animValue)
     {
-        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         Animator animator = null;
 
         if (gameObject.GetValue(this) as GameObject != null)
@@ -73,12 +70,22 @@ public class GameUI : IUI
 
     public void ResetAnimTrigger(string field, string animValue)
     {
-        throw new NotImplementedException();
+        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+
+        if (gameObject.GetValue(this) as Button != null)
+        {
+            Animator animator = (gameObject.GetValue(this) as Button).GetComponent<Animator>();
+            animator.ResetTrigger(animValue);
+        }
+        else
+        {
+            Debug.Log("Couldn't find animator on " + field + " gameObject.");
+        }
     }
 
     public void SetActive(string field, bool active)
     {
-        FieldInfo uiElement = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo uiElement = GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
 
         if (uiElement.GetValue(this) as GameObject != null)
         {
@@ -130,9 +137,9 @@ public class GameUI : IUI
     {
         FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
 
-        if (gameObject.GetValue(this) as GameObject != null)
+        if (gameObject.GetValue(this) as Button != null)
         {
-            Animator animator = (gameObject.GetValue(this) as GameObject).GetComponent<Animator>();
+            Animator animator = (gameObject.GetValue(this) as Button).GetComponent<Animator>();
             animator.SetTrigger(animValue);
         }
         else
