@@ -10,19 +10,27 @@ public class SceneInteractionManager : MonoBehaviour
         _currentSceneBuildIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
+    /// <summary>
+    /// Loads the first stage of the game.
+    /// </summary>
     public static void StartGame()
     {
         ResetDefaults();
         SceneManager.LoadScene(_currentSceneBuildIndex + 1);
     }
 
-    //This is needed for the retry button functionalitys
+    /// <summary>
+    /// Reloads the current stage the player is in.
+    /// </summary>
     public static void ReloadCurrentLevel()
     {
         ResetDefaults();
         SceneManager.LoadScene(_currentSceneBuildIndex);
     }
 
+    /// <summary>
+    /// Reloads the main menu from any scene.
+    /// </summary>
     public static void LoadMainMenu()
     {
         ResetDefaults();
@@ -30,12 +38,17 @@ public class SceneInteractionManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    /// <summary>
+    /// Closes the application.
+    /// </summary>
     public static void QuitGame()
     {
         Application.Quit();
     }
 
-    //This method is for resetting settings that should be default upon scene load
+    /// <summary>
+    /// Reset static values that are true at the beginning of each scene.
+    /// </summary>
     private static void ResetDefaults()
     {
         Time.timeScale = 1.0f;
