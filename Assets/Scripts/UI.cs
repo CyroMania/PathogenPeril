@@ -186,8 +186,8 @@ public class UI : MonoBehaviour
         _gameOver = true;
         PauseGameplay();
         UIService.SetActive(nameof(_winTxt), true);
-        UIService.SetAnimTrigger(nameof(_winTxt), "GameWon");
         UIService.SetActive(nameof(_finishedGamePanel), true);
+        UIService.SetAnimTrigger(nameof(_winTxt), "GameWon");
     }
 
     internal void GameLost()
@@ -195,7 +195,7 @@ public class UI : MonoBehaviour
         _gameOver = true;
         PauseGameplay();
         UIService.SetActive(nameof(_loseTxt), true);
-        UIService.SetAnimTrigger(nameof(_loseTxt), "GameLost");
         UIService.SetActive(nameof(_finishedGamePanel), true);
+        UIService.SetAnimTrigger(nameof(_loseTxt), "GameLost");
     }
 }

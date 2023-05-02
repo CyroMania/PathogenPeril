@@ -53,7 +53,7 @@ public class GameUI : IUI
 
     public bool GetAnimBool(string field, string animValue)
     {
-        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        FieldInfo gameObject = GetDeclaredField(field);
         Animator animator = null;
 
         if (gameObject.GetValue(this) as GameObject != null)
@@ -70,7 +70,7 @@ public class GameUI : IUI
 
     public void ResetAnimTrigger(string field, string animValue)
     {
-        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo gameObject = GetDeclaredField(field);
 
         if (gameObject.GetValue(this) as Button != null)
         {
@@ -85,7 +85,7 @@ public class GameUI : IUI
 
     public void SetActive(string field, bool active)
     {
-        FieldInfo uiElement = GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo uiElement = GetDeclaredField(field);
 
         if (uiElement.GetValue(this) as GameObject != null)
         {
@@ -105,7 +105,7 @@ public class GameUI : IUI
 
     public void SetAnimBool(string field, string animBool, bool value)
     {
-        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo gameObject = GetDeclaredField(field);
 
         if (gameObject.GetValue(this) as GameObject != null)
         {
@@ -120,7 +120,7 @@ public class GameUI : IUI
 
     public void SetText(string field, string value)
     {
-        FieldInfo textElement = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo textElement = GetDeclaredField(field);
 
         if (textElement.GetValue(this) as TextMeshProUGUI != null)
         {
@@ -135,7 +135,7 @@ public class GameUI : IUI
 
     public void SetAnimTrigger(string field, string animValue)
     {
-        FieldInfo gameObject = typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance);
+        FieldInfo gameObject = GetDeclaredField(field);
 
         if (gameObject.GetValue(this) as Button != null)
         {
@@ -146,5 +146,10 @@ public class GameUI : IUI
         {
             Debug.Log("Couldn't find animator on " + field + " gameObject.");
         }
+    }
+
+    private FieldInfo GetDeclaredField(string field)
+    {
+        return typeof(GameUI).GetField(field, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }
