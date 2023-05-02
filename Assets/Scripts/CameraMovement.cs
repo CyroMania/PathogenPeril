@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -8,14 +8,20 @@ public class CameraMovement : MonoBehaviour
     private float _positionSpeedDampener = 12f;
     private float _zoomSpeedDampener = 3;
 
-    private const float _zoomMax = 6.5f;
-    private const float _zoomMin = 3.0f;
+    private const float ZoomMax = 6.5f;
+    private const float ZoomMin = 3.0f;
 
+    /// <summary>
+    /// Is true if the camera is moving.
+    /// </summary>
     public bool IsMoving
     {
         get => _isMoving;
     }
 
+    /// <summary>
+    /// Is true if the camera is zooming.
+    /// </summary>
     public bool IsZooming
     {
         get => _isZooming;
@@ -54,7 +60,7 @@ public class CameraMovement : MonoBehaviour
                 movementVector += Vector2.right;
             }
 
-            //We check this to confirm its ready to Update UI Elements
+            //We check this to confirm its ready to Update UI Elements.
             if (movementVector != Vector2.zero)
             {
                 _isMoving = true;
@@ -68,18 +74,19 @@ public class CameraMovement : MonoBehaviour
 
             if (Input.mouseScrollDelta != Vector2.zero)
             {
-                //We must subtract for the zoom because the Y-Value is inverted for scrolling in our case
-                //When we zoom in, we are shrinking the camera's size but this results in a greater zoom for example
+                //We must subtract for the zoom because scrolling is an inverted value.
+                //When we zoom in, we are shrinking the camera's size but this results in a greater zoom for example.
                 _zoom -= (Input.mouseScrollDelta.y * (_zoom / 10)) / _zoomSpeedDampener;
 
-                if (_zoom > _zoomMax)
+                //Check to see if the zoom is within the limits.
+                if (_zoom > ZoomMax)
                 {
-                    _zoom = _zoomMax;
+                    _zoom = ZoomMax;
                     _isZooming = false;
                 }
-                else if (_zoom < _zoomMin)
+                else if (_zoom < ZoomMin)
                 {
-                    _zoom = _zoomMin;
+                    _zoom = ZoomMin;
                     _isZooming = false;
                 }
                 else
