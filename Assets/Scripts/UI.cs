@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using TMPro;
-using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,15 +23,15 @@ public class UI : MonoBehaviour
     [SerializeField]
     private GameObject _helpMenuPanel;
 
-    private Animator _divideBtnAnim;
-    private Animator _endTurnBtnAnim;
-    private Animator _winTxtAnim;
-    private Animator _loseTxtAnim;
-    private Animator _pauseMenuAnim;
-
     private static bool _gameOver;
 
     public readonly int RequiredSucceededUnits = 3;
+
+
+    //Needed for Tests
+    public ITime TimeService { get; set; }
+    public IInput InputService { get; set; }
+    public IUI UIService { get; set; }
 
     public static int SucceededUnits { get; set; }
 
@@ -44,24 +43,37 @@ public class UI : MonoBehaviour
         _gameOver = false;
         SucceededUnits = 0;
         GameplayPaused = true;
-        _helpMenuPanel.SetActive(true);
-        _finishedGamePanel.SetActive(false);
-        _pauseMenuPanel.SetActive(true);
-        _winTxt.gameObject.SetActive(false);
-        _loseTxt.gameObject.SetActive(false);
-        _divideBtnAnim = _divideBtn.GetComponent<Animator>();
-        _endTurnBtnAnim = _endTurnBtn.GetComponent<Animator>();
-        _winTxtAnim = _winTxt.GetComponent<Animator>();
-        _loseTxtAnim = _loseTxt.GetComponent<Animator>();
-        _pauseMenuAnim = _pauseMenuPanel.GetComponent<Animator>();
-        _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
+
+        if (TimeService == null)
+        {
+            TimeService = new GameTime();
+        }
+
+        if (InputService == null)
+        {
+            InputService = new GameInput();
+        }
+
+        if (UIService == null)
+        {
+            UIService = new GameUI(_pauseMenuPanel, _finishedGamePanel, _helpMenuPanel,
+                _divideBtn, _endTurnBtn, _winTxt, _loseTxt, _scoreTxt);
+        }
+
+        UIService.SetActive(nameof(_helpMenuPanel), true);
+        UIService.SetActive(nameof(_finishedGamePanel), false);
+        UIService.SetActive(nameof(_pauseMenuPanel), true);
+        UIService.SetActive(nameof(_winTxt), false);
+        UIService.SetActive(nameof(_loseTxt), false);
+
+        UIService.SetText("_scoreTxt", string.Concat(SucceededUnits, "/", RequiredSucceededUnits));
     }
 
     private void Update()
     {
         if (!_gameOver && !_helpMenuPanel.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (InputService.GetKeyDown(KeyCode.Escape))
             {
                 if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
                 {
@@ -72,11 +84,11 @@ public class UI : MonoBehaviour
 
                 if (!GameplayPaused)
                 {
-                    _pauseMenuAnim.SetBool("ShowWindow", true);
+                    UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", true);
                 }
                 else
                 {
-                    _pauseMenuAnim.SetBool("ShowWindow", false);
+                    UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", false);
                 }
 
                 PauseGameplay();
@@ -92,7 +104,7 @@ public class UI : MonoBehaviour
     public void UpdateScoreText(int increment)
     {
         SucceededUnits += increment;
-        _scoreTxt.text = string.Concat(SucceededUnits, "/", RequiredSucceededUnits);
+        UIService.SetText(nameof(_scoreTxt), string.Concat(SucceededUnits, "/", RequiredSucceededUnits));
 
         if (SucceededUnits == RequiredSucceededUnits)
         {
@@ -107,20 +119,20 @@ public class UI : MonoBehaviour
         if (!GameplayPaused)
         {
             //Closes the window incase it is open.
-            if (_pauseMenuAnim.GetBool("ShowWindow"))
+            if (UIService.GetAnimBool(nameof(_pauseMenuPanel), "ShowWindow"))
             {
-                _pauseMenuAnim.SetBool("ShowWindow", false);
+                UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", true);
             }
 
-            _divideBtn.gameObject.SetActive(true);
-            _endTurnBtn.gameObject.SetActive(true);
-            Time.timeScale = 1;
+            UIService.SetActive(nameof(_divideBtn), true);
+            UIService.SetActive(nameof(_endTurnBtn), true);
+            Time.timeScale = TimeService.SetScale(1);
         }
         else
         {
-            _divideBtn.gameObject.SetActive(false);
-            _endTurnBtn.gameObject.SetActive(false);
-            Time.timeScale = 0;
+            UIService.SetActive(nameof(_divideBtn), false);
+            UIService.SetActive(nameof(_endTurnBtn), false);
+            Time.timeScale = TimeService.SetScale(0);
         }
     }
 
@@ -129,47 +141,31 @@ public class UI : MonoBehaviour
         if (display)
         {
             GameplayPaused = true;
-            _helpMenuPanel.SetActive(true);
+            UIService.SetActive(nameof(_helpMenuPanel), true);
         }
         else
         {
-            if (!_pauseMenuAnim.GetBool("ShowWindow"))
+            //If the game is not already paused with an open pause menu, we can unpause the game
+            if (!UIService.GetAnimBool(nameof(_pauseMenuPanel), "ShowWindow"))
             {
                 GameplayPaused = false;
             }
 
-            _helpMenuPanel.SetActive(false);
+            UIService.SetActive(nameof(_helpMenuPanel), false);
         }
     }
 
     internal void DisplayButton(string button, bool shouldDisplay)
     {
-        FieldInfo[] fields = GetType().GetDeclaredFields();
-        Animator anim = null;
-
-        foreach (FieldInfo field in fields)
+        if (shouldDisplay)
         {
-            if (field.Name == button)
-            {
-                anim = (Animator)field.GetValue(this);
-                break;
-            }
+            UIService.ResetAnimTrigger(button, "Hide");
+            UIService.SetAnimTrigger(button, "Show");
         }
-
-        if (anim != null)
+        else
         {
-            anim.gameObject.GetComponent<Button>().interactable = shouldDisplay;
-
-            if (shouldDisplay)
-            {
-                anim.ResetTrigger("Hide");
-                anim.SetTrigger("Show");
-            }
-            else
-            {
-                anim.ResetTrigger("Show");
-                anim.SetTrigger("Hide");
-            }
+            UIService.ResetAnimTrigger(button, "Show");
+            UIService.SetAnimTrigger(button, "Hide");
         }
     }
 
@@ -189,17 +185,17 @@ public class UI : MonoBehaviour
     {
         _gameOver = true;
         PauseGameplay();
-        _winTxt.gameObject.SetActive(true);
-        _winTxtAnim.SetTrigger("GameWon");
-        _finishedGamePanel.SetActive(true);
+        UIService.SetActive(nameof(_winTxt), true);
+        UIService.SetActive(nameof(_finishedGamePanel), true);
+        UIService.SetAnimTrigger(nameof(_winTxt), "GameWon");
     }
 
     internal void GameLost()
     {
         _gameOver = true;
         PauseGameplay();
-        _loseTxt.gameObject.SetActive(true);
-        _loseTxtAnim.SetTrigger("GameLost");
-        _finishedGamePanel.SetActive(true);
+        UIService.SetActive(nameof(_loseTxt), true);
+        UIService.SetActive(nameof(_finishedGamePanel), true);
+        UIService.SetAnimTrigger(nameof(_loseTxt), "GameLost");
     }
 }
