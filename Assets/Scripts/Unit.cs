@@ -199,7 +199,7 @@ public abstract class Unit : MonoBehaviour
     }
 
     /// <summary>
-    /// Initializes the current unit's maximum attributes.
+    /// Initializes the current unit's maximum attributes and assigns necessary components.
     /// </summary>
     /// <param name="maxHitPoints">The unit's maximum health points.</param>
     /// <param name="maxMovementPoints">The unit's maximum movement points.</param>

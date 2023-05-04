@@ -62,51 +62,51 @@ public abstract class ImmuneCell : Unit
                 ResetUnit();
                 _firstCheckedClosestUnit = false;
                 BeginTurn = false;
+                //Reset targets foreach turn.
+                _targetUnit = null;
+                TargetTile = null;
 
                 FindNearestPathogen();
                 List<Tile> selectableTiles = FindSelectableTiles(CurrentTile, new List<Tile>(), 1);
 
                 //After finding a unit to target, we check that they are visible, then reachable.
                 //All these methods are fairly self-explanatory but further explanations can be found in them.
-                if (_targetUnit != null)
+                if (CheckUnitVisible(_targetUnit.CurrentTile))
                 {
-                    if (CheckUnitVisible(_targetUnit.CurrentTile))
+                    if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile, out bool collided))
                     {
-                        if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile, out bool collided))
+                        if (!collided && CheckClosestEnemyUnit(_targetUnit.CurrentTile.transform.position, ImmuneCells.Where(cell => cell != this).ToList()))
                         {
-                            if (!collided && CheckClosestEnemyUnit(_targetUnit.CurrentTile.transform.position, ImmuneCells.Where(cell => cell != this).ToList()))
-                            {
-                                //We set the closest unit to attack the player unit if multiple units are targetting the same.
-                                Debug.Log(gameObject.name + " I can attack");
-                                _canAttack = true;
-                            }
+                            //We set the closest unit to attack the player unit if multiple units are targeting the same.
+                            Debug.Log(gameObject.name + " I can attack");
+                            _canAttack = true;
+                        }
 
-                            if (collided)
-                            {
-                                Debug.Log(gameObject.name + ": Tile is Taken!");
-                                _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
-                            }
-                            else
-                            {
-                                Debug.Log(gameObject.name + ": No collision happened");
-                                _path = FindTargetUnitNearestNeighbourTile();
-                            }
+                        if (collided)
+                        {
+                            Debug.Log(gameObject.name + ": Tile is Taken!");
+                            _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
                         }
                         else
                         {
-                            Debug.Log(gameObject.name + ": Can't reach them, finding nearest tile");
-                            _path = FindPathClosestToTargetUnit();
+                            Debug.Log(gameObject.name + ": No collision happened");
+                            _path = FindTargetUnitNearestNeighbourTile();
                         }
                     }
                     else
                     {
-                        Debug.Log(gameObject.name + ": Can't see them, finding random tile");
-                        Tile targetTile = selectableTiles[Random.Range(0, selectableTiles.Count)];
-                        _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
+                        Debug.Log(gameObject.name + ": Can't reach them, finding nearest tile");
+                        _path = FindPathClosestToTargetUnit();
                     }
-
-                    MovementPoints -= (short)_path.Count;
                 }
+                else
+                {
+                    Debug.Log(gameObject.name + ": Can't see them, finding random tile");
+                    Tile targetTile = selectableTiles[Random.Range(0, selectableTiles.Count)];
+                    _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
+                }
+
+                MovementPoints -= (short)_path.Count;
             }
             else
             {
@@ -119,10 +119,7 @@ public abstract class ImmuneCell : Unit
                 {
                     //Attack the unit once we're next to them.
                     CheckCanAttack();
-                    //Reset targets foreach turn.
                     _finishedTurn = true;
-                    _targetUnit = null;
-                    TargetTile = null;
                     CheckLastImmuneCellFinished();
                 }
             }
@@ -223,7 +220,7 @@ public abstract class ImmuneCell : Unit
             {
                 foreach (ImmuneCell cell in neighbours)
                 {
-                    //If these neighbours exist and are targetting our unit we must go somewhere else.
+                    //If these neighbours exist and are targeting our unit we must go somewhere else.
                     if (cell.TargetUnit != null && cell.TargetUnit.CurrentTile == targetUnitTile)
                     {
                         AssignRandomTargetTileFromCollection(this, targetUnitTile.NeighbouringTiles);
@@ -280,7 +277,7 @@ public abstract class ImmuneCell : Unit
         return false;
     }
 
-    //
+    //Returns true if the target unit is within the range of this enemy.
     private bool CheckUnitVisible(Tile targetUnitTile)
     {
         if (TileMovement.FindDistance(CurrentTile, targetUnitTile) < Visibility)
@@ -306,7 +303,7 @@ public abstract class ImmuneCell : Unit
         }
     }
 
-    //this recursively calls itself until an available tile is found.
+    //This recursively calls itself until an available tile is found.
     //Used in case many enemy units are dogpilling one player unit.
     private Tile GetAvailableTile(List<Tile> tiles, List<Tile> exploredTiles)
     {
@@ -314,13 +311,13 @@ public abstract class ImmuneCell : Unit
 
         foreach (Tile t in tiles)
         {
-            if (!t.Inhabited && t.Reachable && !exploredTiles.Contains(t))
+            if (!t.Inhabited && !exploredTiles.Contains(t))
             {
                 availableTiles.Add(t);
             }
         }
 
-        //returns a random tile from what is available in the given list.
+        //Returns a random tile from what is available in the given list.
         if (availableTiles.Count > 0)
         {
             return tiles[Random.Range(0, tiles.Count)];
@@ -340,7 +337,7 @@ public abstract class ImmuneCell : Unit
         return null;
     }
 
-    // Sets the nearest available player unit as the target unit.
+    //Sets the nearest available player unit as the target unit.
     private void FindNearestPathogen()
     {
         if (PlayerUnits.Count > 0)
@@ -352,10 +349,10 @@ public abstract class ImmuneCell : Unit
 
             foreach (PlayerUnit unit in PlayerUnits)
             {
-                //make units target different units for simplicity if there are more playerUnits
+                //Make units target different units for simplicity if there are more player units.
                 if (ImmuneCells.Count <= PlayerUnits.Count)
                 {
-                    //We confirm that no other Unit has already targeted this Player Unit before targeting them ourselves
+                    //We confirm that no other Unit has already targeted this player unit before targeting them ourselves
                     if (CheckUnitAlreadyATarget(otherImmuneCells, unit))
                     {
                         continue;
@@ -403,7 +400,7 @@ public abstract class ImmuneCell : Unit
                     }
                 }
 
-                //If none have checked so far we are the first to so to avoid any others targetting we set our variable to true.
+                //If none have checked so far we are the first to so to avoid any others targeting we set our variable to true.
                 _firstCheckedClosestUnit = true;
             }
         }

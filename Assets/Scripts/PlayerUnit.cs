@@ -87,7 +87,7 @@ public abstract class PlayerUnit : Unit
                     UnitUI.UpdateStatBarPositions(this, _mainCamera.WorldToScreenPoint(gameObject.transform.position));
                 }
 
-                TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+                TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), Visibility);
 
                 //This rehighlights the selected unit's associated tiles in case they were reset.
                 if (Selected)
@@ -267,12 +267,7 @@ public abstract class PlayerUnit : Unit
         UI.DisplayButton(DivideBtnName, false);
     }
 
-    /// <summary>
-    /// Initializes the player unit's maximum attributes and assigns necessary components.
-    /// </summary>
-    /// <param name="maxHitPoints">The player unit's maximum health points.</param>
-    /// <param name="maxMovementPoints">The player unit's maximum movement points.</param>
-    /// <param name="visibilityRange">The maximum distance in tiles the player unit can detect enemies.</param>
+    /// <inheritdoc cref="Unit.Init" />
     protected override void Init(short maxHitPoints, short maxMovementPoints, short visibilityRange)
     {
         base.Init(maxHitPoints, maxMovementPoints, visibilityRange);
@@ -371,12 +366,12 @@ public abstract class PlayerUnit : Unit
         }
     }
 
-    //This is used to refresh all visible tiles the player can see all of them when necessary.
+    //This is used to refresh all visible tiles so the player can see all of them when necessary.
     private void FindAllVisibleTiles()
     {
         foreach (PlayerUnit unit in PlayerUnits)
         {
-            TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), 1, unit.Visibility);
+            TileMovement.FindVisibleTiles(unit.CurrentTile, new Queue<Tile>(), unit.Visibility);
         }
     }
 }

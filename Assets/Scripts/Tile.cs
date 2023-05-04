@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
+    //These are serialized for debugging purposes.
     [SerializeField]
     private bool _goal = false;
     [SerializeField]
@@ -15,11 +16,10 @@ public class Tile : MonoBehaviour
     private bool _reachable = false;
     [SerializeField]
     private bool _visible = false;
-
-    private new Renderer _renderer;
-
     [SerializeField]
     private List<Tile> _neighbourTiles;
+    private Renderer _renderer;
+
 
     /// <summary>
     /// True if it's the current tile of the currently selected Player Unit.
@@ -180,6 +180,7 @@ public class Tile : MonoBehaviour
                 {
                     Collider2D collider = Physics2D.OverlapBox(transform.position + new Vector3(x, y), size, 0f, layerMask);
 
+                    //This is true when we are at the edge of the board.
                     if (collider != null)
                     {
                         tiles.Add(collider.gameObject.GetComponent<Tile>());

@@ -57,7 +57,7 @@ public class Bacteria : PlayerUnit
             clone.Clone = true;
 
             //Begins the coroutine to animate the movement.
-            StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position + TileMovement.UnitLayer));
+            StartCoroutine(DivideToNewTile(clone, chosenTile.transform.position));
  
             MovementPoints = 0;
             ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Visible), nameof(Tile.Goal) });
@@ -87,6 +87,6 @@ public class Bacteria : PlayerUnit
         clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
         UnitUI.UpdateStatBarValue(clone, EnergyProperty);
         UnitUI.UpdateStatBarPositions(clone, Camera.main.WorldToScreenPoint(destination));
-        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), 1, Visibility);
+        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), Visibility);
     }
 }

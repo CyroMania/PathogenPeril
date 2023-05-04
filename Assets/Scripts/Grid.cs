@@ -17,10 +17,12 @@ public class Grid : MonoBehaviour
     /// <summary>
     /// All tiles in the grid Gameboard.
     /// </summary>
-    public List<Tile> Tiles { get; set; } = new List<Tile>();
+    public List<Tile> Tiles { get; set; }
 
     private void Start()
     {
+        Tiles = new List<Tile>();
+
         if (Tiles.Count == 0)
         {
             GenerateTiles(_gridWidth, _gridHeight, _tile);
@@ -50,7 +52,7 @@ public class Grid : MonoBehaviour
                     //Tiles are named based on coordinates in world space for ease of testing.
                     clone.name = "Tile (" + x + ":" + y + ")";
 
-                    //This sets the last tiles on the y axis to goal tiles.
+                    //This sets the last tiles on the y axis to goal tiles. 
                     if (y == height - 1)
                     {
                         clone.Goal = true;

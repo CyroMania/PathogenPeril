@@ -82,6 +82,7 @@ public class UI : MonoBehaviour
         {
             if (InputService.GetKeyDown(KeyCode.Escape))
             {
+                //This section handles deselection of a unit if one is selected.
                 if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
                 {
                     PlayerUnit.DeselectAllUnits();
@@ -89,6 +90,7 @@ public class UI : MonoBehaviour
                     return;
                 }
 
+                //This shows the pause menu if hidden, or hides it if it displayed.
                 if (!GameplayPaused)
                 {
                     UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, true);
