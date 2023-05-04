@@ -40,6 +40,8 @@ public class CameraMovement : MonoBehaviour
 
             //Geneneral Positional Movement
 
+            //This setup is done with separate if blocks so that the player has direct control with each button.
+            //this way if the player holds down two opposite keys they won't move at all.
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
                 movementVector += Vector2.up;
