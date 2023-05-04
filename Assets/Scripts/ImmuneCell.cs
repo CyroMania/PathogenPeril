@@ -78,30 +78,30 @@ public abstract class ImmuneCell : Unit
                         if (!collided && CheckClosestEnemyUnit(_targetUnit.CurrentTile.transform.position, ImmuneCells.Where(cell => cell != this).ToList()))
                         {
                             //We set the closest unit to attack the player unit if multiple units are targeting the same.
-                            Debug.Log(gameObject.name + " I can attack");
+                            Debug.Log($"{gameObject.name}: I can attack");
                             _canAttack = true;
                         }
 
                         if (collided)
                         {
-                            Debug.Log(gameObject.name + ": Tile is Taken!");
+                            Debug.Log($"{gameObject.name}: Tile is Taken!");
                             _path = TileMovement.FindTilePath(CurrentTile, TargetTile, new Stack<Tile>(), MovementPoints);
                         }
                         else
                         {
-                            Debug.Log(gameObject.name + ": No collision happened");
+                            Debug.Log($"{gameObject.name}: No collision happened");
                             _path = FindTargetUnitNearestNeighbourTile();
                         }
                     }
                     else
                     {
-                        Debug.Log(gameObject.name + ": Can't reach them, finding nearest tile");
+                        Debug.Log($"{gameObject.name}: Can't reach them, finding nearest tile");
                         _path = FindPathClosestToTargetUnit();
                     }
                 }
                 else
                 {
-                    Debug.Log(gameObject.name + ": Can't see them, finding random tile");
+                    Debug.Log($"{gameObject.name}: Can't see them, finding random tile");
                     Tile targetTile = selectableTiles[Random.Range(0, selectableTiles.Count)];
                     _path = TileMovement.FindTilePath(CurrentTile, targetTile, new Stack<Tile>(), MovementPoints);
                 }
@@ -299,7 +299,7 @@ public abstract class ImmuneCell : Unit
         cell.TargetTile = GetAvailableTile(tiles, exploredTiles);
         if (cell.TargetTile != null)
         {
-            Debug.Log("Assigned new tile to unit: " + cell.TargetTile.name);
+            Debug.Log($"Assigned new tile to unit: {cell.TargetTile.name}");
         }
     }
 
@@ -452,7 +452,7 @@ public abstract class ImmuneCell : Unit
         {
             if (otherCell._targetUnit != null && otherCell._targetUnit == unit)
             {
-                Debug.Log(name + ": This Unit already Is Already Targeted!");
+                Debug.Log($"{name}: This Unit already Is Already Targeted!");
                 return true;
             }
         }

@@ -61,7 +61,7 @@ public class GameUI : IUI
         }
         else
         {
-            Debug.Log("Animator couldn't be found on gameObject " + field + ".");
+            Debug.Log($"Animator couldn't be found on gameObject {field}.");
         }
 
         return animator.GetBool(animValue);
@@ -78,7 +78,7 @@ public class GameUI : IUI
         }
         else
         {
-            Debug.Log("Couldn't find animator on " + field + " gameObject.");
+            Debug.Log($"Couldn't find animator on {field} gameObject.");
         }
     }
 
@@ -118,7 +118,7 @@ public class GameUI : IUI
         }
         else
         {
-            Debug.Log("Couldn't convert find animator on " + field + " gameObject.");
+            Debug.Log($"Couldn't convert find animator on {field} gameObject.");
         }
     }
 
@@ -153,7 +153,7 @@ public class GameUI : IUI
         }
         else
         {
-            Debug.Log("Couldn't find animator on " + field + " gameObject.");
+            Debug.Log($"Couldn't find animator on {field} gameObject.");
         }
     }
 

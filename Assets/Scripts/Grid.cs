@@ -50,7 +50,7 @@ public class Grid : MonoBehaviour
                     Tile clone = Instantiate(tile, new Vector3(x, y, transform.position.z), Quaternion.identity, transform);
 
                     //Tiles are named based on coordinates in world space for ease of testing.
-                    clone.name = "Tile (" + x + ":" + y + ")";
+                    clone.name = $"Tile ({x}:{y})";
 
                     //This sets the last tiles on the y axis to goal tiles. 
                     if (y == height - 1)
@@ -69,7 +69,7 @@ public class Grid : MonoBehaviour
                     clone.transform.rotation = Quaternion.identity;
                     clone.transform.parent = transform;
 
-                    clone.name = "Tile (" + x + ":" + y + ")";
+                    clone.name = $"Tile ({x}:{y})";
 
                     if (y == height - 1)
                     {

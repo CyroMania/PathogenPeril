@@ -163,7 +163,7 @@ public abstract class Unit : MonoBehaviour
     public static void EndCurrentTurn()
     {
         _isPlayerTurn = !_isPlayerTurn;
-        Debug.Log("PlayerTurn: " + _isPlayerTurn);
+        Debug.Log($"PlayerTurn: {_isPlayerTurn}");
 
         if (_isPlayerTurn)
         {
@@ -317,6 +317,7 @@ public abstract class Unit : MonoBehaviour
                 Tile spawnTile = AcceptableTiles[Random.Range(0, AcceptableTiles.Count)];
                 Macrophage macrophage = Instantiate(FindObjectOfType<Macrophage>(), spawnTile.transform.position, Quaternion.identity);
                 macrophage.GetComponent<Macrophage>().CurrentTile = spawnTile;
+                macrophage.name = "Macrophage";
             }
         }
     }
