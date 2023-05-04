@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -97,6 +96,11 @@ public class GameUI : IUI
             GameObject parent = (uiElement.GetValue(this) as TextMeshProUGUI).gameObject;
             parent.SetActive(active);
         }
+        else if (uiElement.GetValue(this) as Button != null)
+        {
+            GameObject parent = (uiElement.GetValue(this) as Button).gameObject;
+            parent.SetActive(active);
+        }
         else
         {
             Debug.Log("Couldn't convert " + field + " to game object.");
@@ -139,7 +143,12 @@ public class GameUI : IUI
 
         if (gameObject.GetValue(this) as Button != null)
         {
-            Animator animator = (gameObject.GetValue(this) as Button).GetComponent<Animator>();
+            Animator animator = (gameObject.GetValue(this) as Button).gameObject.GetComponent<Animator>();
+            animator.SetTrigger(animValue);
+        }
+        else if (gameObject.GetValue(this) as TextMeshProUGUI)
+        {
+            Animator animator = (gameObject.GetValue(this) as TextMeshProUGUI).gameObject.GetComponent<Animator>();
             animator.SetTrigger(animValue);
         }
         else
