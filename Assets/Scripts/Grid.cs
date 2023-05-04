@@ -50,6 +50,7 @@ public class Grid : MonoBehaviour
                     //Tiles are named based on coordinates in world space for ease of testing.
                     clone.name = "Tile (" + x + ":" + y + ")";
 
+                    //This sets the last tiles on the y axis to goal tiles.
                     if (y == height - 1)
                     {
                         clone.Goal = true;
