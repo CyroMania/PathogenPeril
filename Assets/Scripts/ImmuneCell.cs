@@ -2,6 +2,10 @@
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// This class is the parent class for all enemy unit types found in the game.
+/// It handles enemy unit pathfinding and attacks.
+/// </summary>
 public abstract class ImmuneCell : Unit
 {
     private PlayerUnit _targetUnit;

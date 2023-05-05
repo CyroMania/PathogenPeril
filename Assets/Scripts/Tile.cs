@@ -3,6 +3,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
+/// <summary>
+/// The objects in the game that the units position and move themselves on.
+/// </summary>
 public class Tile : MonoBehaviour
 {
     //These are serialized for debugging purposes.
@@ -22,7 +25,7 @@ public class Tile : MonoBehaviour
 
 
     /// <summary>
-    /// True if it's the current tile of the currently selected Player Unit.
+    /// True if it's the current tile of the currently selected player unit.
     /// </summary>
     public bool Current
     {
@@ -31,7 +34,7 @@ public class Tile : MonoBehaviour
     }
 
     /// <summary>
-    /// True if a unit is selected and another unit inhabits a reachable tile.
+    /// True if unit is selected and another unit inhabits a reachable tile.
     /// </summary>
     public bool Inhabited
     {

@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// The base class for pathogens the player controls.
+/// </summary>
 public abstract class PlayerUnit : Unit
 {
     private const string DivideBtnName = "_divideBtn";

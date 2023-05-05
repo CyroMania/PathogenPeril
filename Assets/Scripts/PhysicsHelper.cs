@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Static class for using Unity physics. 
+/// </summary>
 public static class PhysicsHelper
 {
     /// <summary>

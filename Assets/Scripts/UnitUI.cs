@@ -3,6 +3,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Handles the stat bars that float above or below the active player units.
+/// </summary>
 public class UnitUI : MonoBehaviour
 {
     private const string statBarsContainerName = "StatBars";

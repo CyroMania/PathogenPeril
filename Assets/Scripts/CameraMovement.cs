@@ -1,5 +1,8 @@
  using UnityEngine;
 
+/// <summary>
+/// Handles camera movement based on user input.
+/// </summary>
 public class CameraMovement : MonoBehaviour
 {
     private bool _isMoving;

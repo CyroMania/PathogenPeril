@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A Large phagocyte. They use phagocytosis to prevent bacterial invasions.
+/// </summary>
 public class Macrophage : ImmuneCell
 {
     private const float MinPlayerUnitDistance = 0.03f;

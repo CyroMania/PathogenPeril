@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Allows for different scenes to load.
+/// </summary>
 public class SceneInteractionManager : MonoBehaviour
 {
     private static int _currentSceneBuildIndex;

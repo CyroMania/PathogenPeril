@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Main player unit. A simple pathogen that replicates by cloning itself.
+/// </summary>
 public class Bacteria : PlayerUnit
 {
     private static readonly short _maxHitPoints = 8;

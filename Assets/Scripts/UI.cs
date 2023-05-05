@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manipulates ui components based on specific input.
+/// </summary>
 public class UI : MonoBehaviour
 {
     internal const int RequiredSucceededUnits = 3;

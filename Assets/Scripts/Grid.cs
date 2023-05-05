@@ -2,15 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// The gameboard that maps all the tiles.
+/// </summary>
 public class Grid : MonoBehaviour
 {
-
     [SerializeField]
     private int _gridWidth = 10;
-
     [SerializeField]
     private int _gridHeight = 30;
-
     [SerializeField]
     private Tile _tile;
 

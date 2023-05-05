@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// static class that handles the movement of units on tiles.
+/// </summary>
 public static class TileMovement
 {
     /// <summary>

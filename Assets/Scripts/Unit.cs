@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// The game objects the player interacts with on the game board.
+/// </summary>
 public abstract class Unit : MonoBehaviour
 {
     private const string EndTurnBtnName = "_endTurnBtn";
