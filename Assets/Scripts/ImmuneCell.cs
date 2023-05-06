@@ -8,17 +8,15 @@ using UnityEngine;
 /// </summary>
 public abstract class ImmuneCell : Unit
 {
+    //This boolean is temporary. It's a bodge fix due to a poor design decision earlier in development.
+    //It will be removed during a large refactor.
+    private bool _firstCheckedClosestUnit = false;
+    private bool _finishedTurn = false;
+    private bool _canAttack = false;
     private PlayerUnit _targetUnit;
     private Renderer _renderer;
     private Collider2D _collider;
     private Stack<Tile> _path = new Stack<Tile>();
-
-    private bool _finishedTurn = false;
-    private bool _canAttack = false;
-
-    //This boolean is temporary. It's a bodge fix due to a poor design decision earlier in development.
-    //It will be removed during a large refactor.
-    private bool _firstCheckedClosestUnit = false;
 
     /// <summary>
     /// True if the immune cell has finished moving and attacking, otherwise false.

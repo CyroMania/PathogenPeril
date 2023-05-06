@@ -440,7 +440,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e0798b5278159d4d92c324830c7b477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 519420031}
   _statBar: {fileID: 2333781432660404396, guid: 1fde79189ee001a429d3fab100df50d0, type: 3}
 --- !u!114 &340083356
 MonoBehaviour:
@@ -4611,9 +4610,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da71bd132feb0184d9e1cc376603b8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 20
-  gridHeight: 30
-  tile: {fileID: 384650044}
+  _gridWidth: 20
+  _gridHeight: 30
+  _tile: {fileID: 384650044}
 --- !u!1 &2129751036
 GameObject:
   m_ObjectHideFlags: 0

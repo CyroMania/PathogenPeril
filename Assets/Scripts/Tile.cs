@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class Tile : MonoBehaviour
 {
+    private static readonly Vector2 _size = new Vector2(0.5f, 0.5f);
+
     //These are serialized for debugging purposes.
     [SerializeField]
     private bool _goal = false;
@@ -79,13 +81,13 @@ public class Tile : MonoBehaviour
         private set => _neighbourTiles = value;
     }
 
-    void Start()
+    private void Start()
     {
         NeighbouringTiles = FindNeighbouringTiles();
         _renderer = GetComponent<Renderer>();
     }
 
-    void Update()
+    private void Update()
     {
         //This determines the colour of tile based on different state priority
         //TODO: Refactor code into a method and provide calls to it to remove this from the update function
@@ -168,7 +170,6 @@ public class Tile : MonoBehaviour
     /// <returns>A list of tiles.</returns>
     private List<Tile> FindNeighbouringTiles()
     {
-        Vector2 size = new Vector2(0.5f, 0.5f);
         List<Tile> tiles = new List<Tile>();
         int layerMask = 1 << LayerMask.NameToLayer("Tile");
 
@@ -177,7 +178,7 @@ public class Tile : MonoBehaviour
             for (int y = -1; y <= 1; y++)
             {
                 //this check is performant and guarantees an adjacent tile because each one will have at least an x or y value of zero
-                //as we are not including corner neighbours. We still need to compare that they are not equal otherwise we will
+                //as we are not including corner neighbours. We still need to compare that they are not equal otherwise we will have
                 // a reference to the current tile in its own neighbourTiles list.
                 if (x != y && x * y == 0)
                 {
