@@ -182,7 +182,7 @@ public class Tile : MonoBehaviour
                 // a reference to the current tile in its own neighbourTiles list.
                 if (x != y && x * y == 0)
                 {
-                    Collider2D collider = Physics2D.OverlapBox(transform.position + new Vector3(x, y), size, 0f, layerMask);
+                    Collider2D collider = Physics2D.OverlapBox(transform.position + new Vector3(x, y), _size, 0f, layerMask);
 
                     //This is true when we are at the edge of the board.
                     if (collider != null)
