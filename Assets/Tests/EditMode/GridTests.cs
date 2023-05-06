@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
-
+ 
 [TestFixture]
 public class GridTests
 {
@@ -18,7 +18,7 @@ public class GridTests
 
         grid.GenerateTiles(width, height, null);
 
-        Assert.AreEqual(width * height, grid.tiles.Count);
+        Assert.AreEqual(width * height, grid.Tiles.Count);
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class GridTests
         grid.GenerateTiles(width, height, null);
         int numGoalTiles = 0;
 
-        foreach (Tile t in grid.tiles)
+        foreach (Tile t in grid.Tiles)
         {
             if (t.transform.position.y == height - 1)
             {

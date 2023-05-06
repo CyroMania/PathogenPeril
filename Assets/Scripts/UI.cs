@@ -4,8 +4,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manipulates ui components based on specific input.
+/// </summary>
 public class UI : MonoBehaviour
 {
+    internal const int RequiredSucceededUnits = 3;
+    private const string ShowWindowAnimBool = "ShowWindow";
+
+    private static bool _gameOver;
+
     [SerializeField]
     private Button _divideBtn;
     [SerializeField]
@@ -23,19 +31,20 @@ public class UI : MonoBehaviour
     [SerializeField]
     private GameObject _helpMenuPanel;
 
-    private static bool _gameOver;
-
-    public readonly int RequiredSucceededUnits = 3;
-
-
     //Needed for Tests
     public ITime TimeService { get; set; }
     public IInput InputService { get; set; }
     public IUI UIService { get; set; }
 
-    public static int SucceededUnits { get; set; }
+    /// <summary>
+    /// The number of units that have made it into the blood stream.
+    /// </summary>
+    internal static int SucceededUnits { get; set; }
 
-    public static bool GameplayPaused { get; private set; }
+    /// <summary>
+    /// True if the gameplay is currently paused.
+    /// </summary>
+    internal static bool GameplayPaused { get; private set; }
 
     private void Awake()
     {
@@ -60,13 +69,14 @@ public class UI : MonoBehaviour
                 _divideBtn, _endTurnBtn, _winTxt, _loseTxt, _scoreTxt);
         }
 
+        //nameof Keyword allows us to create more maintainable code without creating lots of constants.
         UIService.SetActive(nameof(_helpMenuPanel), true);
         UIService.SetActive(nameof(_finishedGamePanel), false);
         UIService.SetActive(nameof(_pauseMenuPanel), true);
         UIService.SetActive(nameof(_winTxt), false);
         UIService.SetActive(nameof(_loseTxt), false);
 
-        UIService.SetText("_scoreTxt", string.Concat(SucceededUnits, "/", RequiredSucceededUnits));
+        UIService.SetText(nameof(_scoreTxt), string.Concat(SucceededUnits, "/", RequiredSucceededUnits));
     }
 
     private void Update()
@@ -75,6 +85,7 @@ public class UI : MonoBehaviour
         {
             if (InputService.GetKeyDown(KeyCode.Escape))
             {
+                //This section handles deselection of a unit if one is selected.
                 if (Unit.IsPlayerTurn && Unit.CheckAnyPlayerUnitSelected())
                 {
                     PlayerUnit.DeselectAllUnits();
@@ -82,13 +93,14 @@ public class UI : MonoBehaviour
                     return;
                 }
 
+                //This shows the pause menu if hidden, or hides it if it displayed.
                 if (!GameplayPaused)
                 {
-                    UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", true);
+                    UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, true);
                 }
                 else
                 {
-                    UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", false);
+                    UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, false);
                 }
 
                 PauseGameplay();
@@ -96,11 +108,18 @@ public class UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Begins a new turn.
+    /// </summary>
     public void NewTurn()
     {
         Unit.EndCurrentTurn();
     }
 
+    /// <summary>
+    /// Increases the onscreen score by some value.
+    /// </summary>
+    /// <param name="increment">the number of points to increase the score by.</param>
     public void UpdateScoreText(int increment)
     {
         SucceededUnits += increment;
@@ -112,16 +131,20 @@ public class UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Pauses or unpauses the gameplay.
+    /// </summary>
     public void PauseGameplay()
     {
+        //This will reverse the current state.
         GameplayPaused = !GameplayPaused;
 
         if (!GameplayPaused)
         {
             //Closes the window incase it is open.
-            if (UIService.GetAnimBool(nameof(_pauseMenuPanel), "ShowWindow"))
+            if (UIService.GetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool))
             {
-                UIService.SetAnimBool(nameof(_pauseMenuPanel), "ShowWindow", true);
+                UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, true);
             }
 
             UIService.SetActive(nameof(_divideBtn), true);
@@ -136,6 +159,10 @@ public class UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controls whether the help info menu appears or not.
+    /// </summary>
+    /// <param name="display">Shows the menu if true, hides the menu if false.</param>
     public void DisplayInfoMenu(bool display)
     {
         if (display)
@@ -146,7 +173,7 @@ public class UI : MonoBehaviour
         else
         {
             //If the game is not already paused with an open pause menu, we can unpause the game
-            if (!UIService.GetAnimBool(nameof(_pauseMenuPanel), "ShowWindow"))
+            if (!UIService.GetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool))
             {
                 GameplayPaused = false;
             }
@@ -155,6 +182,11 @@ public class UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controls whether a specific button appears or not.
+    /// </summary>
+    /// <param name="button">The button to show or hide.</param>
+    /// <param name="shouldDisplay">Shows the menu if true, hides the menu if false.</param>
     internal void DisplayButton(string button, bool shouldDisplay)
     {
         if (shouldDisplay)
@@ -169,6 +201,12 @@ public class UI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Confirms buttons are usable with the given parameters.
+    /// </summary>
+    /// <param name="currentEnergy">The remaining energy of the current selected unit.</param>
+    /// <param name="maxEnergy">The selected unit's max energy level.</param>
+    /// <param name="fullySurrounded">True if the unit has no available neighbouring tiles.</param>
     internal void CheckButtonsUsable(short currentEnergy, short maxEnergy, bool fullySurrounded)
     {
         if (currentEnergy == maxEnergy && !fullySurrounded)
@@ -181,7 +219,10 @@ public class UI : MonoBehaviour
         }
     }
 
-    internal void GameWon()
+    /// <summary>
+    /// Manipulates the UI if the player wins the game.
+    /// </summary>
+    private void GameWon()
     {
         _gameOver = true;
         PauseGameplay();
@@ -190,6 +231,9 @@ public class UI : MonoBehaviour
         UIService.SetAnimTrigger(nameof(_winTxt), "GameWon");
     }
 
+    /// <summary>
+    /// Manipulates the UI if the player loses the game.
+    /// </summary>
     internal void GameLost()
     {
         _gameOver = true;
