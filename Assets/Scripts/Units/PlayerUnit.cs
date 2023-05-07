@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -126,12 +127,7 @@ public abstract class PlayerUnit : Unit
 
                         if (CurrentTile.Goal)
                         {
-                            //We must despawn the unit if they are on a goal tile and increment the score.
-                            UI.UpdateScoreText(1);
-                            Kill();
-                            //We need to reset all tiles so they're visible tiles are reset.
-                            ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Goal) });
-                            FindAllVisibleTiles();
+                            SendUnitIntoBloodStream();
                             //This returns because the unit is destroyed so no more logic involving their state needs to take place.
                             return;
                         }
@@ -284,6 +280,20 @@ public abstract class PlayerUnit : Unit
         }
 
         PlayerUnits.Add(this);
+    }
+
+    /// <summary>
+    /// Removes the unit from the battlefield and increments the score.
+    /// </summary>
+    protected void SendUnitIntoBloodStream()
+    {
+        //We must despawn the unit if they are on a goal tile and increment the score.
+        UI.UpdateScoreText(1);
+        Kill();
+        //We need to reset all tiles so they're visible tiles are reset.
+        ResetAllTiles(ignoredProps: new string[] { nameof(Tile.Goal) });
+        FindAllVisibleTiles();
+        return;
     }
 
     /// <summary>

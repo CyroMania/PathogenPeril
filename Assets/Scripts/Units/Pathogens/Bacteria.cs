@@ -87,9 +87,18 @@ public class Bacteria : PlayerUnit
         }
 
         clone.transform.position = destination;
-        clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);
-        UnitUI.UpdateStatBarValue(clone, EnergyProperty);
-        UnitUI.UpdateStatBarPositions(clone, Camera.main.WorldToScreenPoint(destination));
-        TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), Visibility);
+        clone.CurrentTile = TileMovement.CalculateCurrentTile(clone);;
+
+        if (clone.CurrentTile.Goal)
+        {
+            Debug.Log("Unit is going into bloodstream..."); 
+            clone.SendUnitIntoBloodStream();
+        }
+        else
+        {
+            UnitUI.UpdateStatBarValue(clone, EnergyProperty);
+            UnitUI.UpdateStatBarPositions(clone, Camera.main.WorldToScreenPoint(destination));
+            TileMovement.FindVisibleTiles(CurrentTile, new Queue<Tile>(), Visibility);
+        }
     }
 }
