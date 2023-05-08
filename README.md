@@ -1,8 +1,7 @@
 # COMP3000 - Honour's Project
 
-## Supervisor
-
-Swen Gaudl
+<b>Supervisor - Dr Swen Gaudl</b>\
+I'd like to wish a special thanks to my supervisor and all the people around me who gave me the motivation to make this project a reality.
 
 ## Project Vision
 
@@ -22,7 +21,7 @@ It will be coded in C#. All the Models will be designed in Krita which is where 
 animations will also be created.
 The game will be a 2D strategy game with an isometric top-down perspective.
 
-## PathogenPeril - Description
+## Pathogen Peril - Description
 This Repo is the main source code for my honours project, presently named 'Pathogen Peril'.
 Here you can find all the classes and assets I've created to make this passion project a reality.
 
@@ -34,7 +33,8 @@ via entertaining game mechanics, from the perspective of the invaders (Pathogens
  
 Here is a simple list of the current controls for User Input:
 
-WASD / Arrow Keys - Move Around Game Board.
-Escape - Open the pause Menu.
+WASD / Arrow Keys - Move Around Game Board.\
+Escape Key - Open the pause Menu or Deselect current unit if selected.\
+Left Mouse Button - Select and Deselect Units. Also interact with buttons.
 
 The same information and other helpful tips can also be found in the application.
