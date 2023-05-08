@@ -73,7 +73,7 @@ public abstract class ImmuneCell : Unit
 
                 //After finding a unit to target, we check that they are visible, then reachable.
                 //All these methods are fairly self-explanatory but further explanations can be found in them.
-                if (CheckUnitVisible(_targetUnit.CurrentTile))
+                if (_targetUnit != null && CheckUnitVisible(_targetUnit.CurrentTile))
                 {
                     if (CheckUnitReachable(CurrentTile, _targetUnit.CurrentTile, out bool collided))
                     {
