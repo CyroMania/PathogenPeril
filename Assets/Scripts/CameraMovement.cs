@@ -35,7 +35,7 @@ public class CameraMovement : MonoBehaviour
         _zoom = GetComponent<Camera>().orthographicSize;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!UI.GameplayPaused)
         {

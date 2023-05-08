@@ -84,7 +84,7 @@ public class Grid : MonoBehaviour
         //This if statement only runs if the is not null because the NSubstitute does not allow the Destroy method call.
         if (tile != null)
         {
-            GameObject first = Tiles.First().gameObject;
+            GameObject first = Tiles.FirstOrDefault().gameObject;
             Destroy(first);
             Tiles.RemoveAt(0);
         }

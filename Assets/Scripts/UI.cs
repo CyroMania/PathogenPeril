@@ -144,7 +144,7 @@ public class UI : MonoBehaviour
             //Closes the window incase it is open.
             if (UIService.GetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool))
             {
-                UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, true);
+                UIService.SetAnimBool(nameof(_pauseMenuPanel), ShowWindowAnimBool, false);
             }
 
             UIService.SetActive(nameof(_divideBtn), true);
