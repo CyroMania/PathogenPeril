@@ -1,10 +1,10 @@
-## COMP3000 - Honour's Project
+# COMP3000 - Honour's Project
 
-# Supervisor
+## Supervisor
 
 Swen Gaudl
 
-# Project Vision
+## Project Vision
 
 This product is for gaming enthusiasts with an interest in biology.
 It is simply a fun game with added educational tidbits, for people interested in learning
@@ -22,7 +22,7 @@ It will be coded in C#. All the Models will be designed in Krita which is where 
 animations will also be created.
 The game will be a 2D strategy game with an isometric top-down perspective.
 
-# PathogenPeril - Description
+## PathogenPeril - Description
 This Repo is the main source code for my honours project, presently named 'Pathogen Peril'.
 Here you can find all the classes and assets I've created to make this passion project a reality.
 
@@ -30,7 +30,7 @@ This project encompasses a 2D tactical turn-based strategy game involving the Im
 The main goal is to simulate the behaviour of the immune systems response to various pathogens
 via entertaining game mechanics, from the perspective of the invaders (Pathogens).
 
-# Controls
+## Controls
  
 Here is a simple list of the current controls for User Input:
 
