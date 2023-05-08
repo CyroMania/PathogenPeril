@@ -1,10 +1,10 @@
-##COMP3000 - Honour's Project
+## COMP3000 - Honour's Project
 
-#Supervisor
+# Supervisor
 
 Swen Gaudl
 
-#Project Vision
+# Project Vision
 
 This product is for gaming enthusiasts with an interest in biology.
 It is simply a fun game with added educational tidbits, for people interested in learning
@@ -30,7 +30,7 @@ This project encompasses a 2D tactical turn-based strategy game involving the Im
 The main goal is to simulate the behaviour of the immune systems response to various pathogens
 via entertaining game mechanics, from the perspective of the invaders (Pathogens).
 
-#Controls
+# Controls
  
 Here is a simple list of the current controls for User Input:
 
